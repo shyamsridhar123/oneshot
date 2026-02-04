@@ -237,4 +237,4 @@ pytest tests/test_chat.py   # Run specific test file
 
 ## License
 
-Internal Demo — Not for Distribution
+MIT License - see [LICENSE](LICENSE) for details.
