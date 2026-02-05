@@ -100,15 +100,9 @@ federation/
 │   │   ├── api/            # REST endpoints + WebSocket
 │   │   ├── models/         # Database models & schemas
 │   │   ├── services/       # LLM, documents, knowledge
-│   │   └── data/           # Seed data definitions
-│   ├── setup_db.py         # Database setup & seeding CLI
-│   ├── demo_setup.py       # Demo preparation script
+│   │   └── data/           # Seed data
 │   ├── tests/              # Pytest test suite
 │   └── requirements.txt
-├── scripts/
-│   └── setup_database.sh   # Shell wrapper for DB setup
-├── demo.sh                 # Main demo management script
-├── .env.example            # Sample environment configuration
 └── README.md
 ```
 
@@ -118,79 +112,39 @@ federation/
 
 ### Prerequisites
 
-- Linux, macOS, or WSL (Windows users should use WSL)
 - Python 3.11+
-- [uv](https://docs.astral.sh/uv/) (recommended) or pip
-- Node.js 18+ with pnpm
+- Node.js 18+ (with pnpm recommended)
 - Azure OpenAI API access
 
 ### Environment Setup
 
-Copy the example environment file and configure your Azure OpenAI credentials:
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` with your values:
+Create a `.env` file in the project root:
 
 ```env
-# Azure OpenAI Configuration (Required)
+# Azure OpenAI Configuration
 AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com
-AZURE_OPENAI_API_KEY=your-api-key
-AZURE_OPENAI_API_VERSION=2024-12-01-preview
+AZURE_OPENAI_KEY=your-api-key
+AZURE_OPENAI_DEPLOYMENT=gpt-4o
+AZURE_OPENAI_API_VERSION=2024-02-15-preview
 
-# Model Deployments
-AZURE_OPENAI_DEPLOYMENT_NAME=gpt-5.2-chat           # Primary chat model
-AZURE_OPENAI_GPT5_DEPLOYMENT_NAME=gpt-5.1           # Secondary model
-AZURE_OPENAI_CODEX_DEPLOYMENT_NAME=gpt-5.1-codex-max # Code tasks
-AZURE_OPENAI_TEXTEMBEDDING_DEPLOYMENT_NAME=text-embedding-3-small  # Embeddings for RAG
-
-# Database (SQLite with async support)
+# Database
 DATABASE_URL=sqlite+aiosqlite:///./data/federation.db
 ```
 
-See [.env.example](.env.example) for all available configuration options.
-
 ### Backend Setup
 
-#### Option 1: Using uv (Recommended)
-
-[uv](https://docs.astral.sh/uv/) is an extremely fast Python package installer and resolver.
-
-```bash
-# Install uv if you haven't already
-curl -LsSf https://astral.sh/uv/install.sh | sh
-# Or on macOS: brew install uv
-
-cd backend
-
-# Create virtual environment and install dependencies (one command)
-uv venv && source .venv/bin/activate && uv pip install -r requirements.txt
-
-# Initialize database and seed with sample data
-python setup_db.py init --seed
-
-# Start the server
-uvicorn app.main:app --reload --port 8000
-```
-
-#### Option 2: Using pip (Traditional)
-
 ```bash
 cd backend
-python -m venv .venv
-source .venv/bin/activate
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
-# Initialize database and seed with sample data
-python setup_db.py init --seed
+# Seed the database with sample data
+python -c "from app.data.seed import seed_database; import asyncio; asyncio.run(seed_database())"
 
 # Start the server
 uvicorn app.main:app --reload --port 8000
 ```
-
-> **Note**: Developed and tested on Linux/WSL. macOS works the same. Native Windows users should use WSL for best results.
 
 ### Frontend Setup
 
@@ -220,38 +174,6 @@ Open http://localhost:3000 to access the application.
 | `/ws/agents/{conversation_id}` | WS | Real-time agent updates |
 
 Full API documentation: [docs/API.md](docs/API.md) or visit `/docs` when running.
-
----
-
-## Database Management
-
-Federation includes comprehensive database management scripts:
-
-```bash
-# Using the Python CLI directly
-cd backend
-python setup_db.py init              # Create database and tables
-python setup_db.py seed              # Populate with sample data
-python setup_db.py init --seed       # Initialize and seed in one step
-python setup_db.py reset --seed -y   # Reset and reseed (destructive)
-python setup_db.py status            # Show database statistics
-python setup_db.py clear             # Clear all data (keep tables)
-
-# Using demo.sh wrapper
-./demo.sh db:init                    # Create database  
-./demo.sh db:seed                    # Seed sample data
-./demo.sh db:status                  # Show statistics
-./demo.sh db:reset                   # Reset database
-./demo.sh db:clear                   # Clear all data
-
-# Quick seeding without embeddings (faster, works offline)
-python setup_db.py seed --no-embeddings
-```
-
-Sample data includes:
-- **8 past engagements** — Digital transformation, M&A, growth strategy examples
-- **10 consulting frameworks** — PMI Playbook, Cloud Migration, AI/ML Implementation, etc.
-- **5 expertise areas** — Healthcare, Financial Services, Supply Chain, M&A
 
 ---
 
