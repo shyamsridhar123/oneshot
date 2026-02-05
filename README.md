@@ -2,6 +2,8 @@
 
 ## AI-Powered Professional Services Engagement Platform
 
+> **⚠️ POC / Art of the Possible** — This is a proof-of-concept demonstrating what's possible with multi-agent AI systems. Not production-ready. Built for demos and exploration.
+
 A demonstration platform showcasing how AI agents can transform professional services delivery. Built on Microsoft Agent Framework and Azure OpenAI GPT-5.x.
 
 ![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)
@@ -207,14 +209,14 @@ pytest tests/test_chat.py   # Run specific test file
 
 ---
 
-## Key Value Propositions
+## What This Demo Shows
 
-| Metric | Projected Impact |
-|--------|------------------|
-| **Proposal Win Rate** | +15-20% (faster response, better quality) |
-| **Senior Time Recapture** | 20-30% reduction in research/drafting |
-| **Knowledge Reuse** | 3x improvement in finding past work |
-| **Revenue per Consultant** | 25-40% increase |
+| Capability | Demo Scenario |
+|------------|---------------|
+| **Multi-Agent Coordination** | Orchestrator dispatches tasks to specialist agents |
+| **Rapid Content Generation** | Proposals generated in minutes vs. weeks |
+| **Knowledge Retrieval** | Semantic search over past engagements |
+| **Real-time Visibility** | Watch agents work via WebSocket streaming |
 
 ---
 
