@@ -12,6 +12,13 @@
 #   ./demo.sh full       - Full demo prep (start + cleanup + seed + test)
 #   ./demo.sh reset      - Full reset and fresh start
 #
+# Database commands:
+#   ./demo.sh db:init    - Initialize database (create tables)
+#   ./demo.sh db:seed    - Seed database with sample data  
+#   ./demo.sh db:reset   - Reset database (drop and recreate)
+#   ./demo.sh db:clear   - Clear all data (keep tables)
+#   ./demo.sh db:status  - Show database status
+#
 
 set -e
 
@@ -296,6 +303,13 @@ show_help() {
     echo "  reset     Complete reset (delete DB, restart, reseed)"
     echo "  help      Show this help message"
     echo ""
+    echo "Database Commands:"
+    echo "  db:init   Initialize database (create tables only)"
+    echo "  db:seed   Seed database with sample data"
+    echo "  db:reset  Reset database (drop and recreate tables)"
+    echo "  db:clear  Clear all data (keep tables)"  
+    echo "  db:status Show database statistics"
+    echo ""
     echo "Quick Start:"
     echo "  ./demo.sh full"
     echo ""
@@ -305,6 +319,26 @@ show_help() {
     echo "  3. Open: http://localhost:3000"
     echo "  4. Verify agent status panel shows 'Connected'"
     echo ""
+}
+
+# Database operations using setup_db.py
+run_db_command() {
+    local command=$1
+    shift
+    
+    cd "$BACKEND_DIR"
+    
+    # Activate venv (try .venv first, then venv)
+    if [ -d ".venv" ]; then
+        source .venv/bin/activate
+    elif [ -d "venv" ]; then
+        source venv/bin/activate
+    else
+        print_status error "Virtual environment not found. Run './demo.sh start' first."
+        exit 1
+    fi
+    
+    python setup_db.py $command "$@"
 }
 
 # Main command handler
@@ -332,6 +366,25 @@ case "${1:-}" in
         ;;
     reset)
         reset_demo
+        ;;
+    db:init)
+        shift
+        run_db_command init "$@"
+        ;;
+    db:seed)
+        shift
+        run_db_command seed "$@"
+        ;;
+    db:reset)
+        shift
+        run_db_command reset "$@"
+        ;;
+    db:clear)
+        shift
+        run_db_command clear "$@"
+        ;;
+    db:status)
+        run_db_command status
         ;;
     help|--help|-h)
         show_help
