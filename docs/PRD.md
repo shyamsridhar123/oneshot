@@ -39,38 +39,40 @@
 Federation deploys a coordinated team of specialized AI agents that mirror a consulting firm's operating model:
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                      FEDERATION PLATFORM                         │
-├─────────────────────────────────────────────────────────────────┤
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
-│  │  STRATEGIST  │  │  RESEARCHER  │  │   ANALYST    │          │
-│  │    AGENT     │  │    AGENT     │  │    AGENT     │          │
-│  │              │  │              │  │              │          │
-│  │ • Engagement │  │ • Web Search │  │ • Data Viz   │          │
-│  │   Scoping    │  │ • Document   │  │ • Financial  │          │
-│  │ • Proposal   │  │   Analysis   │  │   Modeling   │          │
-│  │   Generation │  │ • News       │  │ • Benchmarks │          │
-│  │ • Framework  │  │   Synthesis  │  │ • Trends     │          │
-│  │   Selection  │  │              │  │              │          │
-│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘          │
-│         │                  │                  │                  │
-│         └──────────────────┼──────────────────┘                  │
-│                            ▼                                     │
-│  ┌─────────────────────────────────────────────────────────────┐│
-│  │              ORCHESTRATOR AGENT                              ││
-│  │  • Task Decomposition  • Agent Coordination  • Quality QA   ││
-│  └─────────────────────────────────────────────────────────────┘│
-│                            ▼                                     │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
-│  │   SCRIBE     │  │   ADVISOR    │  │   MEMORY     │          │
-│  │    AGENT     │  │    AGENT     │  │    AGENT     │          │
-│  │              │  │              │  │              │          │
-│  │ • Document   │  │ • Client     │  │ • Knowledge  │          │
-│  │   Generation │  │   Comms      │  │   Retrieval  │          │
-│  │ • Formatting │  │ • Exec       │  │ • Past Work  │          │
-│  │ • Branding   │  │   Summaries  │  │ • Templates  │          │
-│  └──────────────┘  └──────────────┘  └──────────────┘          │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|                      FEDERATION PLATFORM                        |
++-----------------------------------------------------------------+
+|  +--------------+  +--------------+  +--------------+           |
+|  |  STRATEGIST  |  |  RESEARCHER  |  |   ANALYST    |           |
+|  |    AGENT     |  |    AGENT     |  |    AGENT     |           |
+|  |              |  |              |  |              |           |
+|  | * Engagement |  | * Web Search |  | * Data Viz   |           |
+|  |   Scoping    |  | * Document   |  | * Financial  |           |
+|  | * Proposal   |  |   Analysis   |  |   Modeling   |           |
+|  |   Generation |  | * News       |  | * Benchmarks |           |
+|  | * Framework  |  |   Synthesis  |  | * Trends     |           |
+|  |   Selection  |  |              |  |              |           |
+|  +------+-------+  +------+-------+  +------+-------+           |
+|         |                 |                 |                   |
+|         +-----------------+-----------------+                   |
+|                           |                                     |
+|                           v                                     |
+|  +-------------------------------------------------------------+|
+|  |              ORCHESTRATOR AGENT                             ||
+|  |  * Task Decomposition  * Agent Coordination  * Quality QA  ||
+|  +-------------------------------------------------------------+|
+|                           |                                     |
+|                           v                                     |
+|  +--------------+  +--------------+  +--------------+           |
+|  |   SCRIBE     |  |   ADVISOR    |  |   MEMORY     |           |
+|  |    AGENT     |  |    AGENT     |  |    AGENT     |           |
+|  |              |  |              |  |              |           |
+|  | * Document   |  | * Client     |  | * Knowledge  |           |
+|  |   Generation |  |   Comms      |  |   Retrieval  |           |
+|  | * Formatting |  | * Exec       |  | * Past Work  |           |
+|  | * Branding   |  |   Summaries  |  | * Templates  |           |
+|  +--------------+  +--------------+  +--------------+           |
++-----------------------------------------------------------------+
 ```
 
 ---
