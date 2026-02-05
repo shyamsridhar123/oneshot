@@ -10,9 +10,11 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+/lib/
 lib64/
 parts/
+# Don't ignore frontend lib folder
+!frontend/src/lib/
 sdist/
 var/
 wheels/
