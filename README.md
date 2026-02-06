@@ -25,46 +25,66 @@ A demonstration platform showcasing how AI agents can transform professional ser
 |                    Next.js 14 • Shadcn/ui • Tailwind                 |
 |                        Zustand State Management                      |
 +----------------------------------+-----------------------------------+
-                                  |
-                                  |  REST API / WebSocket
-                                  v
-+----------------------------------------------------------------------+
+                                   |
+                          REST API / WebSocket
+                                   |
++----------------------------------v-----------------------------------+
 |                               BACKEND                                |
-|                        FastAPI • Python 3.11                         |
-+----------------------------------------------------------------------+
+|                         FastAPI • Python 3.11                        |
 |                                                                      |
-|    +-----------+   +-----------+   +-----------+   +-----------+     |
-|    | Strategist|   | Researcher|   |  Analyst  |   |  Advisor  |     |
-|    +-----+-----+   +-----+-----+   +-----+-----+   +-----+-----+     |
-|          |               |               |               |           |
-|          +---------------+---------------+---------------+           |
-|                              |                                       |
-|                              v                                       |
-|                      +-------------------+                           |
-|                      |    ORCHESTRATOR   |                           |
-|                      +---------+---------+                           |
+|                      +--------------------+                          |
+|                      |    ORCHESTRATOR    |                          |
+|                      | Intent Analysis    |                          |
+|                      | Task Decomposition |                          |
+|                      | Response Synthesis |                          |
+|                      +---------+----------+                          |
 |                                |                                     |
-|              +-----------------+-----------------+                   |
-|              |                 |                 |                   |
-|              v                 v                 v                   |
-|    +------------+    +------------+    +-------------------+         |
-|    |   Scribe   |    |   Memory   |    |   SQLite +   RAG  |         |
-|    +------------+    +------------+    +-------------------+         |
+|          Parallel dispatch based on intent                           |
+|       +--------+--------+--------+--------+--------+                 |
+|       |        |        |        |        |        |                 |
+|       v        v        v        v        v        v                 |
+|  +----------+----------+-------+-------+--------+--------+          |
+|  |Strategist|Researcher|Analyst| Scribe|Advisor | Memory |          |
+|  |proposals |web search|data & | docs &|client  | RAG &  |          |
+|  |& scoping |& intel   |models |format |comms   | search |          |
+|  +----------+----------+-------+-------+--------+--------+          |
+|       |        |        |        |        |        |                 |
+|       +--------+--------+--------+--------+--------+                 |
+|                                |                                     |
+|                       +--------v--------+                            |
+|                       |    SERVICES     |                            |
+|                       | LLM (Azure GPT) |                            |
+|                       | Knowledge (RAG)  |                            |
+|                       | Documents        |                            |
+|                       | Traces           |                            |
+|                       +--------+--------+                            |
+|                                |                                     |
+|                       +--------v--------+                            |
+|                       |   DATA LAYER    |                            |
+|                       | SQLite+aiosqlite|                            |
+|                       +-----------------+                            |
 |                                                                      |
 +----------------------------------------------------------------------+
+
+Dispatch patterns:
+  Proposals  → Strategist, Researcher, Analyst, Memory, Scribe
+  Research   → Researcher, Memory, Advisor
+  Analysis   → Analyst, Memory
+  Documents  → Scribe, Advisor
+  Questions  → Memory (+ minimal agents)
 ```
 
 ### Agent Roles
 
 | Agent | Role | Key Capabilities |
 |-------|------|------------------|
-| **Orchestrator** | Coordinator | Task decomposition, agent dispatch, quality control |
+| **Orchestrator** | Coordinator | Intent analysis, parallel agent dispatch, response synthesis |
 | **Strategist** | Strategy | Engagement scoping, proposal generation, framework selection |
 | **Researcher** | Intelligence | Web search, news synthesis, company research |
 | **Analyst** | Analysis | Data visualization, financial modeling, benchmarking |
 | **Scribe** | Documents | Document generation, formatting, branding |
 | **Advisor** | Communications | Client comms, executive summaries, recommendations |
-| **Memory** | Knowledge | RAG retrieval, past work discovery, semantic search |
+| **Memory** | Knowledge | RAG retrieval, semantic search, past engagement discovery |
 
 ---
 
@@ -223,9 +243,9 @@ pytest tests/test_chat.py   # Run specific test file
 
 | Capability | Demo Scenario |
 |------------|---------------|
-| **Multi-Agent Coordination** | Orchestrator dispatches tasks to specialist agents |
+| **Multi-Agent Coordination** | Orchestrator dispatches tasks to specialist agents in parallel |
 | **Rapid Content Generation** | Proposals generated in minutes vs. weeks |
-| **Knowledge Retrieval** | Semantic search over past engagements |
+| **Knowledge Retrieval** | Semantic search over past engagements via Memory agent |
 | **Real-time Visibility** | Watch agents work via WebSocket streaming |
 
 ---
