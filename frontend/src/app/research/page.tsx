@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Search, Loader2, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,13 +16,21 @@ import { v4 as uuidv4 } from "uuid";
 export default function ResearchPage() {
   const [query, setQuery] = useState("");
   const [companyName, setCompanyName] = useState("");
+  const researchCardId = useRef(uuidv4());
+  const briefingCardId = useRef(uuidv4());
 
   const researchMutation = useMutation({
     mutationFn: researchApi.query,
+    onMutate: () => {
+      researchCardId.current = uuidv4();
+    },
   });
 
   const briefingMutation = useMutation({
     mutationFn: researchApi.briefing,
+    onMutate: () => {
+      briefingCardId.current = uuidv4();
+    },
   });
 
   return (
@@ -81,7 +89,7 @@ export default function ResearchPage() {
                 {researchMutation.data && (
                   <div className="mt-4 animate-fade-in-up">
                     <TrendCard
-                      id={uuidv4()}
+                      id={researchCardId.current}
                       content={researchMutation.data.message}
                       query={query}
                       status={researchMutation.data.status}
@@ -129,7 +137,7 @@ export default function ResearchPage() {
                 {briefingMutation.data && (
                   <div className="mt-4 animate-fade-in-up">
                     <TrendCard
-                      id={uuidv4()}
+                      id={briefingCardId.current}
                       content={briefingMutation.data.message}
                       query={`${briefingMutation.data.company_name} Client Briefing`}
                       status={briefingMutation.data.status}
