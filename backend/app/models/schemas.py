@@ -142,10 +142,18 @@ class BriefingRequest(BaseModel):
     focus_areas: list[str] = Field(default_factory=list)
 
 
-# ============ Proposal Schemas ============
+# ============ Content Generation Schemas ============
+
+class ContentRequest(BaseModel):
+    """Schema for social media content generation."""
+    topic: str
+    platforms: list[str] = Field(default_factory=lambda: ["linkedin", "twitter", "instagram"])
+    content_type: str = Field(default="post")  # post, thread, campaign, calendar
+    additional_context: Optional[str] = None
+
 
 class ProposalRequest(BaseModel):
-    """Schema for proposal generation."""
+    """Schema for proposal generation (legacy, wraps ContentRequest)."""
     client_name: str
     client_industry: str
     engagement_type: str

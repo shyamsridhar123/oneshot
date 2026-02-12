@@ -1,47 +1,78 @@
-"""Scribe Agent - Document generation and formatting."""
+"""Scribe Agent - Platform-specific content generation using MAF with MCP tools.
+
+Uses Microsoft Agent Framework to generate social media content and
+optionally saves drafts to the filesystem via MCP server integration.
+"""
+
+import logging
 
 from app.agents.prompts import SCRIBE_PROMPT
+from app.agents.factory import create_agent, get_agent_tools
 from app.services.llm_service import get_llm_service
+
+logger = logging.getLogger(__name__)
 
 
 async def run_scribe(task: str, context: dict) -> tuple[str, int]:
-    """
-    Run the Scribe agent for document generation.
-    
+    """Run the Scribe agent for platform-specific content generation.
+
+    Creates a MAF ChatAgent with optional filesystem MCP tool so the agent
+    can save generated content as draft files in ./data/drafts/.
+
     Args:
-        task: The document generation task
-        context: Context including content from other agents
-    
+        task: The content generation task
+        context: Context including content from Wave 1 agents
+
     Returns:
-        Tuple of (generated document content, tokens used)
+        Tuple of (generated content, tokens used)
     """
-    llm = get_llm_service()
-    
-    # Gather content from previous agents
+    # Gather context from previous agents (Wave 1 outputs)
     previous = context.get("previous_results", {})
+    platforms = context.get("platforms", ["linkedin", "twitter", "instagram"])
     content_parts = []
-    
+
     if "strategist" in previous:
-        content_parts.append(f"Strategy Content:\n{previous['strategist']}")
+        content_parts.append(f"## Content Strategy\n{previous['strategist']}")
     if "researcher" in previous:
-        content_parts.append(f"Research Content:\n{previous['researcher']}")
+        content_parts.append(f"## Research & Trends\n{previous['researcher']}")
     if "analyst" in previous:
-        content_parts.append(f"Analysis Content:\n{previous['analyst']}")
-    
-    content_str = "\n\n".join(content_parts) if content_parts else context.get("message", "")
-    
+        content_parts.append(f"## Engagement Data\n{previous['analyst']}")
+    if "memory" in previous:
+        content_parts.append(f"## Brand Context\n{previous['memory']}")
+
+    source_content = "\n\n".join(content_parts) if content_parts else context.get("message", "")
+    platforms_str = ", ".join(platforms)
+
     prompt = f"""Task: {task}
 
-Source Content:
-{content_str}
+Target Platforms: {platforms_str}
 
-Generate a polished, professional document in markdown format.
-Include proper headers, formatting, and structure appropriate for the document type."""
+Source Content from Research & Strategy:
+{source_content}
 
+Generate platform-specific social media content for each target platform.
+Follow the template-guided pattern: hook → body → CTA → hashtags.
+
+After generating content, save each platform's post as a draft file using the
+filesystem tool (if available). Use filenames like 'linkedin_draft.md',
+'twitter_draft.md', 'instagram_draft.md'."""
+
+    # Try MAF agent path (with MCP tools)
+    try:
+        tools = get_agent_tools("scribe", include_mcp=True)
+        agent = create_agent("scribe", SCRIBE_PROMPT, tools=tools)
+        response = await agent.run(prompt)
+        text = response.text or ""
+        tokens = response.usage_details.total_token_count if response.usage_details else 0
+        return text, tokens or 0
+    except Exception as e:
+        logger.warning("MAF agent path failed for scribe, falling back to direct LLM: %s", e)
+
+    # Fallback: direct LLM call (no MCP, no tools)
+    llm = get_llm_service()
     response = await llm.complete_with_usage(
         prompt=prompt,
         system_prompt=SCRIBE_PROMPT,
         temperature=0.6,
     )
-    
     return response.content, response.tokens_used

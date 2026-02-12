@@ -59,6 +59,12 @@ A multi-agent AI system that coordinates 7 specialized agents — each with dist
 |  | content writing   | scoring (1-10)    |                           |
 |  +-------------------+-------------------+                           |
 |                       |                                              |
+|  MCP Servers (subprocess, auto-registered on agents)                |
+|  +-----------------+-----------------+                               |
+|  | Filesystem MCP  |  Fetch MCP      |                               |
+|  | (draft saving)  |  (web content)  |                               |
+|  +-----------------+-----------------+                               |
+|                       |                                              |
 |              +--------v--------+                                     |
 |              |    SERVICES     |                                     |
 |              | LLM (Azure GPT) |                                     |
@@ -92,6 +98,37 @@ Each agent uses an explicit reasoning pattern, demonstrating advanced prompt eng
 
 ---
 
+## MCP Tool Integration
+
+Agents connect to external capabilities via [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) servers, spawned as subprocesses and auto-registered on MAF agents at runtime.
+
+| MCP Server | Agent | Purpose |
+|------------|-------|---------|
+| **Filesystem MCP** (`@modelcontextprotocol/server-filesystem`) | Scribe | Saves generated content drafts to `./data/drafts/` for persistence and review |
+| **Fetch MCP** (`@anthropic-ai/mcp-server-fetch`) | Researcher | Retrieves real-time web content to ground trend research in current data |
+
+MCP integration is automatic via MAF's built-in `MCPStdioTool`:
+
+```python
+from agent_framework import MCPStdioTool
+
+fs_mcp = MCPStdioTool(
+    name="filesystem",
+    command="npx",
+    args=["-y", "@modelcontextprotocol/server-filesystem", "./data/drafts"],
+)
+
+agent = client.create_agent(
+    name="scribe",
+    instructions=SCRIBE_PROMPT,
+    tools=[fs_mcp],  # MCP server auto-connects when agent.run() is called
+)
+```
+
+MCP servers are optional — agents gracefully fall back to direct LLM calls if MCP is unavailable.
+
+---
+
 ## Tech Stack
 
 | Layer | Technology |
@@ -100,6 +137,7 @@ Each agent uses an explicit reasoning pattern, demonstrating advanced prompt eng
 | **Backend** | Python 3.11, FastAPI, SQLAlchemy 2.x, aiosqlite |
 | **AI** | Azure OpenAI GPT-5.x, Microsoft Agent Framework |
 | **Auth** | Azure Identity (DefaultAzureCredential) |
+| **MCP** | Filesystem MCP (draft persistence), Fetch MCP (web grounding) |
 | **Database** | SQLite with async support |
 | **Real-time** | WebSocket for agent status streaming |
 

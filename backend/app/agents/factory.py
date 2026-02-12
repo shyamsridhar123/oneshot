@@ -1,15 +1,17 @@
 """MAF Agent Factory - Creates agents using Microsoft Agent Framework patterns.
 
 Social Media Command Center tool definitions for each specialized agent.
+Includes MCP server integration for filesystem access and web search.
 """
 
 import json
+import shutil
 from typing import Callable, Any
 from pathlib import Path
 
 from azure.identity import DefaultAzureCredential
 from agent_framework.azure import AzureOpenAIResponsesClient
-from agent_framework import ai_function as tool
+from agent_framework import ai_function as tool, MCPStdioTool
 
 from app.config import settings
 
@@ -17,6 +19,8 @@ _credential = DefaultAzureCredential()
 
 # Path to brand data files
 _DATA_DIR = Path(__file__).resolve().parent.parent.parent / "data"
+_DRAFTS_DIR = _DATA_DIR / "drafts"
+_NPX_PATH = shutil.which("npx")
 
 
 def get_azure_client() -> AzureOpenAIResponsesClient:
@@ -29,22 +33,58 @@ def get_azure_client() -> AzureOpenAIResponsesClient:
     )
 
 
+# ============================================================
+# MCP Server Tools
+# ============================================================
+
+def create_filesystem_mcp() -> MCPStdioTool | None:
+    """Create filesystem MCP tool for saving content drafts.
+
+    Uses @modelcontextprotocol/server-filesystem to provide
+    file read/write capabilities scoped to the drafts directory.
+    """
+    if not _NPX_PATH:
+        return None
+    _DRAFTS_DIR.mkdir(parents=True, exist_ok=True)
+    return MCPStdioTool(
+        name="filesystem",
+        command=_NPX_PATH,
+        args=["-y", "@modelcontextprotocol/server-filesystem", str(_DRAFTS_DIR)],
+        description="File system access for saving and reading content drafts",
+    )
+
+
+def create_fetch_mcp() -> MCPStdioTool | None:
+    """Create web fetch MCP tool for grounding content in real web data.
+
+    Uses @anthropic-ai/mcp-server-fetch for web content retrieval.
+    """
+    if not _NPX_PATH:
+        return None
+    return MCPStdioTool(
+        name="fetch",
+        command=_NPX_PATH,
+        args=["-y", "@anthropic-ai/mcp-server-fetch"],
+        description="Web fetch for retrieving real-time web content and trends",
+    )
+
+
 def create_agent(
     name: str,
     instructions: str,
-    tools: list[Callable] = None,
+    tools: list | None = None,
     deployment: str = None,
 ):
-    """Create an agent using MAF pattern.
+    """Create an agent using MAF pattern with optional MCP tools.
 
     Args:
         name: Agent name
         instructions: System prompt for the agent
-        tools: Optional list of tool functions decorated with @tool
+        tools: Optional list of tool functions (@tool) and/or MCPStdioTool instances
         deployment: Optional specific deployment to use
 
     Returns:
-        MAF agent instance
+        MAF ChatAgent instance with MCP servers auto-connected at runtime
     """
     client = AzureOpenAIResponsesClient(
         endpoint=settings.azure_openai_endpoint,
@@ -53,7 +93,7 @@ def create_agent(
         credential=_credential,
     )
 
-    return client.as_agent(
+    return client.create_agent(
         name=name,
         instructions=instructions,
         tools=tools or [],
@@ -381,8 +421,38 @@ Note: Based on B2B tech audience engagement patterns."""
 # Agent → Tool mapping
 # ============================================================
 
-AGENT_TOOLS = {
+AGENT_TOOLS: dict[str, list] = {
     "researcher": [search_trends, analyze_hashtags, search_competitor_content, search_web, search_news],
     "memory": [get_brand_guidelines, get_past_posts, get_content_calendar, search_knowledge_base],
     "analyst": [calculate_engagement_metrics, recommend_posting_schedule],
 }
+
+
+def get_agent_tools(agent_name: str, include_mcp: bool = True) -> list:
+    """Get tools for an agent, optionally including MCP servers.
+
+    Args:
+        agent_name: Name of the agent (researcher, scribe, memory, analyst)
+        include_mcp: Whether to include MCP server tools
+
+    Returns:
+        List of tool functions and MCPStdioTool instances
+    """
+    tools = list(AGENT_TOOLS.get(agent_name, []))
+
+    if not include_mcp:
+        return tools
+
+    # Scribe gets filesystem MCP for saving drafts
+    if agent_name == "scribe":
+        fs_mcp = create_filesystem_mcp()
+        if fs_mcp:
+            tools.append(fs_mcp)
+
+    # Researcher gets fetch MCP for web-grounded content
+    if agent_name == "researcher":
+        fetch_mcp = create_fetch_mcp()
+        if fetch_mcp:
+            tools.append(fetch_mcp)
+
+    return tools
