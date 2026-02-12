@@ -10,6 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { researchApi } from "@/lib/api";
+import { TrendCard } from "@/components/research/trend-card";
+import { v4 as uuidv4 } from "uuid";
 
 export default function ResearchPage() {
   const [query, setQuery] = useState("");
@@ -26,10 +28,10 @@ export default function ResearchPage() {
   return (
     <div className="flex flex-col h-full">
       <div className="flex h-14 items-center border-b px-6">
-        <h1 className="text-xl font-semibold">Research</h1>
+        <h1 className="text-xl font-semibold">Trends</h1>
       </div>
 
-      <div className="flex-1 p-6">
+      <div className="flex-1 overflow-y-auto p-6">
         <Tabs defaultValue="query" className="w-full">
           <TabsList className="mb-6">
             <TabsTrigger value="query">Research Query</TabsTrigger>
@@ -77,16 +79,16 @@ export default function ResearchPage() {
                 </div>
 
                 {researchMutation.data && (
-                  <Card className="mt-4 bg-muted/50">
-                    <CardContent className="pt-4">
-                      <p className="text-sm">
-                        <strong>Status:</strong> {researchMutation.data.status}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {researchMutation.data.message}
-                      </p>
-                    </CardContent>
-                  </Card>
+                  <div className="mt-4 animate-fade-in-up">
+                    <TrendCard
+                      id={uuidv4()}
+                      content={researchMutation.data.message}
+                      query={query}
+                      status={researchMutation.data.status}
+                      tokensUsed={researchMutation.data.tokens_used}
+                      variant="research"
+                    />
+                  </div>
                 )}
               </CardContent>
             </Card>
@@ -125,19 +127,16 @@ export default function ResearchPage() {
                 </Button>
 
                 {briefingMutation.data && (
-                  <Card className="mt-4 bg-muted/50">
-                    <CardContent className="pt-4">
-                      <p className="text-sm">
-                        <strong>Company:</strong> {briefingMutation.data.company_name}
-                      </p>
-                      <p className="text-sm">
-                        <strong>Status:</strong> {briefingMutation.data.status}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {briefingMutation.data.message}
-                      </p>
-                    </CardContent>
-                  </Card>
+                  <div className="mt-4 animate-fade-in-up">
+                    <TrendCard
+                      id={uuidv4()}
+                      content={briefingMutation.data.message}
+                      query={`${briefingMutation.data.company_name} Client Briefing`}
+                      status={briefingMutation.data.status}
+                      variant="briefing"
+                      companyName={briefingMutation.data.company_name}
+                    />
+                  </div>
                 )}
               </CardContent>
             </Card>

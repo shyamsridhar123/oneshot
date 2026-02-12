@@ -14,6 +14,7 @@ import { useStore, EMPTY_MESSAGES } from "@/lib/store";
 import { useAgentWebSocket } from "@/lib/websocket";
 import type { Message, Conversation } from "@/lib/types";
 import { ConversationList } from "./conversation-list";
+import { MemoizedMarkdown } from "./memoized-markdown";
 import { v4 as uuidv4 } from "uuid";
 
 function MessageBubble({ message }: { message: Message }) {
@@ -42,7 +43,13 @@ function MessageBubble({ message }: { message: Message }) {
             : "bg-muted text-foreground"
         )}
       >
-        <div className="whitespace-pre-wrap">{message.content}</div>
+        {isUser ? (
+          <div className="whitespace-pre-wrap">{message.content}</div>
+        ) : (
+          <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-1 prose-headings:my-2 prose-ul:my-1 prose-ol:my-1 prose-li:my-0 prose-pre:my-2 prose-blockquote:my-2">
+            <MemoizedMarkdown content={message.content} id={message.id} />
+          </div>
+        )}
         <div
           className={cn(
             "mt-1 text-xs",
