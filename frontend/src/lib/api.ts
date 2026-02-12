@@ -102,7 +102,7 @@ export const proposalsApi = {
 
 export const researchApi = {
   query: (data: ResearchRequest) =>
-    fetchJson<{ query: string; status: string; message: string }>(
+    fetchJson<{ query: string; status: string; message: string; tokens_used?: number }>(
       "/api/research/query",
       {
         method: "POST",
