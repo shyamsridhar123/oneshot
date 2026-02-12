@@ -101,23 +101,27 @@ export const proposalsApi = {
 // ============ Research API ============
 
 export const researchApi = {
-  query: (data: ResearchRequest) =>
-    fetchJson<{ query: string; status: string; message: string; tokens_used?: number }>(
-      "/api/research/query",
+  query: (data: ResearchRequest & { session_id?: string }) => {
+    const params = data.session_id ? `?session_id=${encodeURIComponent(data.session_id)}` : "";
+    return fetchJson<{ query: string; status: string; message: string; tokens_used?: number }>(
+      `/api/research/query${params}`,
       {
         method: "POST",
-        body: JSON.stringify(data),
+        body: JSON.stringify({ query: data.query, research_type: data.research_type, sources: data.sources }),
       }
-    ),
+    );
+  },
 
-  briefing: (data: BriefingRequest) =>
-    fetchJson<{ company_name: string; status: string; message: string }>(
-      "/api/research/briefing",
+  briefing: (data: BriefingRequest & { session_id?: string }) => {
+    const params = data.session_id ? `?session_id=${encodeURIComponent(data.session_id)}` : "";
+    return fetchJson<{ company_name: string; status: string; message: string; tokens_used?: number }>(
+      `/api/research/briefing${params}`,
       {
         method: "POST",
-        body: JSON.stringify(data),
+        body: JSON.stringify({ company_name: data.company_name, industry: data.industry }),
       }
-    ),
+    );
+  },
 };
 
 // ============ Documents API ============

@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { researchApi } from "@/lib/api";
 import { TrendCard } from "@/components/research/trend-card";
+import { useAgentWebSocket } from "@/lib/websocket";
 import { v4 as uuidv4 } from "uuid";
 
 export default function ResearchPage() {
@@ -18,6 +19,12 @@ export default function ResearchPage() {
   const [companyName, setCompanyName] = useState("");
   const researchCardId = useRef(uuidv4());
   const briefingCardId = useRef(uuidv4());
+
+  // Stable session ID for WebSocket agent status updates
+  const [sessionId] = useState(() => `research-${uuidv4()}`);
+
+  // Connect WebSocket so AgentStatusPanel in the layout receives live events
+  useAgentWebSocket(sessionId);
 
   const researchMutation = useMutation({
     mutationFn: researchApi.query,
@@ -70,6 +77,7 @@ export default function ResearchPage() {
                       researchMutation.mutate({
                         query,
                         research_type: "comprehensive",
+                        session_id: sessionId,
                       })
                     }
                     disabled={!query.trim() || researchMutation.isPending}
@@ -124,7 +132,10 @@ export default function ResearchPage() {
                 </div>
                 <Button
                   onClick={() =>
-                    briefingMutation.mutate({ company_name: companyName })
+                    briefingMutation.mutate({
+                      company_name: companyName,
+                      session_id: sessionId,
+                    })
                   }
                   disabled={!companyName.trim() || briefingMutation.isPending}
                 >
