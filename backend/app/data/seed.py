@@ -1,9 +1,8 @@
-"""Seed script to populate the database with sample data and embeddings."""
+"""Seed script to populate the database with TechVista social media data and embeddings."""
 
 import asyncio
 import json
 import uuid
-from datetime import datetime, timedelta
 from pathlib import Path
 
 from app.models.database import (
@@ -18,431 +17,251 @@ from app.services.llm_service import get_llm_service
 DATA_DIR = Path(__file__).resolve().parent.parent.parent / "data"
 
 
-# ============ Sample Engagements ============
+# ============ Social Media Campaign History ============
+# These populate the engagements table so the agents can reference
+# past campaign performance when strategizing new content.
 
-SAMPLE_ENGAGEMENTS = [
+SAMPLE_CAMPAIGNS = [
     {
-        "client_name": "Global Manufacturing Inc",
-        "client_industry": "Manufacturing",
-        "engagement_type": "Digital Transformation",
-        "description": "End-to-end supply chain digitization including IoT sensor integration, predictive maintenance analytics, and digital twin implementation for three manufacturing facilities. Deployed real-time monitoring dashboards and automated quality control systems.",
-        "outcomes": "30% reduction in inventory costs, 25% improvement in delivery times, 40% decrease in unplanned downtime, $15M annual savings identified",
-        "team_members": ["John Partner", "Sarah Manager", "Mike Analyst", "Lisa Consultant"],
-        "frameworks_used": ["Digital Maturity Assessment", "Supply Chain 4.0 Framework", "Change Management Playbook"],
-        "status": "completed",
-        "days_ago": 180,
-    },
-    {
-        "client_name": "HealthCare Partners Network",
-        "client_industry": "Healthcare",
-        "engagement_type": "Post-Merger Integration",
-        "description": "Integration of two regional healthcare systems following $2.5B merger. Scope included IT systems consolidation, clinical process harmonization, workforce integration planning, and culture alignment initiatives across 12 hospitals and 50+ clinics.",
-        "outcomes": "$50M synergies captured in year 1, 95% staff retention, unified EHR platform deployed, 20% reduction in administrative overhead",
-        "team_members": ["Lisa Partner", "Tom Manager", "Amy Analyst", "David Consultant"],
-        "frameworks_used": ["PMI Playbook", "Healthcare Synergy Model", "Cultural Integration Framework"],
-        "status": "completed",
-        "days_ago": 120,
-    },
-    {
-        "client_name": "TechCorp Solutions",
+        "client_name": "TechVista Inc.",
         "client_industry": "Technology",
-        "engagement_type": "Growth Strategy",
-        "description": "Comprehensive growth strategy for B2B SaaS company seeking to expand from $50M to $200M ARR. Analyzed market opportunities, pricing optimization, go-to-market strategy, and M&A targets for inorganic growth.",
-        "outcomes": "Identified 3 adjacent market opportunities worth $500M TAM, new pricing model projected to increase ARPU by 35%, M&A roadmap with 5 priority targets",
-        "team_members": ["Robert Partner", "Jennifer Manager", "Kevin Analyst"],
-        "frameworks_used": ["Growth Diagnostic", "Pricing Excellence Framework", "M&A Target Screening"],
+        "engagement_type": "Product Launch Campaign",
+        "description": "Multi-platform social media campaign for AI Collaboration Suite v3.0 launch. Coordinated announcements across LinkedIn, Twitter/X, and Instagram with a phased rollout: teaser week, launch day blitz, and sustained engagement. Leveraged founder storytelling, behind-the-scenes content, and data-driven thought leadership.",
+        "outcomes": "22K LinkedIn impressions on launch post, 25K Twitter impressions on founder thread, 5.1% Instagram engagement rate, 40% increase in website traffic from social, 150 inbound demo requests attributed to social",
+        "team_members": ["Social Media Manager", "Content Strategist", "Graphic Designer", "VP Marketing"],
+        "frameworks_used": ["Multi-Platform Launch Playbook", "Engagement Ladder Framework", "Brand Voice Guidelines"],
         "status": "completed",
-        "days_ago": 90,
+        "days_ago": 30,
     },
     {
-        "client_name": "RetailMax Corporation",
-        "client_industry": "Retail",
-        "engagement_type": "Customer Experience Transformation",
-        "description": "Omnichannel customer experience redesign for national retailer with 500+ stores. Implemented unified commerce platform, personalization engine, mobile app enhancement, and store associate enablement tools.",
-        "outcomes": "25% increase in customer satisfaction (NPS), 18% improvement in conversion rates, 40% growth in mobile app engagement, $80M incremental revenue in year 1",
-        "team_members": ["Michelle Partner", "Brian Manager", "Susan Analyst", "Chris Consultant"],
-        "frameworks_used": ["Customer Journey Mapping", "Omnichannel Maturity Model", "Personalization at Scale"],
+        "client_name": "TechVista Inc.",
+        "client_industry": "Technology",
+        "engagement_type": "Thought Leadership Series",
+        "description": "6-week LinkedIn thought leadership campaign positioning TechVista's CEO as an authority on human-AI collaboration. Published weekly long-form posts with data from 200+ enterprise deployments. Each post followed the contrarian-hook + data-proof + CTA formula that drove viral engagement.",
+        "outcomes": "5.8% average engagement rate (vs. 2% industry avg), 1 viral post (22K impressions, 340 shares), 3 speaking invitations from conference organizers, 28% increase in CEO LinkedIn followers",
+        "team_members": ["Content Strategist", "CEO", "Data Analyst", "Social Media Manager"],
+        "frameworks_used": ["Thought Leadership Funnel", "Data Storytelling Framework", "Executive Voice Playbook"],
         "status": "completed",
         "days_ago": 60,
     },
     {
-        "client_name": "EnergyFirst Utilities",
-        "client_industry": "Energy & Utilities",
-        "engagement_type": "Operational Excellence",
-        "description": "Lean operations transformation for regional utility serving 2M customers. Focus areas included field service optimization, grid maintenance efficiency, customer service redesign, and workforce planning.",
-        "outcomes": "22% improvement in first-time fix rates, 30% reduction in truck rolls, 15% decrease in call center volume, $25M annual cost savings",
-        "team_members": ["Daniel Partner", "Rachel Manager", "Jason Analyst"],
-        "frameworks_used": ["Lean Operations Playbook", "Field Service Excellence", "Utility Customer Experience"],
+        "client_name": "TechVista Inc.",
+        "client_industry": "Technology",
+        "engagement_type": "Developer Community Campaign",
+        "description": "Twitter/X-focused campaign targeting developers and ML practitioners. Published technical threads, hot takes on AI industry trends, and BuildInPublic content. Engaged with developer community through replies, quote tweets, and collaborative threads with tech influencers.",
+        "outcomes": "6.2% engagement rate on viral thread (25K impressions), 580 retweets on top thread, 1200 new developer followers, 45 community-generated code contributions, featured in 3 developer newsletters",
+        "team_members": ["Developer Advocate", "Social Media Manager", "Engineering Lead"],
+        "frameworks_used": ["Developer Community Playbook", "Thread Optimization Guide", "Community Engagement Ladder"],
         "status": "completed",
-        "days_ago": 150,
+        "days_ago": 45,
     },
     {
-        "client_name": "FinServ Global Bank",
-        "client_industry": "Financial Services",
-        "engagement_type": "Risk & Compliance Modernization",
-        "description": "End-to-end risk management and compliance transformation including regulatory reporting automation, AML/KYC process redesign, and risk data infrastructure modernization for Tier 1 bank.",
-        "outcomes": "60% reduction in false positive alerts, 40% faster regulatory reporting, $100M reduction in compliance costs over 3 years, improved regulatory ratings",
-        "team_members": ["Patricia Partner", "Mark Manager", "Emily Analyst", "Andrew Consultant"],
-        "frameworks_used": ["Risk Operating Model", "RegTech Implementation", "Data Quality Framework"],
+        "client_name": "TechVista Inc.",
+        "client_industry": "Technology",
+        "engagement_type": "Employer Branding Campaign",
+        "description": "Instagram-led employer branding initiative showcasing TechVista culture, team celebrations, and day-in-the-life content. Used carousel posts, reels, and stories to highlight the human side of building AI. Combined authentic team moments with hiring CTAs.",
+        "outcomes": "5.1% average engagement rate on Instagram, 35% increase in career page visits from social, 2x increase in inbound applications, 4.8% engagement on team celebration carousel, top-performing content: behind-the-scenes QA testing celebration",
+        "team_members": ["Social Media Manager", "People & Culture Lead", "Graphic Designer"],
+        "frameworks_used": ["Employer Brand Framework", "Authentic Content Guide", "Instagram Carousel Best Practices"],
         "status": "completed",
-        "days_ago": 200,
+        "days_ago": 20,
     },
     {
-        "client_name": "Pharma Innovations Ltd",
-        "client_industry": "Life Sciences",
-        "engagement_type": "R&D Productivity",
-        "description": "R&D operating model redesign for mid-size pharmaceutical company. Scope included portfolio optimization, clinical trial efficiency, AI-enabled drug discovery integration, and strategic partnerships strategy.",
-        "outcomes": "20% reduction in clinical trial cycle times, 3 AI-enabled discovery programs launched, partnership framework with 2 academic institutions, improved pipeline probability of success",
-        "team_members": ["William Partner", "Karen Manager", "Steven Analyst"],
-        "frameworks_used": ["R&D Excellence Model", "Clinical Trial Optimization", "AI in Drug Discovery"],
+        "client_name": "TechVista Inc.",
+        "client_industry": "Technology",
+        "engagement_type": "Healthcare Vertical Campaign",
+        "description": "Targeted LinkedIn campaign promoting TechVista's healthcare AI deployment success. Combined vulnerability-driven storytelling (what was hard) with proof-of-results content. Featured customer testimonial snippets and compliance journey narrative.",
+        "outcomes": "3.9% engagement rate, 18K impressions, 156 comments (high conversation), 89 shares, 12 inbound leads from healthcare sector, 3 healthcare media mentions",
+        "team_members": ["Content Strategist", "Healthcare Sales Lead", "Social Media Manager"],
+        "frameworks_used": ["Vertical Marketing Playbook", "Customer Story Framework", "Compliance-Safe Content Guide"],
         "status": "completed",
-        "days_ago": 240,
-    },
-    {
-        "client_name": "LogiTrans International",
-        "client_industry": "Transportation & Logistics",
-        "engagement_type": "Technology Modernization",
-        "description": "Legacy systems modernization for global logistics provider. Migrated core TMS and WMS to cloud, implemented real-time tracking capabilities, and deployed customer self-service portal.",
-        "outcomes": "99.9% system uptime (from 97%), 50% reduction in IT maintenance costs, real-time visibility for 100% of shipments, customer satisfaction up 30%",
-        "team_members": ["George Partner", "Nancy Manager", "Paul Analyst", "Linda Consultant"],
-        "frameworks_used": ["Cloud Migration Playbook", "API-First Architecture", "Customer Portal Design"],
-        "status": "completed",
-        "days_ago": 100,
+        "days_ago": 15,
     },
 ]
 
 
-# ============ Sample Frameworks ============
+# ============ Social Media Strategies & Playbooks ============
+# Knowledge items the agents can retrieve to inform content strategy.
 
-SAMPLE_FRAMEWORKS = [
+SAMPLE_STRATEGIES = [
     {
-        "title": "Digital Maturity Assessment",
-        "category": "framework",
-        "industry": None,
-        "content": """A structured approach to evaluating an organization's digital capabilities across 6 dimensions:
-
-1. **Strategy & Vision**: Digital strategy alignment, leadership commitment, innovation culture
-2. **Customer Experience**: Digital channels, personalization, omnichannel integration
-3. **Operations**: Process automation, data-driven decisions, agile ways of working
-4. **Technology**: Cloud adoption, modern architecture, cybersecurity posture
-5. **Data & Analytics**: Data governance, analytics capabilities, AI/ML readiness
-6. **Organization & Culture**: Digital skills, change readiness, talent strategy
-
-Assessment produces a maturity score (1-5) per dimension with prioritized roadmap.""",
-        "tags": ["digital", "transformation", "assessment", "maturity"],
-    },
-    {
-        "title": "Supply Chain 4.0 Framework",
-        "category": "framework",
-        "industry": "Manufacturing",
-        "content": """Framework for next-generation supply chain transformation leveraging Industry 4.0 technologies:
-
-**Core Components:**
-- IoT-enabled visibility across end-to-end supply chain
-- Predictive analytics for demand sensing and inventory optimization
-- Digital twins for supply chain simulation and scenario planning
-- Autonomous logistics and warehouse automation
-- Blockchain for traceability and supplier collaboration
-
-**Implementation Phases:**
-1. Visibility Foundation (sensors, data integration)
-2. Predictive Capabilities (ML models, analytics)
-3. Automation & Optimization (robotics, autonomous systems)
-4. Ecosystem Integration (supplier networks, customer integration)""",
-        "tags": ["supply chain", "manufacturing", "iot", "automation"],
-    },
-    {
-        "title": "PMI Playbook",
-        "category": "framework",
-        "industry": None,
-        "content": """Post-Merger Integration playbook for successful deal value capture:
-
-**Day 1 Readiness:**
-- Legal entity integration requirements
-- IT systems continuity
-- Employee communications
-- Customer/supplier notifications
-
-**First 100 Days:**
-- Synergy capture tracking and governance
-- Integration Management Office setup
-- Culture integration initiatives
-- Quick wins identification and execution
-
-**Value Capture Workstreams:**
-- Revenue synergies (cross-sell, pricing, market expansion)
-- Cost synergies (procurement, shared services, footprint)
-- Capital synergies (working capital, capex optimization)
-
-**Critical Success Factors:**
-- Clear leadership and decision rights
-- Dedicated integration resources
-- Transparent communication
-- Retention of key talent""",
-        "tags": ["m&a", "integration", "synergies", "transformation"],
-    },
-    {
-        "title": "Customer Journey Mapping",
-        "category": "framework",
-        "industry": "Retail",
-        "content": """Methodology for understanding and optimizing end-to-end customer experiences:
-
-**Journey Stages:**
-1. Awareness & Discovery
-2. Research & Consideration
-3. Purchase & Transaction
-4. Onboarding & Activation
-5. Usage & Engagement
-6. Support & Service
-7. Loyalty & Advocacy
-
-**For Each Stage, Map:**
-- Customer goals and expectations
-- Touchpoints and channels
-- Pain points and friction
-- Moments of truth
-- Emotional journey
-- Opportunities for improvement
-
-**Outputs:**
-- Visual journey maps
-- Pain point prioritization matrix
-- Quick wins and strategic initiatives
-- Success metrics and KPIs""",
-        "tags": ["customer experience", "journey", "retail", "cx"],
-    },
-    {
-        "title": "Change Management Playbook",
-        "category": "framework",
-        "industry": None,
-        "content": """Comprehensive approach to driving organizational change adoption:
-
-**ADKAR Model Integration:**
-- Awareness of need for change
-- Desire to participate and support
-- Knowledge of how to change
-- Ability to implement new skills
-- Reinforcement to sustain change
-
-**Key Workstreams:**
-1. Stakeholder Analysis & Engagement
-2. Communications Strategy & Execution
-3. Training & Capability Building
-4. Change Champion Network
-5. Resistance Management
-6. Adoption Measurement
-
-**Success Metrics:**
-- Awareness levels (survey)
-- Training completion rates
-- Adoption metrics (system usage, process compliance)
-- Performance outcomes""",
-        "tags": ["change management", "adoption", "transformation", "culture"],
-    },
-    {
-        "title": "Lean Operations Playbook",
-        "category": "framework",
-        "industry": None,
-        "content": """Framework for operational excellence through lean principles:
-
-**Core Principles:**
-- Eliminate waste (muda) in all forms
-- Continuous improvement (kaizen)
-- Respect for people
-- Just-in-time delivery
-- Built-in quality (jidoka)
-
-**Diagnostic Tools:**
-- Value stream mapping
-- Process capability analysis
-- Root cause analysis (5 Whys, fishbone)
-- Standard work documentation
-
-**Implementation Approach:**
-1. Current state assessment
-2. Future state design
-3. Pilot and iterate
-4. Scale and sustain
-5. Continuous improvement cycles
-
-**Typical Results:**
-- 20-40% productivity improvement
-- 30-50% lead time reduction
-- 50%+ quality defect reduction""",
-        "tags": ["operations", "lean", "efficiency", "continuous improvement"],
-    },
-    {
-        "title": "Growth Diagnostic",
-        "category": "framework",
-        "industry": None,
-        "content": """Comprehensive growth strategy assessment framework:
-
-**Growth Lever Analysis:**
-1. Core Growth: Organic growth in existing markets
-2. Adjacent Growth: New products, segments, or geographies
-3. Transformational Growth: New business models, M&A
-
-**Market Assessment:**
-- Market sizing (TAM, SAM, SOM)
-- Growth rate analysis
-- Competitive dynamics
-- Customer segmentation
-
-**Capability Gaps:**
-- Go-to-market capabilities
-- Product/service development
-- Operational scalability
-- Talent and organization
-
-**Output:**
-- Growth opportunity matrix
-- Prioritized initiatives
-- Investment requirements
-- Implementation roadmap""",
-        "tags": ["growth", "strategy", "market analysis", "expansion"],
-    },
-    {
-        "title": "Pricing Excellence Framework",
-        "category": "framework",
-        "industry": None,
-        "content": """End-to-end pricing optimization methodology:
-
-**Pricing Strategy:**
-- Value-based pricing principles
-- Competitive positioning
-- Price architecture design
-- Discount governance
-
-**Analytics & Insights:**
-- Price elasticity analysis
-- Customer willingness-to-pay research
-- Competitive intelligence
-- Margin analytics
-
-**Execution Capabilities:**
-- Pricing tools and CPQ
-- Sales enablement
-- Performance management
-- Deal desk processes
-
-**Governance:**
-- Pricing committee structure
-- Approval workflows
-- Exception management
-- Continuous monitoring
-
-**Typical Impact:**
-- 2-5% margin improvement
-- Reduced discounting
-- Improved win rates""",
-        "tags": ["pricing", "revenue", "margin", "commercial excellence"],
-    },
-    {
-        "title": "Cloud Migration Playbook",
-        "category": "framework",
+        "title": "Multi-Platform Content Strategy",
+        "category": "strategy",
         "industry": "Technology",
-        "content": """Enterprise cloud migration methodology:
+        "content": """TechVista's cross-platform content strategy for maximum reach and engagement:
 
-**Migration Strategies (6 Rs):**
-1. Rehost (lift and shift)
-2. Replatform (lift and reshape)
-3. Repurchase (move to SaaS)
-4. Refactor (re-architect)
-5. Retain (keep on-premises)
-6. Retire (decommission)
+**Platform Roles:**
+- **LinkedIn:** Authority building — thought leadership, customer success, industry analysis
+- **Twitter/X:** Community building — developer engagement, quick takes, threads, real-time conversation
+- **Instagram:** Culture building — team stories, behind-the-scenes, employer branding, visual storytelling
 
-**Migration Phases:**
-1. Assess: Application portfolio analysis, cloud readiness
-2. Plan: Migration waves, dependency mapping, risk assessment
-3. Migrate: Execute migration, testing, validation
-4. Optimize: Cost optimization, performance tuning
-5. Operate: Cloud operations, FinOps, continuous improvement
+**Content Repurposing Flow:**
+1. Start with a core insight or story
+2. LinkedIn: Full-length thought leadership post (1300-3000 chars)
+3. Twitter/X: Distilled thread (3-8 tweets) or hot take
+4. Instagram: Visual carousel or behind-the-scenes reel
 
-**Key Success Factors:**
-- Executive sponsorship
-- Cloud Center of Excellence
-- Security and compliance integration
-- Skills development
-- Vendor management""",
-        "tags": ["cloud", "migration", "technology", "modernization"],
+**Cross-Platform Rules:**
+- Never post identical content across platforms
+- Adapt tone and format to each platform's audience
+- Maintain 24-48 hour gap between platforms for same topic
+- Track which platform drives highest engagement per topic type""",
+        "tags": ["strategy", "multi-platform", "content planning", "social media"],
     },
     {
-        "title": "AI/ML Implementation Framework",
-        "category": "framework",
-        "industry": None,
-        "content": """Framework for successful AI/ML deployment in enterprise:
+        "title": "Engagement Optimization Playbook",
+        "category": "strategy",
+        "industry": "Technology",
+        "content": """Data-driven engagement optimization based on TechVista's historical performance:
 
-**Use Case Identification:**
-- Business value assessment
-- Data availability check
-- Technical feasibility
-- Implementation complexity
+**Top-Performing Post Formats:**
+1. Contrarian hooks + data proof (avg 5.8% engagement)
+2. Thread format with numbered insights (avg 6.2% engagement)
+3. Behind-the-scenes team moments (avg 5.1% engagement)
+4. Hot takes with actionable advice (avg 4.5% engagement)
+5. Product data with customer proof points (avg 4.2% engagement)
 
-**Development Lifecycle:**
-1. Problem framing and data exploration
-2. Feature engineering and model development
-3. Model validation and testing
-4. Deployment and integration
-5. Monitoring and maintenance
+**Optimal Posting Times (PST):**
+- LinkedIn: Tuesday-Thursday, 8:30-9:30 AM
+- Twitter/X: Monday-Friday, 10:00 AM-1:00 PM
+- Instagram: Tuesday-Friday, 12:00-5:00 PM
 
-**MLOps Capabilities:**
-- Model versioning and registry
-- Automated training pipelines
-- Model monitoring and drift detection
-- A/B testing framework
-
-**Governance:**
-- AI ethics and responsible AI
-- Model explainability
-- Bias detection and mitigation
-- Regulatory compliance
-
-**Success Metrics:**
-- Model performance (accuracy, precision, recall)
-- Business impact (revenue, cost savings)
-- Adoption rates""",
-        "tags": ["ai", "ml", "analytics", "data science", "automation"],
-    },
-]
-
-
-# ============ Sample Expertise Areas ============
-
-SAMPLE_EXPERTISE = [
-    {
-        "title": "Digital Transformation Leadership",
-        "category": "expertise",
-        "industry": None,
-        "content": """Deep expertise in leading large-scale digital transformation programs across industries. Key capabilities include digital strategy development, technology architecture, change management, and agile delivery. Track record of 50+ successful transformations with average ROI of 300%.""",
-        "tags": ["digital", "leadership", "transformation"],
+**Engagement Drivers:**
+- Ask a specific question (not generic "what do you think?")
+- Include 2-3 concrete data points
+- Use first-person storytelling for authenticity
+- Reference trending industry topics within 24-48 hours
+- Carousel/thread formats drive 2-3x more saves and shares""",
+        "tags": ["engagement", "optimization", "analytics", "best practices"],
     },
     {
-        "title": "Healthcare Industry Expertise",
-        "category": "expertise",
-        "industry": "Healthcare",
-        "content": """Specialized knowledge of healthcare industry including provider operations, payer dynamics, life sciences R&D, regulatory environment (HIPAA, FDA), and emerging trends in digital health, telehealth, and value-based care. 15+ years of healthcare consulting experience.""",
-        "tags": ["healthcare", "provider", "payer", "life sciences"],
+        "title": "Brand Voice & Tone Guide",
+        "category": "strategy",
+        "industry": "Technology",
+        "content": """TechVista's brand voice framework for consistent social media communication:
+
+**Voice Pillars:**
+1. Professional yet approachable — experts who don't talk down
+2. Innovation-forward — lead with what's new and next
+3. Human-centered — technology serves people
+
+**Tone Calibration by Context:**
+- Product announcements: Confident + excited (not hype-y)
+- Thought leadership: Authoritative + conversational
+- Community engagement: Warm + curious
+- Team culture: Authentic + celebratory
+- Industry commentary: Insightful + balanced
+
+**Language DOs:**
+- "We've learned..." (not "We've revolutionized...")
+- "Our data shows..." (not "Everyone knows...")
+- "Here's what worked..." (not "Here's the secret...")
+- Use specific numbers over vague claims
+- Write as a knowledgeable peer, not a vendor
+
+**Language DON'Ts:**
+- Superlatives without data ("best ever", "revolutionary")
+- Buzzword soup ("synergy", "paradigm shift", "game-changer")
+- Competitor bashing (even subtle)
+- Unsubstantiated claims about AI capabilities""",
+        "tags": ["brand voice", "tone", "writing guide", "messaging"],
     },
     {
-        "title": "Financial Services Expertise",
-        "category": "expertise",
-        "industry": "Financial Services",
-        "content": """Deep expertise in banking, insurance, and capital markets including retail/commercial banking operations, risk management, regulatory compliance (Basel, Dodd-Frank), and fintech disruption. Experience with 20+ Tier 1 financial institutions.""",
-        "tags": ["banking", "insurance", "fintech", "risk", "compliance"],
+        "title": "Hashtag Strategy & Performance",
+        "category": "strategy",
+        "industry": "Technology",
+        "content": """TechVista's hashtag strategy based on reach and engagement data:
+
+**Always-On Tags (every post):**
+- #TechVista (branded, tracking)
+- #AIInnovation (category, reach)
+
+**Platform-Specific High Performers:**
+LinkedIn (use 3-5 per post):
+- #EnterpriseAI (18K avg reach)
+- #FutureOfWork (22K avg reach)
+- #DigitalTransformation (15K avg reach)
+- #AICollaboration (8K avg reach, but high engagement)
+- #TechLeadership (12K avg reach)
+
+Twitter/X (use 2-3 per post):
+- #AI (broad reach)
+- #BuildInPublic (dev community)
+- #DevCommunity (technical audience)
+- #TechTuesday (recurring series)
+- #MLOps (niche, high-intent)
+
+Instagram (use 8-12 per post):
+- #TechLife #TeamTechVista #BTS #StartupLife #AICompany
+- Supplement with trending and topic-specific tags
+
+**Rules:**
+- Branded tags first, category tags second, trending tags last
+- Monitor weekly for declining reach tags
+- Rotate 2-3 experimental tags per week""",
+        "tags": ["hashtags", "reach", "social media", "tagging strategy"],
     },
     {
-        "title": "Supply Chain & Operations",
-        "category": "expertise",
-        "industry": "Manufacturing",
-        "content": """End-to-end supply chain expertise including procurement, manufacturing operations, logistics, and inventory management. Deep knowledge of Industry 4.0 technologies, lean principles, and supply chain planning systems (SAP, Oracle, Kinaxis).""",
-        "tags": ["supply chain", "operations", "manufacturing", "logistics"],
+        "title": "Content Calendar Planning Framework",
+        "category": "strategy",
+        "industry": "Technology",
+        "content": """Weekly content planning framework for TechVista's social media:
+
+**Content Mix (per week):**
+- Announcements: 20% — Product launches, partnerships, milestones
+- Thought Leadership: 30% — Industry insights, data-backed opinions, trend analysis
+- Engagement: 25% — Questions, polls, threads, community replies
+- Culture: 25% — Team stories, behind-the-scenes, hiring, events
+
+**Weekly Cadence:**
+- LinkedIn: 3-4 posts/week (Tue/Wed/Thu optimal)
+- Twitter/X: 1-2 posts/day (plus engagement replies)
+- Instagram: 3-5 posts/week (Tue-Fri optimal)
+
+**Planning Process:**
+1. Monday: Review previous week metrics, identify trending topics
+2. Tuesday: Draft week's content based on calendar and trending opportunities
+3. Wednesday-Friday: Publish and actively engage in comments/replies
+4. Friday: Capture any behind-the-scenes or celebration content
+
+**Seasonal & Event Calendar:**
+- Major tech conferences (CES, SXSW, Google I/O, Build)
+- Industry awareness weeks/days
+- Company milestones and anniversaries
+- Product release cycles""",
+        "tags": ["content calendar", "planning", "cadence", "editorial"],
     },
     {
-        "title": "M&A and Post-Merger Integration",
-        "category": "expertise",
-        "industry": None,
-        "content": """Extensive experience in M&A strategy, due diligence, and post-merger integration. Track record of 100+ deals across industries with expertise in synergy identification, Day 1 readiness, and integration program management. Average synergy capture rate of 110% of target.""",
-        "tags": ["m&a", "integration", "due diligence", "synergies"],
+        "title": "Social Media Analytics & KPIs",
+        "category": "strategy",
+        "industry": "Technology",
+        "content": """TechVista's social media performance measurement framework:
+
+**Primary KPIs:**
+- Engagement Rate: Target 4%+ (LinkedIn), 3.5%+ (Twitter), 5%+ (Instagram)
+- Impressions Growth: 15% month-over-month
+- Follower Growth: 10% month-over-month
+- Click-Through Rate: 2%+ on posts with links
+- Share of Voice: Track vs. 3 key competitors
+
+**Content Performance Tiers:**
+- Viral: >5% engagement rate, >20K impressions
+- High: 3-5% engagement rate, >10K impressions
+- Standard: 2-3% engagement rate, >5K impressions
+- Low: <2% engagement rate, <5K impressions (review and learn)
+
+**Attribution Metrics:**
+- Social → Website traffic (UTM tracking)
+- Social → Demo requests (attributed leads)
+- Social → Job applications (career page referrals)
+- Social → Brand mentions and sentiment
+
+**Reporting Cadence:**
+- Daily: Quick engagement check, respond to comments
+- Weekly: Content performance review, trending topic scan
+- Monthly: Full analytics report, strategy adjustment
+- Quarterly: Competitive analysis, strategy refresh""",
+        "tags": ["analytics", "kpis", "metrics", "performance", "reporting"],
     },
 ]
 
@@ -457,112 +276,93 @@ async def generate_embedding(llm_service, text: str) -> list[float]:
         return []
 
 
-async def seed_database():
-    """Seed the database with sample data and embeddings."""
-    print("🌱 Starting database seeding...")
-    
-    # Initialize database
+async def seed_database(skip_embeddings: bool = False):
+    """Seed the database with TechVista social media data.
+
+    Seeds campaign history, social media strategies, brand guidelines,
+    past posts, and content calendar for the Social Media Command Center.
+    """
+    print("Starting social media data seeding...")
+
     await init_db()
-    print("✓ Database initialized")
-    
+    print("Database initialized")
+
     # Get LLM service for embeddings
-    llm_service = get_llm_service()
-    
+    llm_service = None
+    embed_func = None
+    if not skip_embeddings:
+        try:
+            llm_service = get_llm_service()
+
+            async def _embed(text: str) -> list[float]:
+                return await generate_embedding(llm_service, text)
+
+            embed_func = _embed
+            print("Embedding service available")
+        except Exception as e:
+            print(f"Embeddings disabled: {e}")
+    else:
+        print("Skipping embeddings (--no-embeddings flag)")
+
     async with AsyncSessionLocal() as db:
-        # Seed engagements
-        print("\n📁 Seeding engagements...")
-        for eng_data in SAMPLE_ENGAGEMENTS:
-            # Generate embedding from description
-            embed_text = f"{eng_data['client_name']} {eng_data['engagement_type']} {eng_data['description']}"
-            embedding = await generate_embedding(llm_service, embed_text)
-            
-            days = eng_data.pop("days_ago")
-            
+        # 1. Seed campaign history (engagements table)
+        print("\nSeeding campaign history...")
+        for camp in SAMPLE_CAMPAIGNS:
+            embedding = []
+            if embed_func:
+                embed_text = f"{camp['engagement_type']} {camp['description']}"
+                embedding = await embed_func(embed_text)
+
+            from datetime import datetime, timedelta
+
+            days = camp["days_ago"]
             engagement = Engagement(
                 id=str(uuid.uuid4()),
-                client_name=eng_data["client_name"],
-                client_industry=eng_data["client_industry"],
-                engagement_type=eng_data["engagement_type"],
-                description=eng_data["description"],
-                outcomes=eng_data["outcomes"],
-                team_members=eng_data["team_members"],
-                frameworks_used=eng_data["frameworks_used"],
-                status=eng_data["status"],
-                start_date=datetime.utcnow() - timedelta(days=days + 90),
+                client_name=camp["client_name"],
+                client_industry=camp["client_industry"],
+                engagement_type=camp["engagement_type"],
+                description=camp["description"],
+                outcomes=camp["outcomes"],
+                team_members=camp["team_members"],
+                frameworks_used=camp["frameworks_used"],
+                status=camp["status"],
+                start_date=datetime.utcnow() - timedelta(days=days + 30),
                 end_date=datetime.utcnow() - timedelta(days=days),
                 embedding=embedding,
             )
             db.add(engagement)
-            print(f"  ✓ {eng_data['client_name']} - {eng_data['engagement_type']}")
-        
-        # Seed frameworks
-        print("\n📚 Seeding frameworks...")
-        for fw_data in SAMPLE_FRAMEWORKS:
-            embed_text = f"{fw_data['title']} {fw_data['content']}"
-            embedding = await generate_embedding(llm_service, embed_text)
-            
+            print(f"  + {camp['engagement_type']}")
+
+        # 2. Seed social media strategies (knowledge_items table)
+        print("\nSeeding social media strategies...")
+        for strat in SAMPLE_STRATEGIES:
+            embedding = []
+            if embed_func:
+                embed_text = f"{strat['title']} {strat['content']}"
+                embedding = await embed_func(embed_text)
+
             item = KnowledgeItem(
                 id=str(uuid.uuid4()),
-                title=fw_data["title"],
-                content=fw_data["content"],
-                category=fw_data["category"],
-                industry=fw_data["industry"],
-                tags=fw_data["tags"],
+                title=strat["title"],
+                content=strat["content"],
+                category=strat["category"],
+                industry=strat["industry"],
+                tags=strat["tags"],
                 embedding=embedding,
             )
             db.add(item)
-            print(f"  ✓ {fw_data['title']}")
-        
-        # Seed expertise
-        print("\n🎓 Seeding expertise areas...")
-        for exp_data in SAMPLE_EXPERTISE:
-            embed_text = f"{exp_data['title']} {exp_data['content']}"
-            embedding = await generate_embedding(llm_service, embed_text)
-            
-            item = KnowledgeItem(
-                id=str(uuid.uuid4()),
-                title=exp_data["title"],
-                content=exp_data["content"],
-                category=exp_data["category"],
-                industry=exp_data["industry"],
-                tags=exp_data["tags"],
-                embedding=embedding,
-            )
-            db.add(item)
-            print(f"  ✓ {exp_data['title']}")
-        
-        await db.commit()
-        print("\n✅ Database seeding complete!")
-        print(f"   - {len(SAMPLE_ENGAGEMENTS)} engagements")
-        print(f"   - {len(SAMPLE_FRAMEWORKS)} frameworks")
-        print(f"   - {len(SAMPLE_EXPERTISE)} expertise areas")
+            print(f"  + {strat['title']}")
 
-
-if __name__ == "__main__":
-    asyncio.run(seed_database())
-
-
-async def seed_social_media_data():
-    """Seed the database with TechVista brand data for social media content creation.
-
-    Loads brand guidelines, past posts, and content calendar into the
-    knowledge_items table with embeddings for semantic retrieval by the
-    Memory agent.
-    """
-    print("🌱 Starting social media data seeding...")
-
-    await init_db()
-    print("✓ Database initialized")
-
-    llm_service = get_llm_service()
-
-    async with AsyncSessionLocal() as db:
-        # 1. Load brand guidelines as a single knowledge item
+        # 3. Load brand guidelines
         brand_guidelines_path = DATA_DIR / "brand_guidelines.md"
         if brand_guidelines_path.exists():
-            print("\n📋 Seeding brand guidelines...")
+            print("\nSeeding brand guidelines...")
             content = brand_guidelines_path.read_text(encoding="utf-8")
-            embedding = await generate_embedding(llm_service, f"TechVista brand guidelines voice tone style {content[:500]}")
+            embedding = []
+            if embed_func:
+                embedding = await embed_func(
+                    f"TechVista brand guidelines voice tone style {content[:500]}"
+                )
 
             item = KnowledgeItem(
                 id=str(uuid.uuid4()),
@@ -574,22 +374,24 @@ async def seed_social_media_data():
                 embedding=embedding,
             )
             db.add(item)
-            print("  ✓ Brand guidelines loaded")
+            print("  + Brand guidelines loaded")
         else:
-            print(f"  ⚠ Brand guidelines not found at {brand_guidelines_path}")
+            print(f"  Warning: Brand guidelines not found at {brand_guidelines_path}")
 
-        # 2. Load past posts — one knowledge item per post for granular retrieval
+        # 4. Load past posts — one knowledge item per post for granular retrieval
         past_posts_path = DATA_DIR / "past_posts.json"
         if past_posts_path.exists():
-            print("\n📱 Seeding past post performance data...")
+            print("\nSeeding past post performance data...")
             posts = json.loads(past_posts_path.read_text(encoding="utf-8"))
 
             for post in posts:
-                embed_text = (
-                    f"{post['platform']} post performance:{post['performance']} "
-                    f"engagement:{post['engagement_rate']}% {post['content'][:200]}"
-                )
-                embedding = await generate_embedding(llm_service, embed_text)
+                embedding = []
+                if embed_func:
+                    embed_text = (
+                        f"{post['platform']} post performance:{post['performance']} "
+                        f"engagement:{post['engagement_rate']}% {post['content'][:200]}"
+                    )
+                    embedding = await embed_func(embed_text)
 
                 success_factors = post.get("success_factors", [])
                 item = KnowledgeItem(
@@ -608,20 +410,21 @@ async def seed_social_media_data():
                     embedding=embedding,
                 )
                 db.add(item)
-                print(f"  ✓ {post['platform'].title()} post ({post['date']}) — {post['performance']}")
+                print(f"  + {post['platform'].title()} post ({post['date']}) — {post['performance']}")
         else:
-            print(f"  ⚠ Past posts not found at {past_posts_path}")
+            print(f"  Warning: Past posts not found at {past_posts_path}")
 
-        # 3. Load content calendar as a single knowledge item
+        # 5. Load content calendar
         calendar_path = DATA_DIR / "content_calendar.json"
         if calendar_path.exists():
-            print("\n📅 Seeding content calendar template...")
+            print("\nSeeding content calendar...")
             calendar_content = calendar_path.read_text(encoding="utf-8")
             calendar_data = json.loads(calendar_content)
-            embedding = await generate_embedding(
-                llm_service,
-                f"TechVista content calendar weekly schedule {calendar_data.get('theme', '')}",
-            )
+            embedding = []
+            if embed_func:
+                embedding = await embed_func(
+                    f"TechVista content calendar weekly schedule {calendar_data.get('theme', '')}",
+                )
 
             item = KnowledgeItem(
                 id=str(uuid.uuid4()),
@@ -633,9 +436,21 @@ async def seed_social_media_data():
                 embedding=embedding,
             )
             db.add(item)
-            print("  ✓ Content calendar loaded")
+            print("  + Content calendar loaded")
         else:
-            print(f"  ⚠ Content calendar not found at {calendar_path}")
+            print(f"  Warning: Content calendar not found at {calendar_path}")
 
         await db.commit()
-        print("\n✅ Social media data seeding complete!")
+
+    # Count totals
+    past_posts_count = len(json.loads((DATA_DIR / "past_posts.json").read_text())) if (DATA_DIR / "past_posts.json").exists() else 0
+    print("\nSocial media data seeding complete!")
+    print(f"  - {len(SAMPLE_CAMPAIGNS)} campaign history entries")
+    print(f"  - {len(SAMPLE_STRATEGIES)} strategy playbooks")
+    print(f"  - 1 brand guidelines document")
+    print(f"  - {past_posts_count} past post performance records")
+    print(f"  - 1 content calendar")
+
+
+if __name__ == "__main__":
+    asyncio.run(seed_database())

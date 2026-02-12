@@ -212,159 +212,43 @@ async def clear_database(verbose: bool = True) -> bool:
 
 
 async def seed_database(verbose: bool = True, skip_embeddings: bool = False) -> bool:
-    """Seed the database with sample data."""
+    """Seed the database with TechVista social media data."""
     if verbose:
         print_header("Seeding Database")
-    
+
     try:
         from app.models.database import AsyncSessionLocal, init_db, KnowledgeItem, Engagement
-        from app.data.seed import (
-            SAMPLE_ENGAGEMENTS,
-            SAMPLE_FRAMEWORKS,
-            SAMPLE_EXPERTISE,
-        )
         from sqlalchemy import select, func
-        import uuid
-        from datetime import timedelta
-        
+
         await init_db()
-        
+
         # Check if data already exists
         async with AsyncSessionLocal() as db:
             knowledge_count = await db.execute(select(func.count()).select_from(KnowledgeItem))
             engagement_count = await db.execute(select(func.count()).select_from(Engagement))
-            
+
             existing_knowledge = knowledge_count.scalar() or 0
             existing_engagements = engagement_count.scalar() or 0
-            
+
             if existing_knowledge > 0 or existing_engagements > 0:
                 if verbose:
                     print_status(
                         f"Database already contains {existing_knowledge} knowledge items "
-                        f"and {existing_engagements} engagements",
+                        f"and {existing_engagements} campaigns",
                         "warning"
                     )
                     print_status("Use 'reset --seed' to clear and reseed, or 'clear' first", "info")
                 return False
-        
-        # Get embedding service if not skipping
-        embed_func = None
-        if not skip_embeddings:
-            try:
-                from app.services.llm_service import get_llm_service
-                llm_service = get_llm_service()
-                
-                async def generate_embedding(text: str) -> list[float]:
-                    try:
-                        return await llm_service.embed(text)
-                    except Exception as e:
-                        if verbose:
-                            print_status(f"Embedding failed: {e}", "warning")
-                        return []
-                
-                embed_func = generate_embedding
-                if verbose:
-                    print_status("Embedding service available", "success")
-            except Exception as e:
-                if verbose:
-                    print_status(f"Embeddings disabled: {e}", "warning")
-        else:
-            if verbose:
-                print_status("Skipping embeddings (--no-embeddings flag)", "info")
-        
-        async with AsyncSessionLocal() as db:
-            # Seed engagements
-            if verbose:
-                print_status("Seeding engagements...", "pending")
-            
-            for eng_data in SAMPLE_ENGAGEMENTS:
-                # Copy data to avoid modifying original
-                data = dict(eng_data)
-                days = data.pop("days_ago")
-                
-                # Generate embedding if available
-                embedding = []
-                if embed_func:
-                    embed_text = f"{data['client_name']} {data['engagement_type']} {data['description']}"
-                    embedding = await embed_func(embed_text)
-                
-                engagement = Engagement(
-                    id=str(uuid.uuid4()),
-                    client_name=data["client_name"],
-                    client_industry=data["client_industry"],
-                    engagement_type=data["engagement_type"],
-                    description=data["description"],
-                    outcomes=data["outcomes"],
-                    team_members=data["team_members"],
-                    frameworks_used=data["frameworks_used"],
-                    status=data["status"],
-                    start_date=datetime.utcnow() - timedelta(days=days + 90),
-                    end_date=datetime.utcnow() - timedelta(days=days),
-                    embedding=embedding,
-                )
-                db.add(engagement)
-                
-                if verbose:
-                    print_status(f"  {data['client_name']} - {data['engagement_type']}", "info")
-            
-            # Seed frameworks
-            if verbose:
-                print_status("Seeding frameworks...", "pending")
-            
-            for fw_data in SAMPLE_FRAMEWORKS:
-                embedding = []
-                if embed_func:
-                    embed_text = f"{fw_data['title']} {fw_data['content']}"
-                    embedding = await embed_func(embed_text)
-                
-                item = KnowledgeItem(
-                    id=str(uuid.uuid4()),
-                    title=fw_data["title"],
-                    content=fw_data["content"],
-                    category=fw_data["category"],
-                    industry=fw_data["industry"],
-                    tags=fw_data["tags"],
-                    embedding=embedding,
-                )
-                db.add(item)
-                
-                if verbose:
-                    print_status(f"  {fw_data['title']}", "info")
-            
-            # Seed expertise
-            if verbose:
-                print_status("Seeding expertise areas...", "pending")
-            
-            for exp_data in SAMPLE_EXPERTISE:
-                embedding = []
-                if embed_func:
-                    embed_text = f"{exp_data['title']} {exp_data['content']}"
-                    embedding = await embed_func(embed_text)
-                
-                item = KnowledgeItem(
-                    id=str(uuid.uuid4()),
-                    title=exp_data["title"],
-                    content=exp_data["content"],
-                    category=exp_data["category"],
-                    industry=exp_data["industry"],
-                    tags=exp_data["tags"],
-                    embedding=embedding,
-                )
-                db.add(item)
-                
-                if verbose:
-                    print_status(f"  {exp_data['title']}", "info")
-            
-            await db.commit()
-        
+
+        # Delegate to seed module
+        from app.data.seed import seed_database as run_seed
+        await run_seed(skip_embeddings=skip_embeddings)
+
         if verbose:
             print_status("Database seeding complete!", "success")
-            print_status(f"  - {len(SAMPLE_ENGAGEMENTS)} engagements", "info")
-            print_status(f"  - {len(SAMPLE_FRAMEWORKS)} frameworks", "info")
-            print_status(f"  - {len(SAMPLE_EXPERTISE)} expertise areas", "info")
-        
+
         return True
-        
+
     except Exception as e:
         print_status(f"Failed to seed database: {e}", "error")
         import traceback

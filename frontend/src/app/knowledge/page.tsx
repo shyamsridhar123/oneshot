@@ -17,7 +17,7 @@ function KnowledgeCard({ item }: { item: KnowledgeItem }) {
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between">
           <CardTitle className="text-base">{item.title}</CardTitle>
-          {item.score !== undefined && (
+          {item.score != null && (
             <Badge variant="secondary">{Math.round(item.score * 100)}%</Badge>
           )}
         </div>
