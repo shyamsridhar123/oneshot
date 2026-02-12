@@ -55,6 +55,16 @@ def print_status(message: str, status: str = "info") -> None:
     print(f"  {icon} {message}")
 
 
+def check_prerequisites() -> bool:
+    """Check that the environment is set up before DB operations."""
+    env_file = Path(__file__).resolve().parent.parent / ".env"
+    if not env_file.exists():
+        print_status("No .env file found at project root.", "error")
+        print_status("Run: cp .env.example .env  (then edit with your Azure OpenAI settings)", "info")
+        return False
+    return True
+
+
 async def get_db_path() -> Path:
     """Get the database file path from settings."""
     from app.config import settings
@@ -427,6 +437,10 @@ Examples:
     
     args = parser.parse_args()
     verbose = not args.quiet
+    
+    # Check prerequisites
+    if not check_prerequisites():
+        return 1
     
     # Confirmation for destructive operations
     if args.command in ["reset", "clear"] and not args.yes:

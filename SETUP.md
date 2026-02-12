@@ -2,6 +2,17 @@
 
 Step-by-step instructions to get the OneShot running locally.
 
+## Quick Start (TL;DR)
+
+```bash
+git clone https://github.com/shyamsridhar123/oneshot.git social-media-command-center
+cd social-media-command-center
+cp .env.example .env          # Edit with your Azure OpenAI settings
+make setup                    # Installs everything + initializes DB
+make run-backend              # Terminal 1
+make run-frontend             # Terminal 2  →  http://localhost:3000
+```
+
 ---
 
 ## Prerequisites
@@ -46,8 +57,8 @@ AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4o
 # Required -- your deployed embedding model name
 AZURE_OPENAI_TEXTEMBEDDING_DEPLOYMENT_NAME=text-embedding-3-small
 
-# Optional -- API version (defaults to 2024-12-01-preview)
-AZURE_OPENAI_API_VERSION=2024-12-01-preview
+# Optional -- API version (defaults to 2025-03-01-preview)
+AZURE_OPENAI_API_VERSION=2025-03-01-preview
 ```
 
 ### Authentication
@@ -84,27 +95,20 @@ pip install -r requirements.txt
 ### Initialize the Database
 
 ```bash
-# Create tables and seed with sample data
+# Create tables and seed with all sample data (one command)
 python setup_db.py init --seed
 ```
 
 This creates:
 - `data/oneshot.db` -- SQLite database
-- Sample engagements, frameworks, and expertise items
+- 5 campaign history entries (engagements table)
+- 6 social media strategy playbooks (knowledge base)
+- Brand guidelines from `data/brand_guidelines.md`
+- Historical post performance from `data/past_posts.json`
+- Content calendar from `data/content_calendar.json`
 - Semantic embeddings for RAG search (requires Azure OpenAI)
 
-> **Without Azure creds**: Use `python setup_db.py init --seed --no-embeddings` to skip embedding generation.
-
-### Seed Social Media Brand Data
-
-```bash
-python -c "from app.data.seed import seed_social_media_data; import asyncio; asyncio.run(seed_social_media_data())"
-```
-
-This loads:
-- `data/brand_guidelines.md` -- NotContosso brand voice and style rules
-- `data/past_posts.json` -- Historical post performance data
-- `data/content_calendar.json` -- Weekly content schedule template
+> **Without Azure creds**: Use `python setup_db.py init --seed --no-embeddings` to skip embedding generation. The knowledge base will still work for keyword search but semantic search will be limited.
 
 ### Start the Backend
 
@@ -165,6 +169,19 @@ Expected result: **85 checks, all passing**.
 ---
 
 ## Quick Reference
+
+### Makefile Commands (Recommended)
+
+| Command | Description |
+|---------|-------------|
+| `make setup` | Full first-time setup (backend + frontend + DB) |
+| `make run-backend` | Start backend server (port 8000) |
+| `make run-frontend` | Start frontend dev server (port 3000) |
+| `make db-init` | Initialize DB schema and seed data |
+| `make db-reset` | Reset DB and reseed (destructive) |
+| `make db-status` | Show database statistics |
+| `make test` | Run test suite |
+| `make help` | Show all available targets |
 
 ### Backend Commands
 
