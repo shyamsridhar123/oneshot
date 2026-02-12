@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Federation - Multi-Agent AI Platform",
-  description: "Coordinated AI agents for professional services",
+  title: "OneShot - Multi-Agent AI Platform",
+  description: "Coordinated AI agents for social media content creation",
 };
 
 export default function RootLayout({

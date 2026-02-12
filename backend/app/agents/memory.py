@@ -1,18 +1,23 @@
 """Memory Agent - Knowledge retrieval and RAG."""
 
+from typing import Optional
+
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.agents.prompts import MEMORY_PROMPT
 from app.services.llm_service import get_llm_service
 from app.services.knowledge_service import get_knowledge_service
 from app.models.database import AsyncSessionLocal
 
 
-async def run_memory(task: str, context: dict) -> tuple[str, int]:
+async def run_memory(task: str, context: dict, db: Optional[AsyncSession] = None) -> tuple[str, int]:
     """
     Run the Memory agent for knowledge retrieval using semantic search.
     
     Args:
         task: The retrieval task
         context: Context including query details
+        db: Optional database session (uses AsyncSessionLocal if not provided)
     
     Returns:
         Tuple of (retrieved knowledge and context, tokens used)
@@ -26,21 +31,25 @@ async def run_memory(task: str, context: dict) -> tuple[str, int]:
     # Build search query
     search_query = f"{task} {message} {' '.join(entities)}"
     
-    # Perform semantic search
-    async with AsyncSessionLocal() as db:
-        # Search knowledge items (frameworks, expertise)
+    # Perform semantic search - use provided session or create one
+    async def _do_search(session: AsyncSession):
         knowledge_results = await knowledge_service.search(
             query=search_query,
-            db=db,
+            db=session,
             limit=5,
         )
-        
-        # Find similar past engagements
         engagement_results = await knowledge_service.find_similar_engagements(
             query=search_query,
-            db=db,
+            db=session,
             limit=3,
         )
+        return knowledge_results, engagement_results
+
+    if db is not None:
+        knowledge_results, engagement_results = await _do_search(db)
+    else:
+        async with AsyncSessionLocal() as session:
+            knowledge_results, engagement_results = await _do_search(session)
     
     # Format results
     kb_text = _format_knowledge_results(knowledge_results)

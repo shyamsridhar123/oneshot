@@ -31,13 +31,13 @@ export function FooterSection() {
               <span className="text-primary">We&apos;re building core IP amplification.</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-              Federation represents our commitment to making every consultant&apos;s expertise 
-              instantly amplified by the collective intelligence of the entire firm.
+              OneShot represents our commitment to making every content creator&apos;s expertise 
+              instantly amplified by the collective intelligence of the entire team.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button size="lg" className="text-lg px-8 py-6" asChild>
                 <Link href="/chat">
-                  Start Using Federation
+                  Start Using OneShot
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Link>
               </Button>
@@ -55,12 +55,12 @@ export function FooterSection() {
               <div className="md:col-span-1">
                 <Link href="/" className="inline-flex items-center gap-2 mb-4">
                   <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-chart-2 flex items-center justify-center">
-                    <span className="text-white font-bold text-lg">F</span>
+                    <span className="text-white font-bold text-lg">O</span>
                   </div>
-                  <span className="text-xl font-bold">Federation</span>
+                  <span className="text-xl font-bold">OneShot</span>
                 </Link>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Multi-agent AI platform for professional services, powered by Microsoft Agent Framework.
+                  Multi-agent AI platform for social media content creation, powered by Microsoft Agent Framework.
                 </p>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
@@ -106,7 +106,7 @@ export function FooterSection() {
             {/* Bottom bar */}
             <div className="mt-16 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
               <p className="text-sm text-muted-foreground">
-                © {new Date().getFullYear()} Federation Demo. Built with Microsoft Agent Framework.
+                © {new Date().getFullYear()} OneShot by NotContosso Inc. Built with Microsoft Agent Framework.
               </p>
               <p className="text-sm text-muted-foreground">
                 Proof of Concept · Not for Production Use

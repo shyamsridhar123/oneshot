@@ -1,4 +1,4 @@
-"""Comprehensive API test script for Federation backend.
+"""Comprehensive API test script for OneShot backend.
 
 This module is designed to run against a live server (python tests/test_api.py).
 When run via pytest, tests are skipped unless the server is available.
@@ -242,7 +242,7 @@ async def test_websocket(conv_id: str):
 async def run_all_tests():
     """Run all API tests."""
     print("=" * 60)
-    print("🚀 Federation Backend API Tests")
+    print("🚀 OneShot Backend API Tests")
     print(f"📅 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"🌐 Base URL: {BASE_URL}")
     print("=" * 60)

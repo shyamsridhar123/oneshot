@@ -1,4 +1,4 @@
-"""SQLAlchemy database models for Federation."""
+"""SQLAlchemy database models for OneShot."""
 
 import uuid
 from datetime import datetime

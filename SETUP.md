@@ -1,6 +1,6 @@
 # Setup & Run Guide
 
-Step-by-step instructions to get the Social Media Command Center running locally.
+Step-by-step instructions to get the OneShot running locally.
 
 ---
 
@@ -89,7 +89,7 @@ python setup_db.py init --seed
 ```
 
 This creates:
-- `data/federation.db` -- SQLite database
+- `data/oneshot.db` -- SQLite database
 - Sample engagements, frameworks, and expertise items
 - Semantic embeddings for RAG search (requires Azure OpenAI)
 
@@ -102,7 +102,7 @@ python -c "from app.data.seed import seed_social_media_data; import asyncio; asy
 ```
 
 This loads:
-- `data/brand_guidelines.md` -- TechVista brand voice and style rules
+- `data/brand_guidelines.md` -- NotContosso brand voice and style rules
 - `data/past_posts.json` -- Historical post performance data
 - `data/content_calendar.json` -- Weekly content schedule template
 

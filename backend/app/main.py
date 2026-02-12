@@ -1,5 +1,7 @@
 """FastAPI application entry point."""
 
+import asyncio
+import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,11 +11,38 @@ from app.models.database import init_db
 from app.api.routes import chat, proposals, research, documents, knowledge, analytics
 from app.api.websocket import websocket_router
 
+logger = logging.getLogger(__name__)
+
+
+def _install_mcp_cleanup_filter():
+    """Suppress harmless MCP stdio client teardown errors.
+
+    The MCP stdio_client async generator sometimes gets finalized in a
+    different task than the one that opened it, triggering a RuntimeError
+    from anyio's cancel-scope checks.  This is cosmetic — the agent run
+    has already completed successfully — so we filter it out.
+    """
+    loop = asyncio.get_running_loop()
+    _default_handler = loop.get_exception_handler()
+
+    def _handler(loop, context):
+        asyncgen = context.get("asyncgen")
+        if asyncgen and "stdio_client" in getattr(asyncgen, "__qualname__", ""):
+            logger.debug("Suppressed MCP stdio cleanup error (harmless)")
+            return
+        if _default_handler:
+            _default_handler(loop, context)
+        else:
+            loop.default_exception_handler(context)
+
+    loop.set_exception_handler(_handler)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan handler."""
     # Startup
+    _install_mcp_cleanup_filter()
     await init_db()
     print("✓ Database initialized")
     yield
@@ -22,7 +51,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Federation API",
+    title="OneShot API",
     description="AI-Powered Professional Services Engagement Platform",
     version="1.0.0",
     lifespan=lifespan,
@@ -59,7 +88,7 @@ async def health_check():
 async def root():
     """Root endpoint."""
     return {
-        "name": "Federation API",
+        "name": "OneShot API",
         "description": "AI-Powered Professional Services Platform",
         "docs": "/docs",
     }

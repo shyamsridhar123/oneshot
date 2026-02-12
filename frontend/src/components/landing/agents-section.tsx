@@ -57,7 +57,7 @@ const agents = [
   {
     name: "Memory",
     role: "Brand Knowledge (RAG)",
-    description: "Retrieves brand guidelines, past post performance data, and content calendar context to ground all content in TechVista's brand identity.",
+    description: "Retrieves brand guidelines, past post performance data, and content calendar context to ground all content in NotContosso's brand identity.",
     icon: Database,
     color: "from-teal-500 to-cyan-600",
   },

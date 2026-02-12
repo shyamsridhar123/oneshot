@@ -97,11 +97,11 @@ class TestAnalyzeHashtags:
     """Tests for the analyze_hashtags tool function."""
 
     def test_returns_string(self):
-        result = analyze_hashtags("#AIAgents, #TechVista")
+        result = analyze_hashtags("#AIAgents, #NotContosso")
         assert isinstance(result, str)
 
     def test_handles_multiple_hashtags(self):
-        result = analyze_hashtags("#AIAgents, #TechVista, #Enterprise")
+        result = analyze_hashtags("#AIAgents, #NotContosso, #Enterprise")
         assert "AIAgents" in result
 
 
@@ -151,7 +151,7 @@ class TestSearchKnowledgeBase:
 
     def test_contains_query(self):
         result = search_knowledge_base("brand pillars")
-        assert "brand pillars" in result or "TechVista" in result
+        assert "brand pillars" in result or "NotContosso" in result
 
 
 # ============================================================

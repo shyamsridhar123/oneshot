@@ -1,1 +1,1 @@
-"""Federation Backend - AI-Powered Professional Services Platform."""
+"""OneShot Backend - AI-Powered Professional Services Platform."""

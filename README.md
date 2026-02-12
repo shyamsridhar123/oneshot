@@ -1,4 +1,4 @@
-# Social Media Command Center
+# OneShot
 
 ## Multi-Agent AI Platform for Social Media Content Creation
 
@@ -14,7 +14,7 @@ A multi-agent AI system that coordinates 7 specialized agents — each with dist
 
 ## What It Does
 
-**Social Media Command Center** takes a content request (e.g., "Write a LinkedIn post about our AI launch") and orchestrates 7 AI agents in two parallel waves to produce platform-specific, brand-compliant social media content — complete with trend research, engagement benchmarks, and compliance scoring.
+**OneShot** takes a content request (e.g., "Write a LinkedIn post about our AI launch") and orchestrates 7 AI agents in two parallel waves to produce platform-specific, brand-compliant social media content — complete with trend research, engagement benchmarks, and compliance scoring.
 
 ### Architecture
 

@@ -1,10 +1,10 @@
-# Social Media Command Center - Demo Presentation
+# OneShot - Demo Presentation
 
 ## Elevator Pitch
 
 > **One prompt in, seven AI agents coordinate in parallel, platform-ready social content out.**
 >
-> Social Media Command Center is a multi-agent AI system that takes a simple content request -- "Write a LinkedIn post about our AI launch" -- and orchestrates 7 specialized agents, each with a distinct reasoning pattern, to produce brand-compliant, data-backed social media content for LinkedIn, Twitter/X, and Instagram in a single pass.
+> OneShot is a multi-agent AI system that takes a simple content request -- "Write a LinkedIn post about our AI launch" -- and orchestrates 7 specialized agents, each with a distinct reasoning pattern, to produce brand-compliant, data-backed social media content for LinkedIn, Twitter/X, and Instagram in a single pass.
 
 ---
 
@@ -83,14 +83,14 @@ Each agent uses a specific, named reasoning pattern -- this is not just prompt e
 
 **What to show**: Open the chat interface and type:
 
-> "Create a LinkedIn post about TechVista AI Collaboration Suite v3.0 launch. Key stats: 40% fewer meetings, 3x faster document turnaround."
+> "Create a LinkedIn post about NotContosso AI Collaboration Suite v3.0 launch. Key stats: 40% fewer meetings, 3x faster document turnaround."
 
 **What happens (point out each step)**:
 1. Orchestrator classifies intent as `content_creation`, platforms: `[linkedin]`
 2. **Wave 1 fires in parallel** -- 4 agents simultaneously:
    - Researcher finds trending AI topics and hashtags
    - Strategist plans audience targeting and messaging
-   - Memory retrieves TechVista brand guidelines and past post performance
+   - Memory retrieves NotContosso brand guidelines and past post performance
    - Analyst calculates engagement benchmarks for LinkedIn carousels vs text
 3. **Wave 2 fires** with all Wave 1 context:
    - Scribe generates the LinkedIn post using the template pattern
@@ -278,4 +278,4 @@ Testing:   pytest + pytest-asyncio (208 tests)
 
 ## One Slide Summary
 
-**Social Media Command Center** orchestrates 7 AI agents -- each with a distinct reasoning pattern -- in two parallel waves to transform a simple content request into platform-specific, brand-compliant, data-backed social media content. Built on Microsoft Agent Framework with MCP tool integration, Azure Identity, and real-time WebSocket streaming. 208 tests, 85 E2E demo checks, zero hardcoded secrets.
+**OneShot** orchestrates 7 AI agents -- each with a distinct reasoning pattern -- in two parallel waves to transform a simple content request into platform-specific, brand-compliant, data-backed social media content. Built on Microsoft Agent Framework with MCP tool integration, Azure Identity, and real-time WebSocket streaming. 208 tests, 85 E2E demo checks, zero hardcoded secrets.

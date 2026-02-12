@@ -1,4 +1,4 @@
-"""Seed script to populate the database with TechVista social media data and embeddings."""
+"""Seed script to populate the database with NotContosso social media data and embeddings."""
 
 import asyncio
 import json
@@ -23,7 +23,7 @@ DATA_DIR = Path(__file__).resolve().parent.parent.parent / "data"
 
 SAMPLE_CAMPAIGNS = [
     {
-        "client_name": "TechVista Inc.",
+        "client_name": "NotContosso Inc.",
         "client_industry": "Technology",
         "engagement_type": "Product Launch Campaign",
         "description": "Multi-platform social media campaign for AI Collaboration Suite v3.0 launch. Coordinated announcements across LinkedIn, Twitter/X, and Instagram with a phased rollout: teaser week, launch day blitz, and sustained engagement. Leveraged founder storytelling, behind-the-scenes content, and data-driven thought leadership.",
@@ -34,10 +34,10 @@ SAMPLE_CAMPAIGNS = [
         "days_ago": 30,
     },
     {
-        "client_name": "TechVista Inc.",
+        "client_name": "NotContosso Inc.",
         "client_industry": "Technology",
         "engagement_type": "Thought Leadership Series",
-        "description": "6-week LinkedIn thought leadership campaign positioning TechVista's CEO as an authority on human-AI collaboration. Published weekly long-form posts with data from 200+ enterprise deployments. Each post followed the contrarian-hook + data-proof + CTA formula that drove viral engagement.",
+        "description": "6-week LinkedIn thought leadership campaign positioning NotContosso's CEO as an authority on human-AI collaboration. Published weekly long-form posts with data from 200+ enterprise deployments. Each post followed the contrarian-hook + data-proof + CTA formula that drove viral engagement.",
         "outcomes": "5.8% average engagement rate (vs. 2% industry avg), 1 viral post (22K impressions, 340 shares), 3 speaking invitations from conference organizers, 28% increase in CEO LinkedIn followers",
         "team_members": ["Content Strategist", "CEO", "Data Analyst", "Social Media Manager"],
         "frameworks_used": ["Thought Leadership Funnel", "Data Storytelling Framework", "Executive Voice Playbook"],
@@ -45,7 +45,7 @@ SAMPLE_CAMPAIGNS = [
         "days_ago": 60,
     },
     {
-        "client_name": "TechVista Inc.",
+        "client_name": "NotContosso Inc.",
         "client_industry": "Technology",
         "engagement_type": "Developer Community Campaign",
         "description": "Twitter/X-focused campaign targeting developers and ML practitioners. Published technical threads, hot takes on AI industry trends, and BuildInPublic content. Engaged with developer community through replies, quote tweets, and collaborative threads with tech influencers.",
@@ -56,10 +56,10 @@ SAMPLE_CAMPAIGNS = [
         "days_ago": 45,
     },
     {
-        "client_name": "TechVista Inc.",
+        "client_name": "NotContosso Inc.",
         "client_industry": "Technology",
         "engagement_type": "Employer Branding Campaign",
-        "description": "Instagram-led employer branding initiative showcasing TechVista culture, team celebrations, and day-in-the-life content. Used carousel posts, reels, and stories to highlight the human side of building AI. Combined authentic team moments with hiring CTAs.",
+        "description": "Instagram-led employer branding initiative showcasing NotContosso culture, team celebrations, and day-in-the-life content. Used carousel posts, reels, and stories to highlight the human side of building AI. Combined authentic team moments with hiring CTAs.",
         "outcomes": "5.1% average engagement rate on Instagram, 35% increase in career page visits from social, 2x increase in inbound applications, 4.8% engagement on team celebration carousel, top-performing content: behind-the-scenes QA testing celebration",
         "team_members": ["Social Media Manager", "People & Culture Lead", "Graphic Designer"],
         "frameworks_used": ["Employer Brand Framework", "Authentic Content Guide", "Instagram Carousel Best Practices"],
@@ -67,10 +67,10 @@ SAMPLE_CAMPAIGNS = [
         "days_ago": 20,
     },
     {
-        "client_name": "TechVista Inc.",
+        "client_name": "NotContosso Inc.",
         "client_industry": "Technology",
         "engagement_type": "Healthcare Vertical Campaign",
-        "description": "Targeted LinkedIn campaign promoting TechVista's healthcare AI deployment success. Combined vulnerability-driven storytelling (what was hard) with proof-of-results content. Featured customer testimonial snippets and compliance journey narrative.",
+        "description": "Targeted LinkedIn campaign promoting NotContosso's healthcare AI deployment success. Combined vulnerability-driven storytelling (what was hard) with proof-of-results content. Featured customer testimonial snippets and compliance journey narrative.",
         "outcomes": "3.9% engagement rate, 18K impressions, 156 comments (high conversation), 89 shares, 12 inbound leads from healthcare sector, 3 healthcare media mentions",
         "team_members": ["Content Strategist", "Healthcare Sales Lead", "Social Media Manager"],
         "frameworks_used": ["Vertical Marketing Playbook", "Customer Story Framework", "Compliance-Safe Content Guide"],
@@ -88,7 +88,7 @@ SAMPLE_STRATEGIES = [
         "title": "Multi-Platform Content Strategy",
         "category": "strategy",
         "industry": "Technology",
-        "content": """TechVista's cross-platform content strategy for maximum reach and engagement:
+        "content": """NotContosso's cross-platform content strategy for maximum reach and engagement:
 
 **Platform Roles:**
 - **LinkedIn:** Authority building — thought leadership, customer success, industry analysis
@@ -112,7 +112,7 @@ SAMPLE_STRATEGIES = [
         "title": "Engagement Optimization Playbook",
         "category": "strategy",
         "industry": "Technology",
-        "content": """Data-driven engagement optimization based on TechVista's historical performance:
+        "content": """Data-driven engagement optimization based on NotContosso's historical performance:
 
 **Top-Performing Post Formats:**
 1. Contrarian hooks + data proof (avg 5.8% engagement)
@@ -138,7 +138,7 @@ SAMPLE_STRATEGIES = [
         "title": "Brand Voice & Tone Guide",
         "category": "strategy",
         "industry": "Technology",
-        "content": """TechVista's brand voice framework for consistent social media communication:
+        "content": """NotContosso's brand voice framework for consistent social media communication:
 
 **Voice Pillars:**
 1. Professional yet approachable — experts who don't talk down
@@ -170,10 +170,10 @@ SAMPLE_STRATEGIES = [
         "title": "Hashtag Strategy & Performance",
         "category": "strategy",
         "industry": "Technology",
-        "content": """TechVista's hashtag strategy based on reach and engagement data:
+        "content": """NotContosso's hashtag strategy based on reach and engagement data:
 
 **Always-On Tags (every post):**
-- #TechVista (branded, tracking)
+- #NotContosso (branded, tracking)
 - #AIInnovation (category, reach)
 
 **Platform-Specific High Performers:**
@@ -192,7 +192,7 @@ Twitter/X (use 2-3 per post):
 - #MLOps (niche, high-intent)
 
 Instagram (use 8-12 per post):
-- #TechLife #TeamTechVista #BTS #StartupLife #AICompany
+- #TechLife #TeamNotContosso #BTS #StartupLife #AICompany
 - Supplement with trending and topic-specific tags
 
 **Rules:**
@@ -205,7 +205,7 @@ Instagram (use 8-12 per post):
         "title": "Content Calendar Planning Framework",
         "category": "strategy",
         "industry": "Technology",
-        "content": """Weekly content planning framework for TechVista's social media:
+        "content": """Weekly content planning framework for NotContosso's social media:
 
 **Content Mix (per week):**
 - Announcements: 20% — Product launches, partnerships, milestones
@@ -235,7 +235,7 @@ Instagram (use 8-12 per post):
         "title": "Social Media Analytics & KPIs",
         "category": "strategy",
         "industry": "Technology",
-        "content": """TechVista's social media performance measurement framework:
+        "content": """NotContosso's social media performance measurement framework:
 
 **Primary KPIs:**
 - Engagement Rate: Target 4%+ (LinkedIn), 3.5%+ (Twitter), 5%+ (Instagram)
@@ -277,7 +277,7 @@ async def generate_embedding(llm_service, text: str) -> list[float]:
 
 
 async def seed_database(skip_embeddings: bool = False):
-    """Seed the database with TechVista social media data.
+    """Seed the database with NotContosso social media data.
 
     Seeds campaign history, social media strategies, brand guidelines,
     past posts, and content calendar for the Social Media Command Center.
@@ -361,16 +361,16 @@ async def seed_database(skip_embeddings: bool = False):
             embedding = []
             if embed_func:
                 embedding = await embed_func(
-                    f"TechVista brand guidelines voice tone style {content[:500]}"
+                    f"NotContosso brand guidelines voice tone style {content[:500]}"
                 )
 
             item = KnowledgeItem(
                 id=str(uuid.uuid4()),
-                title="TechVista Inc. — Brand & Social Media Guidelines",
+                title="NotContosso Inc. — Brand & Social Media Guidelines",
                 content=content,
                 category="brand_guidelines",
                 industry="Technology",
-                tags=["brand", "guidelines", "social media", "voice", "tone", "TechVista"],
+                tags=["brand", "guidelines", "social media", "voice", "tone", "NotContosso"],
                 embedding=embedding,
             )
             db.add(item)
@@ -423,7 +423,7 @@ async def seed_database(skip_embeddings: bool = False):
             embedding = []
             if embed_func:
                 embedding = await embed_func(
-                    f"TechVista content calendar weekly schedule {calendar_data.get('theme', '')}",
+                    f"NotContosso content calendar weekly schedule {calendar_data.get('theme', '')}",
                 )
 
             item = KnowledgeItem(

@@ -40,9 +40,9 @@ export function LandingNav() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-chart-2 flex items-center justify-center">
-              <span className="text-white font-bold">F</span>
+              <span className="text-white font-bold">O</span>
             </div>
-            <span className="font-semibold text-lg">Federation</span>
+            <span className="font-semibold text-lg">OneShot</span>
           </Link>
 
           {/* Desktop Navigation */}

@@ -124,14 +124,14 @@ class TestGenerateBriefing:
         data = response.json()
         assert data["company_name"] == company
 
-    async def test_generate_briefing_status_pending(self, client: AsyncClient):
-        """Response should indicate pending status (async processing)."""
+    async def test_generate_briefing_status_completed(self, client: AsyncClient):
+        """Response should indicate completed status after synchronous processing."""
         response = await client.post(
             "/api/research/briefing",
             json={"company_name": "Test Corp"},
         )
         data = response.json()
-        assert data["status"] == "pending"
+        assert data["status"] == "completed"
 
     async def test_generate_briefing_validation_missing_company(
         self, client: AsyncClient

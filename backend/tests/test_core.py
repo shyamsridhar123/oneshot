@@ -45,10 +45,10 @@ class TestRootEndpoint:
         assert "docs" in data
 
     async def test_root_api_name(self, client: AsyncClient):
-        """Root endpoint should return Federation API name."""
+        """Root endpoint should return OneShot API name."""
         response = await client.get("/")
         data = response.json()
-        assert data["name"] == "Federation API"
+        assert data["name"] == "OneShot API"
 
     async def test_root_docs_link(self, client: AsyncClient):
         """Root endpoint should point to /docs."""

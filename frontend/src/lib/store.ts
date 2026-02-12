@@ -55,7 +55,7 @@ function createInitialAgentStates(): Record<AgentName, AgentState> {
 
 // ============ Store Interface ============
 
-interface FederationStore {
+interface OneShotStore {
   // Conversations
   conversations: Conversation[];
   activeConversationId: string | null;
@@ -103,7 +103,7 @@ interface FederationStore {
   setStreaming: (streaming: boolean, messageId?: string | null) => void;
 }
 
-export const useStore = create<FederationStore>()(
+export const useStore = create<OneShotStore>()(
   devtools(
     subscribeWithSelector((set, get) => ({
       // ============ Conversations ============
@@ -224,15 +224,15 @@ export const useStore = create<FederationStore>()(
 
 // ============ Selectors ============
 
-export const selectActiveConversation = (state: FederationStore) =>
+export const selectActiveConversation = (state: OneShotStore) =>
   state.conversations.find((c) => c.id === state.activeConversationId);
 
-export const selectActiveMessages = (state: FederationStore): Message[] =>
+export const selectActiveMessages = (state: OneShotStore): Message[] =>
   state.activeConversationId
     ? state.messages[state.activeConversationId] || EMPTY_MESSAGES
     : EMPTY_MESSAGES;
 
-export const selectActiveAgents = (state: FederationStore) =>
+export const selectActiveAgents = (state: OneShotStore) =>
   Object.values(state.agentStates).filter((a) => a.status !== "idle");
 
 // Re-export useShallow for components

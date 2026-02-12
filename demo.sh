@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Federation Demo Setup Script
+# OneShot Demo Setup Script
 #
 # Usage:
 #   ./demo.sh start      - Start backend and frontend servers
@@ -99,8 +99,8 @@ start_backend() {
     fi
     
     # Start in background
-    nohup uvicorn app.main:app --reload --port 8000 > /tmp/federation-backend.log 2>&1 &
-    echo $! > /tmp/federation-backend.pid
+    nohup uvicorn app.main:app --reload --port 8000 > /tmp/oneshot-backend.log 2>&1 &
+    echo $! > /tmp/oneshot-backend.pid
     
     # Wait for startup
     for i in {1..30}; do
@@ -111,7 +111,7 @@ start_backend() {
         sleep 1
     done
     
-    print_status error "Backend failed to start. Check /tmp/federation-backend.log"
+    print_status error "Backend failed to start. Check /tmp/oneshot-backend.log"
     return 1
 }
 
@@ -127,8 +127,8 @@ start_frontend() {
     fi
     
     # Start in background
-    nohup pnpm dev > /tmp/federation-frontend.log 2>&1 &
-    echo $! > /tmp/federation-frontend.pid
+    nohup pnpm dev > /tmp/oneshot-frontend.log 2>&1 &
+    echo $! > /tmp/oneshot-frontend.pid
     
     # Wait for startup
     for i in {1..60}; do
@@ -139,7 +139,7 @@ start_frontend() {
         sleep 1
     done
     
-    print_status error "Frontend failed to start. Check /tmp/federation-frontend.log"
+    print_status error "Frontend failed to start. Check /tmp/oneshot-frontend.log"
     return 1
 }
 
@@ -147,26 +147,26 @@ stop_servers() {
     print_header "Stopping Servers"
     
     # Stop backend
-    if [ -f /tmp/federation-backend.pid ]; then
-        PID=$(cat /tmp/federation-backend.pid)
+    if [ -f /tmp/oneshot-backend.pid ]; then
+        PID=$(cat /tmp/oneshot-backend.pid)
         if kill -0 $PID 2>/dev/null; then
             kill $PID 2>/dev/null || true
             print_status success "Backend stopped"
         fi
-        rm -f /tmp/federation-backend.pid
+        rm -f /tmp/oneshot-backend.pid
     fi
     
     # Kill any remaining uvicorn
     pkill -f "uvicorn app.main:app" 2>/dev/null || true
     
     # Stop frontend
-    if [ -f /tmp/federation-frontend.pid ]; then
-        PID=$(cat /tmp/federation-frontend.pid)
+    if [ -f /tmp/oneshot-frontend.pid ]; then
+        PID=$(cat /tmp/oneshot-frontend.pid)
         if kill -0 $PID 2>/dev/null; then
             kill $PID 2>/dev/null || true
             print_status success "Frontend stopped"
         fi
-        rm -f /tmp/federation-frontend.pid
+        rm -f /tmp/oneshot-frontend.pid
     fi
     
     # Kill any remaining next dev
@@ -269,7 +269,7 @@ reset_demo() {
     stop_servers
     
     print_status pending "Removing database..."
-    rm -f "$BACKEND_DIR/data/federation.db"
+    rm -f "$BACKEND_DIR/data/oneshot.db"
     
     print_status pending "Starting fresh environment..."
     start_servers
@@ -288,7 +288,7 @@ reset_demo() {
 
 show_help() {
     echo ""
-    echo "Federation Demo Script"
+    echo "OneShot Demo Script"
     echo ""
     echo "Usage: ./demo.sh <command>"
     echo ""

@@ -5,6 +5,7 @@ trending topics, analyze competitor content, and research hashtags.
 Optionally uses MCP fetch server for real-time web content retrieval.
 """
 
+import asyncio
 import logging
 
 from app.agents.prompts import RESEARCHER_PROMPT
@@ -19,6 +20,29 @@ from app.agents.factory import (
 from app.services.llm_service import get_llm_service
 
 logger = logging.getLogger(__name__)
+
+
+def _ensure_mcp_cleanup_filter():
+    """Install filter for harmless MCP stdio teardown errors (idempotent)."""
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        return
+    if getattr(loop, "_mcp_filter_installed", False):
+        return
+    _prev = loop.get_exception_handler()
+
+    def _handler(loop, ctx):
+        ag = ctx.get("asyncgen")
+        if ag and "stdio_client" in getattr(ag, "__qualname__", ""):
+            return
+        if _prev:
+            _prev(loop, ctx)
+        else:
+            loop.default_exception_handler(ctx)
+
+    loop.set_exception_handler(_handler)
+    loop._mcp_filter_installed = True
 
 
 async def run_researcher(task: str, context: dict) -> tuple[str, int]:
@@ -55,6 +79,7 @@ If web fetch tools are available, use them to retrieve real-time information."""
 
     # Try MAF agent path (with tools + MCP)
     try:
+        _ensure_mcp_cleanup_filter()
         tools = get_agent_tools("researcher", include_mcp=True)
         agent = create_agent("researcher", RESEARCHER_PROMPT, tools=tools)
         response = await agent.run(prompt)

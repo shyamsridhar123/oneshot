@@ -76,6 +76,7 @@ async def generate_briefing(
         memory_result, m_tokens = await run_memory(
             task=f"Retrieve brand context relevant to {data.company_name}",
             context=context,
+            db=db,
         )
 
         scribe_context = {

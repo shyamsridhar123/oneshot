@@ -1,8 +1,8 @@
-# Federation API Documentation
+# OneShot API Documentation
 
 > **AI-Powered Professional Services Platform API Reference**
 
-This document provides a comprehensive reference for all Federation REST and WebSocket APIs, explaining how each endpoint integrates with the frontend UX and the underlying agent system.
+This document provides a comprehensive reference for all OneShot REST and WebSocket APIs, explaining how each endpoint integrates with the frontend UX and the underlying agent system.
 
 ---
 
@@ -24,7 +24,7 @@ This document provides a comprehensive reference for all Federation REST and Web
 
 ## Overview
 
-The Federation API is a FastAPI-based backend that powers a multi-agent AI platform for professional services. The architecture consists of:
+The OneShot API is a FastAPI-based backend that powers a multi-agent AI platform for professional services. The architecture consists of:
 
 | Layer | Technology | Purpose |
 |-------|------------|---------|
@@ -79,7 +79,7 @@ GET /
 **Response:**
 ```json
 {
-  "name": "Federation API",
+  "name": "OneShot API",
   "description": "AI-Powered Professional Services Platform",
   "docs": "/docs"
 }
@@ -1165,7 +1165,7 @@ curl http://localhost:8000/api/chat/conversations
 # Send a message
 curl -X POST http://localhost:8000/api/chat/conversations/{id}/messages \
   -H "Content-Type: application/json" \
-  -d '{"content": "Hello, Federation!"}'
+  -d '{"content": "Hello, OneShot!"}'
 
 # Generate a proposal
 curl -X POST http://localhost:8000/api/proposals/generate \

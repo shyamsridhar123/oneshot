@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Federation Demo Test and Cleanup Script
+OneShot Demo Test and Cleanup Script
 
 This script prepares the demo environment by:
 - Cleaning up existing conversation history
@@ -115,7 +115,7 @@ async def test_azure_openai() -> bool:
         # Simple test completion
         start = time.time()
         response = await llm.complete(
-            prompt="Say 'Hello, Federation!' in exactly those words.",
+            prompt="Say 'Hello, OneShot!' in exactly those words.",
             system_prompt="You are a helpful assistant. Respond only with the exact phrase requested.",
             max_tokens=50,
         )
@@ -126,7 +126,7 @@ async def test_azure_openai() -> bool:
         
         # Test embeddings
         start = time.time()
-        embedding = await llm.embed("Test embedding for Federation demo")
+        embedding = await llm.embed("Test embedding for OneShot demo")
         elapsed = time.time() - start
         print_status(f"Embeddings working ({len(embedding)} dimensions, {elapsed:.2f}s)", "success")
         
@@ -412,7 +412,7 @@ async def run_full_test():
 
 async def quick_status():
     """Quick health check for demo readiness."""
-    print_header("Federation Demo Status Check")
+    print_header("OneShot Demo Status Check")
     print(f"  Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print()
     

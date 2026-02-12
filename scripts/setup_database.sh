@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Federation Database Setup Script
+# OneShot Database Setup Script
 #
 # Usage:
 #   ./scripts/setup_database.sh init             # Initialize database
@@ -85,10 +85,10 @@ run_setup_db() {
 show_help() {
     cat << 'EOF'
 
-Federation Database Setup Script
+OneShot Database Setup Script
 ================================
 
-This script manages the Federation database including initialization,
+This script manages the OneShot database including initialization,
 seeding with sample data, and maintenance operations.
 
 Usage: ./scripts/setup_database.sh <command> [options]
@@ -122,7 +122,7 @@ Examples:
 
 Environment:
   DATABASE_URL         SQLAlchemy connection string
-                       Default: sqlite+aiosqlite:///./data/federation.db
+                       Default: sqlite+aiosqlite:///./data/oneshot.db
   
   AZURE_OPENAI_*       Required for generating embeddings during seeding
 

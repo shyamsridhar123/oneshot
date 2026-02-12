@@ -170,7 +170,7 @@ class TestGenerateContent:
     async def test_generate_content_minimal_fields(self, client: AsyncClient):
         """Should process request with only required 'topic' field."""
         payload = {
-            "topic": "Team culture at TechVista",
+            "topic": "Team culture at NotContosso",
         }
         response = await client.post(
             "/api/proposals/generate", json=payload, timeout=180.0

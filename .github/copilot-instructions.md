@@ -1,8 +1,8 @@
-# Federation - AI Coding Agent Instructions
+# OneShot - AI Coding Agent Instructions
 
 ## Project Overview
 
-**Federation** is a multi-agent AI platform for professional services, demonstrating coordinated AI agents that mirror a consulting firm's operating model.
+**OneShot** is a multi-agent AI platform for professional services, demonstrating coordinated AI agents that mirror a consulting firm's operating model.
 
 ### Architecture (Dual-Stack)
 
@@ -45,7 +45,7 @@ cd frontend && npm install && npm run dev
 ### Environment Setup
 Copy `.env.example` to `.env` and configure:
 - `AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_KEY`, `AZURE_OPENAI_DEPLOYMENT`
-- `DATABASE_URL=sqlite+aiosqlite:///./data/federation.db`
+- `DATABASE_URL=sqlite+aiosqlite:///./data/oneshot.db`
 
 ### Docker Alternative
 ```bash

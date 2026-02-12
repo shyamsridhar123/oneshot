@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Federation Database Setup and Management Script
+OneShot Database Setup and Management Script
 
 This script provides comprehensive database management capabilities:
 - Initialize database schema
@@ -20,7 +20,7 @@ Usage:
     python setup_db.py migrate       # Run any pending migrations
 
 Environment Variables:
-    DATABASE_URL - SQLAlchemy connection string (default: sqlite+aiosqlite:///./data/federation.db)
+    DATABASE_URL - SQLAlchemy connection string (default: sqlite+aiosqlite:///./data/oneshot.db)
 """
 
 import argparse
@@ -62,10 +62,10 @@ async def get_db_path() -> Path:
     # Extract path from sqlite URL
     db_url = settings.database_url
     if "sqlite" in db_url:
-        # Parse: sqlite+aiosqlite:///./data/federation.db
+        # Parse: sqlite+aiosqlite:///./data/oneshot.db
         path_part = db_url.split("///")[-1]
         return Path(path_part)
-    return Path("./data/federation.db")
+    return Path("./data/oneshot.db")
 
 
 async def ensure_data_directory() -> None:
@@ -212,7 +212,7 @@ async def clear_database(verbose: bool = True) -> bool:
 
 
 async def seed_database(verbose: bool = True, skip_embeddings: bool = False) -> bool:
-    """Seed the database with TechVista social media data."""
+    """Seed the database with NotContosso social media data."""
     if verbose:
         print_header("Seeding Database")
 
@@ -382,7 +382,7 @@ async def run_migrations(verbose: bool = True) -> bool:
 async def main() -> int:
     """Main entry point."""
     parser = argparse.ArgumentParser(
-        description="Federation Database Setup and Management",
+        description="OneShot Database Setup and Management",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

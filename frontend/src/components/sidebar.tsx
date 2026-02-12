@@ -50,9 +50,9 @@ export function Sidebar() {
         {/* Logo */}
         <Link href="/" className="flex h-16 items-center gap-2 border-b px-6 hover:bg-muted/50 transition-colors">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
-            S
+            O
           </div>
-          <span className="text-lg font-semibold">Social Command</span>
+          <span className="text-lg font-semibold">OneShot</span>
         </Link>
 
         {/* Navigation */}
@@ -84,7 +84,7 @@ export function Sidebar() {
             <ThemeToggle />
           </div>
           <p className="text-xs text-muted-foreground">
-            Social Media Command Center
+            OneShot by NotContosso Inc.
           </p>
           <p className="text-xs text-muted-foreground">Multi-Agent Content Platform</p>
         </div>

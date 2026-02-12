@@ -1,5 +1,5 @@
 # Technical Requirements Document (TRD)
-## Federation: AI-Powered Professional Services Engagement Platform
+## OneShot: AI-Powered Professional Services Engagement Platform
 
 ---
 
@@ -316,7 +316,7 @@ async def lifespan(app: FastAPI):
     pass
 
 app = FastAPI(
-    title="Federation API",
+    title="OneShot API",
     version="1.0.0",
     lifespan=lifespan
 )
@@ -792,7 +792,7 @@ class LLMService:
 # app/agents/prompts.py
 
 ORCHESTRATOR_PROMPT = """
-You are the Orchestrator Agent for Federation, a professional services AI platform.
+You are the Orchestrator Agent for OneShot, a professional services AI platform.
 Your role is to coordinate specialized agents to fulfill user requests.
 
 Available Agents:
@@ -971,7 +971,7 @@ services:
       - AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT}
       - AZURE_OPENAI_KEY=${AZURE_OPENAI_KEY}
       - AZURE_OPENAI_DEPLOYMENT=${AZURE_OPENAI_DEPLOYMENT}
-      - DATABASE_URL=sqlite+aiosqlite:///./data/federation.db
+      - DATABASE_URL=sqlite+aiosqlite:///./data/oneshot.db
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
@@ -1008,7 +1008,7 @@ npm run dev
 |                    +------v-----+   +-------v------+            |
 |                    |Azure OpenAI|   |    SQLite    |            |
 |                    |  (Remote)  |   |   (Local)    |            |
-|                    |  GPT-5.x   |   | federation.db|            |
+|                    |  GPT-5.x   |   | oneshot.db|            |
 |                    +------------+   +--------------+            |
 +-----------------------------------------------------------------+
 ```
@@ -1182,7 +1182,7 @@ AZURE_OPENAI_DEPLOYMENT=gpt-5-deployment
 AZURE_OPENAI_EMBEDDING_DEPLOYMENT=text-embedding-ada-002
 
 # Database
-DATABASE_URL=sqlite+aiosqlite:///./data/federation.db
+DATABASE_URL=sqlite+aiosqlite:///./data/oneshot.db
 
 # API
 API_HOST=0.0.0.0

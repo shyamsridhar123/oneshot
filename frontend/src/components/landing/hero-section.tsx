@@ -7,7 +7,7 @@ import Link from "next/link";
 
 const samplePrompts = [
   "Create a LinkedIn post about our AI Collaboration Suite launch",
-  "Write a week of social media content for TechVista across all platforms",
+  "Write a week of social media content for NotContosso across all platforms",
   "What are the trending AI topics on social media this week?",
   "Review this draft tweet for brand alignment and compliance",
 ];
@@ -47,7 +47,7 @@ export function HeroSection() {
 
           {/* Subtitle */}
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Social Media Command Center coordinates 7 specialized AI agents—
+            OneShot coordinates 7 specialized AI agents—
             Strategist, Researcher, Scribe, Advisor—to create platform-perfect content.
             <span className="text-foreground font-medium"> Describe your goal—agents handle the rest.</span>
           </p>

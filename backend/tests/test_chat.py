@@ -186,11 +186,9 @@ class TestSendMessage:
         conv_id = str(uuid.uuid4())
         payload = {"content": "Hello, this is a test message.", "metadata": {}}
         response = await client.post(
-            f"/api/chat/conversations/{conv_id}/messages", json=payload, timeout=120.0
+            f"/api/chat/conversations/{conv_id}/messages", json=payload
         )
-        # This calls agent processing which requires Azure OpenAI
-        # Accept either success (200) or error response
-        assert response.status_code in [200, 500]
+        assert response.status_code == 200
 
     async def test_send_message_schema_validation(
         self, client: AsyncClient, sample_conversation: Conversation
@@ -200,8 +198,7 @@ class TestSendMessage:
         response = await client.post(
             f"/api/chat/conversations/{sample_conversation.id}/messages",
             json=payload,
-            timeout=120.0,
         )
-        if response.status_code == 200:
-            data = response.json()
-            MessageResponse.model_validate(data)
+        assert response.status_code == 200
+        data = response.json()
+        MessageResponse.model_validate(data)

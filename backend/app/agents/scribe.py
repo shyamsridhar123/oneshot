@@ -4,6 +4,7 @@ Uses Microsoft Agent Framework to generate social media content and
 optionally saves drafts to the filesystem via MCP server integration.
 """
 
+import asyncio
 import logging
 
 from app.agents.prompts import SCRIBE_PROMPT
@@ -11,6 +12,29 @@ from app.agents.factory import create_agent, get_agent_tools
 from app.services.llm_service import get_llm_service
 
 logger = logging.getLogger(__name__)
+
+
+def _ensure_mcp_cleanup_filter():
+    """Install filter for harmless MCP stdio teardown errors (idempotent)."""
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        return
+    if getattr(loop, "_mcp_filter_installed", False):
+        return
+    _prev = loop.get_exception_handler()
+
+    def _handler(loop, ctx):
+        ag = ctx.get("asyncgen")
+        if ag and "stdio_client" in getattr(ag, "__qualname__", ""):
+            return
+        if _prev:
+            _prev(loop, ctx)
+        else:
+            loop.default_exception_handler(ctx)
+
+    loop.set_exception_handler(_handler)
+    loop._mcp_filter_installed = True
 
 
 async def run_scribe(task: str, context: dict) -> tuple[str, int]:
@@ -59,6 +83,7 @@ filesystem tool (if available). Use filenames like 'linkedin_draft.md',
 
     # Try MAF agent path (with MCP tools)
     try:
+        _ensure_mcp_cleanup_filter()
         tools = get_agent_tools("scribe", include_mcp=True)
         agent = create_agent("scribe", SCRIBE_PROMPT, tools=tools)
         response = await agent.run(prompt)

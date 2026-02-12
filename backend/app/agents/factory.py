@@ -1,6 +1,6 @@
 """MAF Agent Factory - Creates agents using Microsoft Agent Framework patterns.
 
-Social Media Command Center tool definitions for each specialized agent.
+OneShot tool definitions for each specialized agent.
 Includes MCP server integration for filesystem access and web search.
 """
 
@@ -160,7 +160,7 @@ def analyze_hashtags(hashtags: str, platform: str = "all") -> str:
             "hashtag": tag,
             "estimated_reach": f"{(hash(tag) % 500 + 100)}K",
             "competition": "Medium" if len(tag) > 10 else "High",
-            "relevance_to_techvista": "High" if "ai" in tag.lower() or "tech" in tag.lower() else "Medium",
+            "relevance_to_notcontosso": "High" if "ai" in tag.lower() or "tech" in tag.lower() else "Medium",
         })
 
     return f"""Hashtag Analysis for {platform}:
@@ -171,7 +171,7 @@ Recommendations:
 - Use 3-5 hashtags on LinkedIn (quality over quantity)
 - Use 2-3 hashtags on Twitter/X (keep it focused)
 - Use 15-25 hashtags on Instagram (mix broad and niche)
-- Always include #TechVista and #AIInnovation
+- Always include #NotContosso and #AIInnovation
 
 Note: Simulated hashtag data for demonstration."""
 
@@ -196,7 +196,7 @@ def search_competitor_content(competitor: str, platform: str = "all") -> str:
 2. Customer success stories (LinkedIn) — avg 4.1% engagement
 3. Team spotlight carousels (Instagram) — avg 5.2% engagement
 
-**Gaps TechVista Can Exploit:**
+**Gaps NotContosso Can Exploit:**
 - Competitor lacks authentic behind-the-scenes content
 - No thought leadership on AI ethics and responsible AI
 - Weak community engagement (mostly broadcast, not conversation)
@@ -279,7 +279,7 @@ Note: Live news search unavailable ({e}), showing cached results."""
 
 @tool
 def get_brand_guidelines() -> str:
-    """Retrieve TechVista brand guidelines for content creation."""
+    """Retrieve NotContosso brand guidelines for content creation."""
     guidelines_path = _DATA_DIR / "brand_guidelines.md"
     if guidelines_path.exists():
         return guidelines_path.read_text(encoding="utf-8")
@@ -327,7 +327,7 @@ def search_knowledge_base(query: str) -> str:
     return f"""Knowledge Base Results for: "{query}"
 
 **Brand Context:**
-- TechVista Inc. — Enterprise AI & Intelligent Collaboration
+- NotContosso Inc. — Enterprise AI & Intelligent Collaboration
 - Key Product: AI Collaboration Suite v3.0
 - Brand pillars: "AI that works with you", "Intelligent collaboration", "Enterprise AI, made simple"
 
@@ -392,10 +392,10 @@ def calculate_engagement_metrics(platform: str, content_type: str) -> str:
 - Best posting time: {"8-10 AM" if platform == "linkedin" else "10-11 AM" if platform == "twitter" else "12-1 PM"}
 
 Benchmark comparison:
-- TechVista average: {metrics['avg_engagement'] + 0.5:.1f}% (above industry)
+- NotContosso average: {metrics['avg_engagement'] + 0.5:.1f}% (above industry)
 - Industry average: {metrics['avg_engagement'] - 0.3:.1f}%
 
-Note: Based on B2B tech industry benchmarks and TechVista historical data."""
+Note: Based on B2B tech industry benchmarks and NotContosso historical data."""
 
 
 @tool

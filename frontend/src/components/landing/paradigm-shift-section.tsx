@@ -105,7 +105,7 @@ export function ParadigmShiftSection() {
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                WITH FEDERATION
+                WITH ONESHOT
               </button>
             </div>
           </div>

@@ -201,7 +201,7 @@ async def demo_agent_tools():
     comp = search_competitor_content("Microsoft", "linkedin")
     check("search_competitor_content returns data", "Microsoft" in comp)
 
-    tags = analyze_hashtags("#AIAgents, #TechVista, #Enterprise")
+    tags = analyze_hashtags("#AIAgents, #NotContosso, #Enterprise")
     check("analyze_hashtags returns data", "AIAgents" in tags)
 
     subheader("Memory Tools")
@@ -216,7 +216,7 @@ async def demo_agent_tools():
     check("get_content_calendar returns data", len(calendar) > 0)
 
     kb = search_knowledge_base("AI collaboration")
-    check("search_knowledge_base returns data", "TechVista" in kb)
+    check("search_knowledge_base returns data", "NotContosso" in kb)
 
     subheader("Analyst Tools")
     metrics = calculate_engagement_metrics("linkedin", "carousel")
@@ -246,7 +246,7 @@ async def demo_content_generation(client: AsyncClient):
 
     # Valid request — expects 200 (with LLM) or 500 (without Azure creds)
     r = await client.post("/api/proposals/generate", json={
-        "topic": "TechVista AI Collaboration Suite v3.0 Launch",
+        "topic": "NotContosso AI Collaboration Suite v3.0 Launch",
         "platforms": ["linkedin", "twitter"],
         "content_type": "post",
         "additional_context": "Highlight: 40% fewer meetings, 3x faster document turnaround",
@@ -282,9 +282,9 @@ async def demo_list_content(client: AsyncClient, db_session: AsyncSession):
             id=str(uuid.uuid4()),
             title=f"Demo Post: {platform.title()} Launch Campaign #{i+1}",
             doc_type="social_post",
-            content=f"# {platform.title()} Post\n\nExciting news about TechVista AI Suite v3.0!\n\n"
+            content=f"# {platform.title()} Post\n\nExciting news about NotContosso AI Suite v3.0!\n\n"
                     f"Key highlights:\n- 40% fewer meetings\n- 3x faster turnaround\n- Enterprise-grade security\n\n"
-                    f"#TechVista #AIInnovation #{platform}",
+                    f"#NotContosso #AIInnovation #{platform}",
             format="markdown",
             metadata_={"platform": platform, "campaign": "AI Launch 2026"},
         )
@@ -307,12 +307,12 @@ async def demo_document_export(client: AsyncClient, db_session: AsyncSession) ->
     # Create a rich document for export testing
     doc = Document(
         id=str(uuid.uuid4()),
-        title="TechVista AI Launch - Multi-Platform Campaign",
+        title="NotContosso AI Launch - Multi-Platform Campaign",
         doc_type="social_post",
-        content="""# TechVista AI Collaboration Suite v3.0
+        content="""# NotContosso AI Collaboration Suite v3.0
 
 ## LinkedIn Post
-We're excited to announce TechVista AI Collaboration Suite v3.0!
+We're excited to announce NotContosso AI Collaboration Suite v3.0!
 
 Key benefits for enterprise teams:
 - 40% fewer meetings with AI-powered summaries
@@ -321,10 +321,10 @@ Key benefits for enterprise teams:
 
 Learn more at techvista.com/ai-suite
 
-#TechVista #AIInnovation #EnterpriseAI #FutureOfWork
+#NotContosso #AIInnovation #EnterpriseAI #FutureOfWork
 
 ## Twitter Thread
-1/5 Big news! TechVista AI Suite v3.0 is here.
+1/5 Big news! NotContosso AI Suite v3.0 is here.
 
 2/5 Our customers are seeing 40% fewer meetings. How? AI-powered summaries that capture what matters.
 
@@ -337,7 +337,7 @@ Learn more at techvista.com/ai-suite
 ## Instagram Caption
 AI that works with you, not instead of you.
 
-Introducing TechVista AI Suite v3.0 - where intelligent collaboration meets enterprise security.
+Introducing NotContosso AI Suite v3.0 - where intelligent collaboration meets enterprise security.
 
 Our customers' results speak for themselves:
 - 40% fewer meetings
@@ -346,7 +346,7 @@ Our customers' results speak for themselves:
 
 Link in bio for early access.
 
-#TechVista #AICollaboration #EnterpriseAI #ProductLaunch #Innovation #FutureOfWork #ArtificialIntelligence""",
+#NotContosso #AICollaboration #EnterpriseAI #ProductLaunch #Innovation #FutureOfWork #ArtificialIntelligence""",
         format="markdown",
         metadata_={"demo": True},
     )

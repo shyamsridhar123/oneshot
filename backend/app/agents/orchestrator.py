@@ -1,6 +1,6 @@
 """Orchestrator Agent - Coordinates all other agents using MAF workflow patterns.
 
-Social Media Command Center variant with two-wave parallel dispatch:
+OneShot variant with two-wave parallel dispatch:
   Wave 1 (context gathering): researcher, strategist, memory, analyst
   Wave 2 (creation + review): scribe, advisor
 """

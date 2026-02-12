@@ -1,4 +1,4 @@
-# TechVista Inc. — Brand & Social Media Guidelines
+# NotContosso Inc. — Brand & Social Media Guidelines
 
 ## Brand Voice
 - **Professional yet approachable** — We're experts who don't talk down to anyone
@@ -44,13 +44,13 @@
 ## Hashtag Strategy
 
 ### Always-On Tags (every post)
-- #TechVista
+- #NotContosso
 - #AIInnovation
 
 ### Platform-Specific Tags
 - **LinkedIn:** #EnterpriseAI #FutureOfWork #DigitalTransformation #AICollaboration #TechLeadership
 - **Twitter/X:** #AI #TechTuesday #BuildInPublic #DevCommunity #MLOps
-- **Instagram:** #TechLife #TeamTechVista #BTS #StartupLife #AICompany
+- **Instagram:** #TechLife #TeamNotContosso #BTS #StartupLife #AICompany
 
 ## Content Mix Guidelines
 - **Announcements:** 20% — Product launches, partnerships, milestones
@@ -67,7 +67,7 @@
 - Use data and metrics to support claims
 - Celebrate community members and partners
 - Show the human side of building AI technology
-- Cross-reference trending topics to TechVista's expertise
+- Cross-reference trending topics to NotContosso's expertise
 
 ### DON'T:
 - Make unsubstantiated claims about competitors

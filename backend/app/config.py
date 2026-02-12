@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     # Azure OpenAI
     azure_openai_api_key: str | None = None  # Optional: falls back to DefaultAzureCredential
     azure_openai_endpoint: str
-    azure_openai_api_version: str = "2024-12-01-preview"
+    azure_openai_api_version: str = "2025-03-01-preview"
     
     # Deployments
     azure_openai_deployment_name: str = "gpt-5.2-chat"  # Primary chat model
@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     azure_openai_textembedding_deployment_name: str = "text-embedding-3-small"
 
     # Database
-    database_url: str = "sqlite+aiosqlite:///./data/federation.db"
+    database_url: str = "sqlite+aiosqlite:///./data/oneshot.db"
 
     # Application
     app_env: str = "development"

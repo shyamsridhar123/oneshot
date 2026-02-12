@@ -1,4 +1,4 @@
-"""Pytest configuration and shared fixtures for Federation API tests."""
+"""Pytest configuration and shared fixtures for OneShot API tests."""
 
 import asyncio
 import pytest
@@ -14,7 +14,7 @@ from app.models.database import Base, get_db, Conversation, Message, Document, K
 
 
 # Use test database
-TEST_DATABASE_URL = "sqlite+aiosqlite:///./data/test_federation.db"
+TEST_DATABASE_URL = "sqlite+aiosqlite:///./data/test_oneshot.db"
 
 
 @pytest.fixture(scope="session")

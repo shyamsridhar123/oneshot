@@ -1,6 +1,6 @@
 # Agents League @ TechConnect — Hackathon Battle Plan
 
-## Social Media Command Center
+## OneShot
 
 **Hackathon:** Agents League @ TechConnect  
 **Deadline:** Feb 13, 2026 at 11:59 PM PT  
@@ -87,7 +87,7 @@
 
 > *"Build an AI agent that can effectively assist the communication team of a company in creating social media content for various platforms. Feel creative and choose a specific industry or type of brand."*
 
-This is a 1:1 match with our Social Media Command Center. Here's why Track 2 maximizes our scoring:
+This is a 1:1 match with our OneShot. Here's why Track 2 maximizes our scoring:
 
 #### 1. We Already Have the Architecture (Bonus Territory)
 
@@ -144,9 +144,9 @@ If we encounter Foundry-specific issues, we can pivot to Track 1. See [Section 1
 
 ## 3. What We're Building
 
-**Social Media Command Center** — A multi-agent AI platform built with **Microsoft Agent Framework (MAF)** on Azure OpenAI (Foundry) that helps a brand's communication team ideate, research, write, review, and schedule social media content across platforms (LinkedIn, Twitter/X, Instagram), grounded in brand data and industry knowledge.
+**OneShot** — A multi-agent AI platform built with **Microsoft Agent Framework (MAF)** on Azure OpenAI (Foundry) that helps a brand's communication team ideate, research, write, review, and schedule social media content across platforms (LinkedIn, Twitter/X, Instagram), grounded in brand data and industry knowledge.
 
-**Brand Focus:** TechVista Inc. — a fictional enterprise AI company (technology industry)
+**Brand Focus:** NotContosso Inc. — a fictional enterprise AI company (technology industry)
 
 ### Track 2 Milestones Mapping
 
@@ -169,7 +169,7 @@ If we encounter Foundry-specific issues, we can pivot to Track 1. See [Section 1
 
 ### User Story
 
-> "As a social media manager for TechVista (a tech company), I want to create a week of social media content based on our product announcements and industry trends, so I can maintain consistent brand presence across LinkedIn, Twitter/X, and Instagram."
+> "As a social media manager for NotContosso (a tech company), I want to create a week of social media content based on our product announcements and industry trends, so I can maintain consistent brand presence across LinkedIn, Twitter/X, and Instagram."
 
 ### Demo Flow
 
@@ -177,7 +177,7 @@ If we encounter Foundry-specific issues, we can pivot to Track 1. See [Section 1
 2. **Orchestrator** analyzes intent (structured output) → `content_creation`, dispatches 6 agents in parallel
 3. **Researcher** gathers trending AI topics, competitor social content, relevant hashtags (ReAct pattern)
 4. **Strategist** creates per-platform strategy: audience, tone, posting schedule (Chain-of-Thought)
-5. **Memory** retrieves TechVista brand guidelines, past high-performing posts, style preferences
+5. **Memory** retrieves NotContosso brand guidelines, past high-performing posts, style preferences
 6. **Scribe** generates platform-specific content (LinkedIn article, tweet thread, Instagram caption)
 7. **Advisor** reviews for brand compliance — scores content, suggests improvements (Self-Reflection)
 8. **Analyst** recommends optimal posting times based on engagement benchmarks
@@ -428,7 +428,7 @@ Changes:
 **Goal:** Create synthetic brand data that grounds the agents in a realistic social media context.
 
 Files to create:
-- `backend/data/brand_guidelines.md` — TechVista brand voice, tone per platform, hashtag strategy, DOs/DON'Ts
+- `backend/data/brand_guidelines.md` — NotContosso brand voice, tone per platform, hashtag strategy, DOs/DON'Ts
 - `backend/data/past_posts.json` — 5-10 sample high-performing posts with engagement metrics
 - `backend/data/content_calendar.json` — Sample weekly content plan
 
@@ -514,7 +514,7 @@ See [Section 11: Demo Script](#11-demo-script) and [Section 12: Submission Check
 
 | File | Purpose | Priority |
 |------|---------|----------|
-| `backend/data/brand_guidelines.md` | TechVista brand voice, tone per platform, hashtag strategy | **P0** |
+| `backend/data/brand_guidelines.md` | NotContosso brand voice, tone per platform, hashtag strategy | **P0** |
 | `backend/data/past_posts.json` | Synthetic past post performance data (5-10 examples) | **P0** |
 | `backend/data/content_calendar.json` | Sample weekly content plan template | **P1** |
 | `backend/data/drafts/.gitkeep` | Directory for filesystem MCP to save content drafts | **P1** |
@@ -541,7 +541,7 @@ See [Section 11: Demo Script](#11-demo-script) and [Section 12: Submission Check
 ### `backend/data/brand_guidelines.md`
 
 ```markdown
-# TechVista Inc. — Brand & Social Media Guidelines
+# NotContosso Inc. — Brand & Social Media Guidelines
 
 ## Brand Voice
 - **Professional yet approachable** — We're experts who don't talk down to anyone
@@ -559,10 +559,10 @@ See [Section 11: Demo Script](#11-demo-script) and [Section 12: Submission Check
 3. "Enterprise AI, made simple"
 
 ## Hashtag Strategy
-- Always use: #TechVista #AIInnovation
+- Always use: #NotContosso #AIInnovation
 - LinkedIn: #EnterpriseAI #FutureOfWork #DigitalTransformation
 - Twitter: #AI #TechTuesday #BuildInPublic
-- Instagram: #TechLife #TeamTechVista #BTS
+- Instagram: #TechLife #TeamNotContosso #BTS
 
 ## DOs and DON'Ts
 ### DO:
@@ -589,7 +589,7 @@ See [Section 11: Demo Script](#11-demo-script) and [Section 12: Submission Check
 [
   {
     "platform": "linkedin",
-    "content": "Excited to announce TechVista's new AI Collaboration Suite! After 18 months...",
+    "content": "Excited to announce NotContosso's new AI Collaboration Suite! After 18 months...",
     "engagement_rate": 4.2,
     "impressions": 15000,
     "likes": 630,
@@ -652,7 +652,7 @@ Before submission, verify (per Track 2 security requirements):
 - [ ] **No Azure subscription IDs** — Use environment variables (`AZURE_OPENAI_ENDPOINT`)
 - [ ] **No Azure resource names** — Connection strings use env vars
 - [ ] **No tenant IDs or domain names** — Not hardcoded anywhere
-- [ ] **No PII** — Brand data is synthetic (TechVista is fictional), no real employee names
+- [ ] **No PII** — Brand data is synthetic (NotContosso is fictional), no real employee names
 - [ ] **No Microsoft Confidential info** — Only general-level content
 - [ ] **`.env.example` has placeholders** — Not real values
 - [ ] **No screenshots with sensitive data** — Review all images before submitting
@@ -666,7 +666,7 @@ Before submission, verify (per Track 2 security requirements):
 ## 11. Demo Script
 
 ### Primary Demo Prompt
-> "Create a week of social media content for TechVista's AI Collaboration Suite launch. Target LinkedIn, Twitter, and Instagram. Use our brand guidelines and trending AI topics."
+> "Create a week of social media content for NotContosso's AI Collaboration Suite launch. Target LinkedIn, Twitter, and Instagram. Use our brand guidelines and trending AI topics."
 
 ### Quick Demo Prompt (shorter path)
 > "Write a LinkedIn post announcing our new AI-powered meeting insights feature. Make it thought-leadership focused."
@@ -715,7 +715,7 @@ Before submission, verify (per Track 2 security requirements):
 
 **Part 2: Use It — Multi-Agent Content Creation (3 min)**
 
-5. **2:00-2:20** — Landing page tour: "This is Social Media Command Center, built with Microsoft Agent Framework on Azure OpenAI, UI generated with GitHub Copilot"
+5. **2:00-2:20** — Landing page tour: "This is OneShot, built with Microsoft Agent Framework on Azure OpenAI, UI generated with GitHub Copilot"
 6. **2:20-2:40** — Show the agent panel: "7 specialized agents, each with a specific reasoning pattern"
 7. **2:40-3:30** — Type the primary demo prompt, show agents activating in real-time via WebSocket
 8. **3:30-4:15** — Walk through the generated content: LinkedIn post, tweet thread, Instagram caption, compliance score
@@ -741,7 +741,7 @@ Before submission, verify (per Track 2 security requirements):
 - [ ] [DISCLAIMER.md](https://github.com/microsoft/agentsleague-techconnect/blob/main/DISCLAIMER.md) reviewed
 - [ ] [Code of Conduct](https://github.com/microsoft/agentsleague-techconnect/blob/main/CODE_OF_CONDUCT.md) reviewed
 - [ ] Security checklist (Section 10) complete
-- [ ] All brand data is synthetic (TechVista = fictional company)
+- [ ] All brand data is synthetic (NotContosso = fictional company)
 - [ ] Submit via [project submission template](https://github.com/microsoft/agentsleague-techconnect/issues/new?template=project.yml)
 - [ ] **Microsoft alias included** in submission
 - [ ] Submitted **before Feb 13, 2026, 11:59 PM PT**
