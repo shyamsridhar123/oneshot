@@ -255,11 +255,10 @@ class TestMCPToolCreation:
             assert result is None
 
     def test_create_fetch_mcp_with_npx(self):
-        """Should return MCPStdioTool when npx is available."""
+        """Should return None — @anthropic-ai/mcp-server-fetch removed from npm."""
         with patch("app.agents.factory._NPX_PATH", "/usr/bin/npx"):
             result = create_fetch_mcp()
-            assert result is not None
-            assert result.name == "fetch"
+            assert result is None
 
     def test_create_fetch_mcp_without_npx(self):
         """Should return None when npx is not available."""
@@ -276,14 +275,14 @@ class TestMCPToolCreation:
             )
             assert has_mcp
 
-    def test_get_agent_tools_researcher_includes_mcp(self):
-        """Researcher should get fetch MCP when available."""
+    def test_get_agent_tools_researcher_no_fetch_mcp(self):
+        """Researcher should not get fetch MCP (package removed from npm)."""
         with patch("app.agents.factory._NPX_PATH", "/usr/bin/npx"):
             tools = get_agent_tools("researcher", include_mcp=True)
             has_mcp = any(
                 hasattr(t, "name") and t.name == "fetch" for t in tools
             )
-            assert has_mcp
+            assert not has_mcp
 
     def test_get_agent_tools_no_mcp_flag(self):
         """Should exclude MCP tools when include_mcp is False."""

@@ -57,16 +57,11 @@ def create_filesystem_mcp() -> MCPStdioTool | None:
 def create_fetch_mcp() -> MCPStdioTool | None:
     """Create web fetch MCP tool for grounding content in real web data.
 
-    Uses @anthropic-ai/mcp-server-fetch for web content retrieval.
+    NOTE: @anthropic-ai/mcp-server-fetch was removed from npm.
+    Returns None until a replacement package is available.
+    The researcher agent still works via its built-in search tools.
     """
-    if not _NPX_PATH:
-        return None
-    return MCPStdioTool(
-        name="fetch",
-        command=_NPX_PATH,
-        args=["-y", "@anthropic-ai/mcp-server-fetch"],
-        description="Web fetch for retrieving real-time web content and trends",
-    )
+    return None
 
 
 def create_agent(
