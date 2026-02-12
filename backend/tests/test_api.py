@@ -1,8 +1,13 @@
-"""Comprehensive API test script for Federation backend."""
+"""Comprehensive API test script for Federation backend.
+
+This module is designed to run against a live server (python tests/test_api.py).
+When run via pytest, tests are skipped unless the server is available.
+"""
 
 import asyncio
 import httpx
 import json
+import pytest
 import websockets
 from datetime import datetime
 
@@ -10,6 +15,24 @@ BASE_URL = "http://localhost:8000"
 WS_URL = "ws://localhost:8000"
 
 
+def _server_available() -> bool:
+    """Check if the backend server is reachable."""
+    try:
+        import httpx as _httpx
+        with _httpx.Client(timeout=2.0) as c:
+            c.get(f"{BASE_URL}/health")
+        return True
+    except Exception:
+        return False
+
+
+_skip_no_server = pytest.mark.skipif(
+    not _server_available(),
+    reason="Live server not running at localhost:8000",
+)
+
+
+@_skip_no_server
 async def test_health():
     """Test health endpoint."""
     print("\n🏥 Testing Health Endpoint...")
@@ -21,6 +44,7 @@ async def test_health():
         print("  ✅ Health check passed")
 
 
+@_skip_no_server
 async def test_root():
     """Test root endpoint."""
     print("\n🏠 Testing Root Endpoint...")
@@ -32,6 +56,7 @@ async def test_root():
         print("  ✅ Root endpoint passed")
 
 
+@_skip_no_server
 async def test_conversations():
     """Test conversation CRUD."""
     print("\n💬 Testing Conversations...")
@@ -64,6 +89,7 @@ async def test_conversations():
         return conv_id
 
 
+@_skip_no_server
 async def test_chat_message(conv_id: str):
     """Test sending a message and agent processing."""
     print("\n📨 Testing Chat Message (Agent Processing)...")
@@ -88,6 +114,7 @@ async def test_chat_message(conv_id: str):
             print(f"  ❌ Error: {response.text}")
 
 
+@_skip_no_server
 async def test_proposals():
     """Test proposal endpoints."""
     print("\n📋 Testing Proposals...")
@@ -101,6 +128,7 @@ async def test_proposals():
         print("  ✅ Proposals list passed")
 
 
+@_skip_no_server
 async def test_documents():
     """Test document endpoints."""
     print("\n📄 Testing Documents...")
@@ -114,6 +142,7 @@ async def test_documents():
         print("  ✅ Documents list passed")
 
 
+@_skip_no_server
 async def test_knowledge():
     """Test knowledge search."""
     print("\n🧠 Testing Knowledge Search...")
@@ -134,6 +163,7 @@ async def test_knowledge():
         print("  ✅ Knowledge search passed")
 
 
+@_skip_no_server
 async def test_similar_engagements():
     """Test similar engagements search."""
     print("\n🔍 Testing Similar Engagements...")
@@ -151,6 +181,7 @@ async def test_similar_engagements():
         print("  ✅ Similar engagements passed")
 
 
+@_skip_no_server
 async def test_analytics():
     """Test analytics endpoints."""
     print("\n📊 Testing Analytics...")
@@ -171,6 +202,7 @@ async def test_analytics():
         print("  ✅ Analytics passed")
 
 
+@_skip_no_server
 async def test_research():
     """Test research endpoints."""
     print("\n🔬 Testing Research...")
@@ -189,6 +221,7 @@ async def test_research():
         print("  ✅ Research query passed")
 
 
+@_skip_no_server
 async def test_websocket(conv_id: str):
     """Test WebSocket connection."""
     print("\n🔌 Testing WebSocket...")

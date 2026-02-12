@@ -1,11 +1,14 @@
 """Content API routes — social media content generation and retrieval."""
 
+import logging
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.database import get_db, Document
 from app.models.schemas import ContentRequest, ProposalRequest, ProposalResponse, DocumentResponse
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -74,13 +77,17 @@ async def generate_content(
     """Generate social media content via agents."""
     from app.agents.orchestrator import generate_social_content
 
-    result = await generate_social_content(
-        topic=data.topic,
-        platforms=data.platforms,
-        content_type=data.content_type,
-        additional_context=data.additional_context,
-        db=db,
-    )
+    try:
+        result = await generate_social_content(
+            topic=data.topic,
+            platforms=data.platforms,
+            content_type=data.content_type,
+            additional_context=data.additional_context,
+            db=db,
+        )
+    except Exception as e:
+        logger.error("Content generation failed: %s", e)
+        raise HTTPException(status_code=500, detail=f"Content generation failed: {e}")
 
     return DocumentResponse(
         id=result.id,

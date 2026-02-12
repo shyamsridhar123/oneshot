@@ -171,25 +171,27 @@ class TestExportDocument:
         )
         assert response.status_code == 422  # Validation error
 
-    async def test_export_pdf_not_implemented(
+    async def test_export_pdf_success(
         self, client: AsyncClient, sample_document: Document
     ):
-        """PDF export should return 501 Not Implemented."""
+        """PDF export should return 200 with application/pdf content type."""
         response = await client.post(
             f"/api/documents/{sample_document.id}/export",
             json={"format": "pdf"},
         )
-        assert response.status_code == 501
+        assert response.status_code == 200
+        assert response.headers["content-type"] == "application/pdf"
 
-    async def test_export_docx_not_implemented(
+    async def test_export_docx_success(
         self, client: AsyncClient, sample_document: Document
     ):
-        """DOCX export should return 501 Not Implemented."""
+        """DOCX export should return 200 with DOCX content type."""
         response = await client.post(
             f"/api/documents/{sample_document.id}/export",
             json={"format": "docx"},
         )
-        assert response.status_code == 501
+        assert response.status_code == 200
+        assert "wordprocessingml" in response.headers["content-type"]
 
     async def test_export_content_disposition_header(
         self, client: AsyncClient, sample_document: Document
