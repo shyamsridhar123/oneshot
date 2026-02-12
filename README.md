@@ -1,28 +1,27 @@
-# Federation
+# Social Media Command Center
 
-## AI-Powered Professional Services Engagement Platform
+## Multi-Agent AI Platform for Social Media Content Creation
 
-> **⚠️ POC / Art of the Possible** — This is a proof-of-concept demonstrating what's possible with multi-agent AI systems. Not production-ready. Built for demos and exploration.
-
-A demonstration platform showcasing how AI agents can transform professional services delivery. Built on Microsoft Agent Framework and Azure OpenAI GPT-5.x.
+A multi-agent AI system that coordinates 7 specialized agents — each with distinct reasoning patterns — to create brand-aligned social media content for LinkedIn, Twitter/X, and Instagram. Built on Microsoft Agent Framework and Azure OpenAI with DefaultAzureCredential.
 
 ![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.109-009688?logo=fastapi)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi)
 ![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript)
+![Azure OpenAI](https://img.shields.io/badge/Azure_OpenAI-GPT--5.x-0078D4?logo=microsoft-azure)
 
 ---
 
-## Overview
+## What It Does
 
-**Federation** deploys a coordinated team of specialized AI agents that mirror a consulting firm's operating model, enabling rapid proposal generation, intelligent research, and automated document creation.
+**Social Media Command Center** takes a content request (e.g., "Write a LinkedIn post about our AI launch") and orchestrates 7 AI agents in two parallel waves to produce platform-specific, brand-compliant social media content — complete with trend research, engagement benchmarks, and compliance scoring.
 
 ### Architecture
 
 ```
 +----------------------------------------------------------------------+
 |                               FRONTEND                               |
-|                    Next.js 14 • Shadcn/ui • Tailwind                 |
+|                    Next.js 14 · Shadcn/ui · Tailwind                 |
 |                        Zustand State Management                      |
 +----------------------------------+-----------------------------------+
                                    |
@@ -30,70 +29,66 @@ A demonstration platform showcasing how AI agents can transform professional ser
                                    |
 +----------------------------------v-----------------------------------+
 |                               BACKEND                                |
-|                         FastAPI • Python 3.11                        |
+|                         FastAPI · Python 3.11                        |
 |                                                                      |
 |                      +--------------------+                          |
 |                      |    ORCHESTRATOR    |                          |
-|                      | Intent Analysis    |                          |
-|                      | Task Decomposition |                          |
-|                      | Response Synthesis |                          |
+|                      | Intent: content_   |                          |
+|                      |   creation,        |                          |
+|                      |   strategy,        |                          |
+|                      |   review, trends   |                          |
 |                      +---------+----------+                          |
 |                                |                                     |
-|          Parallel dispatch based on intent                           |
-|       +--------+--------+--------+--------+--------+                 |
-|       |        |        |        |        |        |                 |
-|       v        v        v        v        v        v                 |
-|  +----------+----------+-------+-------+--------+--------+          |
-|  |Strategist|Researcher|Analyst| Scribe|Advisor | Memory |          |
-|  |proposals |web search|data & | docs &|client  | RAG &  |          |
-|  |& scoping |& intel   |models |format |comms   | search |          |
-|  +----------+----------+-------+-------+--------+--------+          |
-|       |        |        |        |        |        |                 |
-|       +--------+--------+--------+--------+--------+                 |
+|              Two-wave parallel dispatch                               |
 |                                |                                     |
-|                       +--------v--------+                            |
-|                       |    SERVICES     |                            |
-|                       | LLM (Azure GPT) |                            |
-|                       | Knowledge (RAG)  |                            |
-|                       | Documents        |                            |
-|                       | Traces           |                            |
-|                       +--------+--------+                            |
-|                                |                                     |
-|                       +--------v--------+                            |
-|                       |   DATA LAYER    |                            |
-|                       | SQLite+aiosqlite|                            |
-|                       +-----------------+                            |
-|                                                                      |
+|  Wave 1: Context Gathering (parallel)                                |
+|  +----------+----------+---------+---------+                         |
+|  |Researcher|Strategist| Memory  | Analyst |                         |
+|  |  (ReAct) |  (CoT)   |  (RAG)  | (Data)  |                         |
+|  | trends & | audience | brand   | engage- |                         |
+|  | hashtags | planning | context | ment    |                         |
+|  +----+-----+----+-----+---+-----+---+-----+                         |
+|       |          |         |         |                               |
+|       +----------+---------+---------+                               |
+|                       |                                              |
+|  Wave 2: Create + Review (parallel, with Wave 1 context)            |
+|  +-------------------+-------------------+                           |
+|  |      Scribe       |     Advisor       |                           |
+|  |  (Template-guided)|  (Self-Reflection)|                           |
+|  | platform-specific | brand compliance  |                           |
+|  | content writing   | scoring (1-10)    |                           |
+|  +-------------------+-------------------+                           |
+|                       |                                              |
+|              +--------v--------+                                     |
+|              |    SERVICES     |                                     |
+|              | LLM (Azure GPT) |                                     |
+|              | Knowledge (RAG)  |                                     |
+|              | Documents        |                                     |
+|              | Traces           |                                     |
+|              +--------+--------+                                     |
+|                       |                                              |
+|              +--------v--------+                                     |
+|              |   DATA LAYER    |                                     |
+|              | SQLite+aiosqlite|                                     |
+|              +-----------------+                                     |
 +----------------------------------------------------------------------+
-
-Dispatch patterns:
-  Proposals  → Strategist, Researcher, Analyst, Memory, Scribe
-  Research   → Researcher, Memory, Advisor
-  Analysis   → Analyst, Memory
-  Documents  → Scribe, Advisor
-  Questions  → Memory (+ minimal agents)
 ```
-
-### Agent Roles
-
-| Agent | Role | Key Capabilities |
-|-------|------|------------------|
-| **Orchestrator** | Coordinator | Intent analysis, parallel agent dispatch, response synthesis |
-| **Strategist** | Strategy | Engagement scoping, proposal generation, framework selection |
-| **Researcher** | Intelligence | Web search, news synthesis, company research |
-| **Analyst** | Analysis | Data visualization, financial modeling, benchmarking |
-| **Scribe** | Documents | Document generation, formatting, branding |
-| **Advisor** | Communications | Client comms, executive summaries, recommendations |
-| **Memory** | Knowledge | RAG retrieval, semantic search, past engagement discovery |
 
 ---
 
-## Demo Scenarios
+## Reasoning Patterns
 
-1. **Rapid Proposal Generation** (Primary) — Generate client proposals in minutes, not weeks
-2. **Client Intelligence Briefing** — Comprehensive briefings before client meetings
-3. **Deliverable Quality Assurance** — Automated QA against firm standards
-4. **Knowledge Discovery** — Find relevant past work, frameworks, and expertise
+Each agent uses an explicit reasoning pattern, demonstrating advanced prompt engineering:
+
+| Agent | Reasoning Pattern | Description |
+|-------|-------------------|-------------|
+| **Orchestrator** | Step-by-Step Decomposition | Classifies intent, determines platforms, dispatches two-wave parallel execution |
+| **Strategist** | Chain-of-Thought (CoT) | Walks through audience → message → tone → calendar → CTA for each platform |
+| **Researcher** | ReAct (Reasoning + Acting) | Loops through Thought → Action → Observation to discover and validate trends |
+| **Analyst** | Data-Driven Benchmarking | Provides engagement benchmarks, optimal timing, and performance predictions |
+| **Scribe** | Template-Guided Generation | Follows platform-specific templates (hook → body → CTA → hashtags) |
+| **Advisor** | Self-Reflection | Initial review → metacognitive reflection → revised compliance score (1-10) |
+| **Memory** | Retrieval-Augmented Grounding | Grounds content in brand guidelines, past post performance, and content calendars |
 
 ---
 
@@ -104,37 +99,9 @@ Dispatch patterns:
 | **Frontend** | Next.js 14, React 19, Shadcn/ui, Tailwind CSS, Zustand |
 | **Backend** | Python 3.11, FastAPI, SQLAlchemy 2.x, aiosqlite |
 | **AI** | Azure OpenAI GPT-5.x, Microsoft Agent Framework |
+| **Auth** | Azure Identity (DefaultAzureCredential) |
 | **Database** | SQLite with async support |
 | **Real-time** | WebSocket for agent status streaming |
-
----
-
-## Project Structure
-
-```
-federation/
-├── docs/
-│   ├── API.md              # Complete API documentation
-│   ├── PRD.md              # Product Requirements Document
-│   ├── TRD.md              # Technical Requirements Document
-│   └── DEMO_PLAN.md        # Demo scenarios and walkthrough
-├── frontend/               # Next.js application
-│   ├── src/
-│   │   ├── app/            # App router pages
-│   │   ├── components/     # React components
-│   │   └── lib/            # API client, store, utilities
-│   └── package.json
-├── backend/                # FastAPI application
-│   ├── app/
-│   │   ├── agents/         # 7 AI agents
-│   │   ├── api/            # REST endpoints + WebSocket
-│   │   ├── models/         # Database models & schemas
-│   │   ├── services/       # LLM, documents, knowledge
-│   │   └── data/           # Seed data
-│   ├── tests/              # Pytest test suite
-│   └── requirements.txt
-└── README.md
-```
 
 ---
 
@@ -144,33 +111,41 @@ federation/
 
 - Python 3.11+
 - Node.js 18+ (with pnpm recommended)
-- Azure OpenAI API access
+- Azure OpenAI resource with deployed models
+- Azure CLI logged in (`az login`) for DefaultAzureCredential
 
 ### Environment Setup
 
-Create a `.env` file in the project root:
+```bash
+cp .env.example .env
+```
+
+Edit `.env` with your Azure OpenAI endpoint:
 
 ```env
-# Azure OpenAI Configuration
 AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com
-AZURE_OPENAI_KEY=your-api-key
-AZURE_OPENAI_DEPLOYMENT=gpt-4o
-AZURE_OPENAI_API_VERSION=2024-02-15-preview
-
-# Database
-DATABASE_URL=sqlite+aiosqlite:///./data/federation.db
+AZURE_OPENAI_API_VERSION=2024-12-01-preview
+AZURE_OPENAI_DEPLOYMENT_NAME=gpt-5.2-chat
 ```
+
+> **Note:** API key is optional. The app uses `DefaultAzureCredential` by default — just run `az login` first.
 
 ### Backend Setup
 
 ```bash
 cd backend
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 
-# Seed the database with sample data
+# Initialize database
+python setup_db.py
+
+# Seed with sample data (engagements + frameworks)
 python -c "from app.data.seed import seed_database; import asyncio; asyncio.run(seed_database())"
+
+# Seed with social media brand data (brand guidelines + past posts + content calendar)
+python -c "from app.data.seed import seed_social_media_data; import asyncio; asyncio.run(seed_social_media_data())"
 
 # Start the server
 uvicorn app.main:app --reload --port 8000
@@ -188,33 +163,12 @@ Open http://localhost:3000 to access the application.
 
 ---
 
-## API Endpoints
+## Demo Scenarios
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/chat/conversations` | GET/POST | List or create conversations |
-| `/api/chat/conversations/{id}/messages` | GET/POST | Get or send messages |
-| `/api/proposals` | GET | List all proposals |
-| `/api/proposals/generate` | POST | Generate new proposal |
-| `/api/research/query` | POST | Execute research query |
-| `/api/research/briefing` | POST | Generate client briefing |
-| `/api/knowledge/search` | POST | Semantic search knowledge base |
-| `/api/documents/{id}/export` | POST | Export document (PDF, DOCX, etc.) |
-| `/api/analytics/metrics` | GET | Performance metrics |
-| `/ws/agents/{conversation_id}` | WS | Real-time agent updates |
-
-Full API documentation: [docs/API.md](docs/API.md) or visit `/docs` when running.
-
----
-
-## Testing
-
-```bash
-cd backend
-pytest                      # Run all tests
-pytest -v                   # Verbose output
-pytest tests/test_chat.py   # Run specific test file
-```
+1. **Content Creation** — "Write a LinkedIn post about our AI Collaboration Suite launch"
+2. **Multi-Platform Campaign** — "Create content for all platforms about our healthcare deployment"
+3. **Trend Research** — "What AI topics are trending on social media this week?"
+4. **Content Review** — "Review this draft tweet for brand alignment"
 
 ---
 
@@ -222,48 +176,41 @@ pytest tests/test_chat.py   # Run specific test file
 
 | Page | Route | Features |
 |------|-------|----------|
-| **Chat** | `/` | Multi-agent conversation, real-time status panel |
-| **Proposals** | `/proposals` | Generate & export client proposals |
-| **Research** | `/research` | Ad-hoc research queries, client briefings |
-| **Knowledge** | `/knowledge` | Semantic search, browse knowledge base |
-| **Analytics** | `/analytics` | Agent metrics, execution traces |
+| **Chat** | `/chat` | Multi-agent conversation, real-time agent status panel |
+| **Content** | `/proposals` | Generated social media content library |
+| **Trends** | `/research` | Trend research and competitor analysis |
+| **Brand** | `/knowledge` | Brand guidelines, past post performance, content calendar |
+| **Analytics** | `/analytics` | Agent metrics, execution traces, token usage |
 
 ---
 
-## Documentation
+## Project Structure
 
-- [API Reference](docs/API.md) — Complete REST & WebSocket API documentation
-- [Product Requirements](docs/PRD.md) — Business context, user stories, success criteria
-- [Technical Requirements](docs/TRD.md) — Architecture, implementation details
-- [Demo Plan](docs/DEMO_PLAN.md) — Demo scenarios and walkthrough guide
-
----
-
-## What This Demo Shows
-
-| Capability | Demo Scenario |
-|------------|---------------|
-| **Multi-Agent Coordination** | Orchestrator dispatches tasks to specialist agents in parallel |
-| **Rapid Content Generation** | Proposals generated in minutes vs. weeks |
-| **Knowledge Retrieval** | Semantic search over past engagements via Memory agent |
-| **Real-time Visibility** | Watch agents work via WebSocket streaming |
-
----
-
-## Development
-
-### Code Conventions
-
-- **Backend**: Async everywhere, use `AgentContext` for agent communication
-- **Frontend**: Compound components, Zustand for state, Shadcn/ui patterns
-- **Testing**: Pytest for backend, comprehensive API coverage
-
-### Adding a New Agent
-
-1. Create `backend/app/agents/{name}.py` inheriting from base
-2. Define `name`, `description`, `capabilities`
-3. Implement `async def process(self, ctx, message)`
-4. Register in `backend/app/agents/factory.py`
+```
+social-media-command-center/
+├── frontend/                  # Next.js application
+│   └── src/
+│       ├── app/               # App router pages
+│       ├── components/        # React components (landing, chat, sidebar)
+│       └── lib/               # API client, store, utilities
+├── backend/                   # FastAPI application
+│   ├── app/
+│   │   ├── agents/            # 7 AI agents with reasoning patterns
+│   │   │   ├── orchestrator.py  # Two-wave parallel dispatch
+│   │   │   ├── prompts.py       # All agent prompts with patterns
+│   │   │   └── factory.py       # MAF agent factory + tools
+│   │   ├── api/               # REST endpoints + WebSocket
+│   │   ├── models/            # Database models & schemas
+│   │   ├── services/          # LLM, documents, knowledge, traces
+│   │   └── data/              # Seed data
+│   ├── data/                  # Brand data files
+│   │   ├── brand_guidelines.md
+│   │   ├── past_posts.json
+│   │   └── content_calendar.json
+│   └── requirements.txt
+├── .env.example
+└── README.md
+```
 
 ---
 

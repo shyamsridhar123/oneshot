@@ -14,50 +14,50 @@ import {
 const agents = [
   {
     name: "Orchestrator",
-    role: "Project Coordinator",
-    description: "Analyzes incoming requests, decomposes complex tasks, and coordinates the right specialists. Ensures seamless handoffs between agents.",
+    role: "Content Coordinator",
+    description: "Analyzes incoming requests, identifies target platforms, and coordinates two-wave parallel dispatch: context gathering then content creation + review.",
     icon: Brain,
     color: "from-violet-500 to-purple-600",
   },
   {
     name: "Strategist",
-    role: "Engagement Architect",
-    description: "Develops proposals, scopes engagements, and selects frameworks based on client context and past successful approaches.",
+    role: "Content Strategist (CoT)",
+    description: "Plans content strategy using Chain-of-Thought reasoning: audience targeting, tone selection, content calendar, and platform-specific CTAs.",
     icon: Target,
     color: "from-blue-500 to-cyan-500",
   },
   {
     name: "Researcher",
-    role: "Intelligence Synthesizer",
-    description: "Monitors internal knowledge, external news feeds, and market data to draft comprehensive briefs grounded in verified sources.",
+    role: "Trend Analyst (ReAct)",
+    description: "Discovers trending topics, analyzes competitor content, and researches hashtags using the ReAct reasoning pattern: Thought, Action, Observation loops.",
     icon: Search,
     color: "from-emerald-500 to-green-500",
   },
   {
     name: "Analyst",
-    role: "Data Interpreter",
-    description: "Creates data visualizations, financial models, and benchmarking analyses. Transforms raw data into actionable insights.",
+    role: "Engagement Analyst",
+    description: "Provides engagement benchmarks, predicts content performance, recommends optimal posting times, and suggests content formats for maximum reach.",
     icon: BarChart3,
     color: "from-orange-500 to-amber-500",
   },
   {
     name: "Scribe",
-    role: "Document Craftsman",
-    description: "Produces polished deliverables with firm branding. Handles document generation, formatting, and export to multiple formats.",
+    role: "Content Writer",
+    description: "Generates platform-specific content using template-guided patterns: LinkedIn articles, Twitter/X threads, Instagram captions with brand voice alignment.",
     icon: FileEdit,
     color: "from-pink-500 to-rose-500",
   },
   {
     name: "Advisor",
-    role: "Communication Expert",
-    description: "Crafts client communications, executive summaries, and presentation talking points. Adapts tone for different audiences.",
+    role: "Brand Compliance (Self-Reflection)",
+    description: "Reviews content for brand alignment using Self-Reflection: initial review, metacognitive reflection, then revised compliance scoring from 1-10.",
     icon: MessageSquare,
     color: "from-indigo-500 to-blue-600",
   },
   {
     name: "Memory",
-    role: "Knowledge Curator",
-    description: "Maintains the knowledge graph, performs semantic search, and surfaces relevant past engagements and institutional expertise.",
+    role: "Brand Knowledge (RAG)",
+    description: "Retrieves brand guidelines, past post performance data, and content calendar context to ground all content in TechVista's brand identity.",
     icon: Database,
     color: "from-teal-500 to-cyan-600",
   },
@@ -71,11 +71,11 @@ export function AgentsSection() {
           {/* Section Header */}
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Meet your <span className="text-primary">silicon colleagues</span>
+              Meet your <span className="text-primary">content agents</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Specialized AI agents with first-class identity, scoped permissions, and full 
-              audit trails—working alongside your human consultants 24/7.
+              Specialized AI agents with distinct reasoning patterns, scoped tools, and full
+              audit trails—creating platform-perfect social media content 24/7.
             </p>
           </div>
 
@@ -131,9 +131,9 @@ export function AgentsSection() {
           {/* Coordination visualization */}
           <div className="mt-16 p-8 rounded-2xl bg-gradient-to-br from-muted/50 to-muted border border-border">
             <div className="text-center mb-8">
-              <h3 className="text-2xl font-bold mb-2">Multi-Agent Orchestration</h3>
+              <h3 className="text-2xl font-bold mb-2">Two-Wave Parallel Orchestration</h3>
               <p className="text-muted-foreground">
-                All agents share a unified context model—eliminating hallucinations and enabling seamless collaboration.
+                Wave 1 gathers context (research, strategy, brand data). Wave 2 creates content and reviews compliance—all in parallel.
               </p>
             </div>
             

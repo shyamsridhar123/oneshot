@@ -15,90 +15,90 @@ import {
 
 const capabilities = [
   {
-    id: "proposals",
-    label: "Proposal Generation",
+    id: "content",
+    label: "Content Creation",
     icon: Lightbulb,
-    title: "From request to deliverable in minutes",
-    description: "Transform a single sentence into a comprehensive proposal with research, frameworks, and financials.",
+    title: "From idea to publish-ready posts in seconds",
+    description: "Transform a single topic into platform-specific social media content for LinkedIn, Twitter/X, and Instagram—with brand compliance built in.",
     features: [
       {
         icon: FileText,
-        title: "Complete Proposals",
-        stat: "End-to-end",
-        description: "Full proposals with executive summary, approach, timeline, and investment—generated from a single prompt."
+        title: "Multi-Platform Posts",
+        stat: "3 platforms",
+        description: "Generate LinkedIn articles, Twitter threads, and Instagram captions simultaneously from a single prompt."
       },
       {
         icon: Clock,
-        title: "Rapid Turnaround",
-        stat: "Minutes",
-        description: "What typically takes 2-3 weeks now happens in under 5 minutes. Win more deals by responding faster."
+        title: "Brand Compliance",
+        stat: "Scored 1-10",
+        description: "Every post is reviewed by the Advisor agent for brand voice alignment, hashtag compliance, and content policy adherence."
       },
       {
         icon: CheckCircle2,
-        title: "Source-Cited",
-        stat: "Traceable",
-        description: "Every claim is traceable to its source—past engagements, market data, or knowledge base frameworks."
+        title: "Data-Grounded",
+        stat: "RAG-powered",
+        description: "Content is grounded in brand guidelines, past post performance, and trending topics—not hallucinated."
       }
     ]
   },
   {
-    id: "research",
-    label: "Client Intelligence",
+    id: "trends",
+    label: "Trend Research",
     icon: Users,
-    title: "Know your client before every meeting",
-    description: "Comprehensive briefings synthesized from multiple sources in seconds, not hours.",
+    title: "Know what's trending before you post",
+    description: "Real-time trend analysis, competitor monitoring, and hashtag research across all platforms—synthesized by the Researcher agent.",
     features: [
       {
         icon: Brain,
-        title: "Deep Synthesis",
-        stat: "Multi-source",
-        description: "Combines public filings, news, industry reports, and internal engagement history into unified briefings."
+        title: "Trend Discovery",
+        stat: "ReAct pattern",
+        description: "The Researcher agent uses Thought-Action-Observation loops to discover and validate trending topics in your industry."
       },
       {
         icon: Users,
-        title: "Executive Profiles",
-        stat: "Leadership",
-        description: "Background, tenure, style, and recent statements for key decision-makers you'll be meeting."
+        title: "Competitor Analysis",
+        stat: "Gap detection",
+        description: "Analyze what competitors are posting, identify content gaps, and find opportunities for differentiation."
       },
       {
         icon: Zap,
-        title: "Meeting Ready",
-        stat: "Instant",
-        description: "Get recommended questions, potential pain points, and relationship history before any client interaction."
+        title: "Hashtag Strategy",
+        stat: "Optimized",
+        description: "Get recommended hashtags with estimated reach, competition level, and relevance scoring per platform."
       }
     ]
   },
   {
-    id: "knowledge",
-    label: "Knowledge Discovery",
+    id: "brand",
+    label: "Brand Intelligence",
     icon: Cog,
-    title: "Unlock your institutional memory",
-    description: "Semantic search that understands meaning, not just keywords. Find relevant work even with different terminology.",
+    title: "Your brand knowledge, always accessible",
+    description: "Semantic search across brand guidelines, past post performance, and content calendars—the Memory agent keeps all agents aligned.",
     features: [
       {
         icon: FileText,
-        title: "Past Engagements",
-        stat: "Semantic",
-        description: "Find similar work based on context and outcomes, not keyword matching. Discover hidden patterns."
+        title: "Past Post Analytics",
+        stat: "Performance",
+        description: "Learn from what worked: high-performing posts, engagement patterns, and content formats that drive results."
       },
       {
         icon: Users,
-        title: "Expert Matching",
-        stat: "Intelligent",
-        description: "Surface the right internal experts based on skills, availability, and past client relationships."
+        title: "Brand Voice Guard",
+        stat: "Consistent",
+        description: "Brand guidelines are embedded in every agent's context, ensuring consistent voice across all platforms."
       },
       {
         icon: Lightbulb,
-        title: "Living Methodologies",
-        stat: "Growing",
-        description: "Frameworks that grow smarter with every engagement—automatically capturing lessons learned."
+        title: "Content Calendar",
+        stat: "Planned",
+        description: "Weekly content plans with optimal posting times, content mix recommendations, and platform-specific scheduling."
       }
     ]
   }
 ];
 
 export function CapabilitiesSection() {
-  const [activeTab, setActiveTab] = useState("proposals");
+  const [activeTab, setActiveTab] = useState("content");
   const activeCapability = capabilities.find(c => c.id === activeTab)!;
 
   return (
@@ -108,11 +108,11 @@ export function CapabilitiesSection() {
           {/* Section Header */}
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Purpose-built for <span className="text-primary">professional services</span>
+              Purpose-built for <span className="text-primary">social media teams</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Transform how consultants create, deliver, and capture value across every 
-              engagement—from initial pitch to final deliverable.
+              Transform how your team creates, reviews, and publishes content across
+              LinkedIn, Twitter/X, and Instagram—with AI agents handling every step.
             </p>
           </div>
 
@@ -192,15 +192,15 @@ export function CapabilitiesSection() {
                     <div className="w-3 h-3 rounded-full bg-red-500" />
                     <div className="w-3 h-3 rounded-full bg-yellow-500" />
                     <div className="w-3 h-3 rounded-full bg-green-500" />
-                    <span className="ml-2 text-sm text-muted-foreground">federation-workspace</span>
+                    <span className="ml-2 text-sm text-muted-foreground">social-media-workspace</span>
                   </div>
-                  
-                  {activeTab === "proposals" && (
+
+                  {activeTab === "content" && (
                     <div className="space-y-4">
                       <div className="flex items-start gap-3">
                         <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs">You</div>
                         <div className="flex-1 bg-muted rounded-xl p-3 text-sm">
-                          Create a proposal for Acme Corp&apos;s digital transformation...
+                          Write a LinkedIn post about our AI Collaboration Suite launch...
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
@@ -209,10 +209,10 @@ export function CapabilitiesSection() {
                         </div>
                         <div className="flex-1 space-y-2">
                           <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <span>Orchestrator is coordinating...</span>
+                            <span>Orchestrator coordinating 2 waves...</span>
                           </div>
                           <div className="grid grid-cols-4 gap-2">
-                            {["Research", "Strategy", "Analysis", "Writing"].map((phase, i) => (
+                            {["Research", "Strategy", "Writing", "Review"].map((phase, i) => (
                               <div key={i} className={cn(
                                 "h-1.5 rounded-full",
                                 i <= 2 ? "bg-primary" : "bg-muted"
@@ -220,59 +220,58 @@ export function CapabilitiesSection() {
                             ))}
                           </div>
                           <div className="bg-card border border-border rounded-lg p-3 text-sm">
-                            <div className="font-medium mb-1">📄 Proposal Generated</div>
-                            <div className="text-muted-foreground text-xs">15 pages • 3 sources cited</div>
+                            <div className="font-medium mb-1">LinkedIn + Twitter + Instagram</div>
+                            <div className="text-muted-foreground text-xs">3 posts generated | Score: 9/10</div>
                           </div>
                         </div>
                       </div>
                     </div>
                   )}
 
-                  {activeTab === "research" && (
+                  {activeTab === "trends" && (
                     <div className="space-y-4">
                       <div className="flex items-start gap-3">
                         <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs">You</div>
                         <div className="flex-1 bg-muted rounded-xl p-3 text-sm">
-                          Brief me on TechCorp before tomorrow&apos;s meeting
+                          What AI topics are trending on social media?
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        {[
+                          { topic: "#AIAgents", platform: "Twitter", trend: "Surging" },
+                          { topic: "AI Collaboration", platform: "LinkedIn", trend: "Rising" },
+                          { topic: "AI company culture", platform: "Instagram", trend: "Stable" },
+                        ].map((result, i) => (
+                          <div key={i} className="flex items-center justify-between bg-card border border-border rounded-lg p-3">
+                            <span className="text-sm">{result.topic}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs text-muted-foreground">{result.platform}</span>
+                              <span className="text-xs text-primary font-medium">{result.trend}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {activeTab === "brand" && (
+                    <div className="space-y-4">
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs">You</div>
+                        <div className="flex-1 bg-muted rounded-xl p-3 text-sm">
+                          What content performed best last month?
                         </div>
                       </div>
                       <div className="bg-card border border-border rounded-lg p-4 space-y-3">
                         <div className="flex items-center gap-2 text-sm font-medium">
                           <Users className="w-4 h-4 text-primary" />
-                          TechCorp Solutions
+                          Top Performing Posts
                         </div>
-                        <div className="grid grid-cols-2 gap-4 text-xs">
-                          <div><span className="text-muted-foreground">Revenue:</span> $50M ARR</div>
-                          <div><span className="text-muted-foreground">Industry:</span> B2B SaaS</div>
-                          <div><span className="text-muted-foreground">Employees:</span> 250</div>
-                          <div><span className="text-muted-foreground">Growth:</span> +40% YoY</div>
+                        <div className="space-y-2 text-xs">
+                          <div className="flex justify-between"><span>LinkedIn myth-busting post</span><span className="text-primary font-medium">5.8% engagement</span></div>
+                          <div className="flex justify-between"><span>Twitter founder thread</span><span className="text-primary font-medium">6.2% engagement</span></div>
+                          <div className="flex justify-between"><span>Instagram team celebration</span><span className="text-primary font-medium">5.1% engagement</span></div>
                         </div>
-                        <div className="pt-2 border-t border-border text-xs text-muted-foreground">
-                          ✅ Past engagement: Growth Strategy (2024)
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {activeTab === "knowledge" && (
-                    <div className="space-y-4">
-                      <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs">You</div>
-                        <div className="flex-1 bg-muted rounded-xl p-3 text-sm">
-                          Healthcare M&A integration frameworks?
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        {[
-                          { title: "HealthCare Partners Integration", match: "92%" },
-                          { title: "Regional Health System PMI", match: "87%" },
-                          { title: "Medical Device M&A Playbook", match: "84%" },
-                        ].map((result, i) => (
-                          <div key={i} className="flex items-center justify-between bg-card border border-border rounded-lg p-3">
-                            <span className="text-sm">{result.title}</span>
-                            <span className="text-xs text-primary font-medium">{result.match} match</span>
-                          </div>
-                        ))}
                       </div>
                     </div>
                   )}

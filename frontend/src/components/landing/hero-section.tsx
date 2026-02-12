@@ -6,10 +6,10 @@ import { ArrowRight, Sparkles, Send } from "lucide-react";
 import Link from "next/link";
 
 const samplePrompts = [
-  "Create a proposal for Acme Corp's digital transformation initiative",
-  "Brief me on TechCorp Solutions ahead of tomorrow's meeting",
-  "What frameworks have we used for post-merger integration in healthcare?",
-  "Draft a competitive analysis for the fintech sector",
+  "Create a LinkedIn post about our AI Collaboration Suite launch",
+  "Write a week of social media content for TechVista across all platforms",
+  "What are the trending AI topics on social media this week?",
+  "Review this draft tweet for brand alignment and compliance",
 ];
 
 export function HeroSection() {
@@ -38,18 +38,18 @@ export function HeroSection() {
           
           {/* Main Headline */}
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
-            <span className="text-foreground">Your firm&apos;s </span>
+            <span className="text-foreground">Your brand&apos;s </span>
             <span className="bg-gradient-to-r from-primary via-chart-1 to-chart-2 bg-clip-text text-transparent">
-              collective intelligence
+              social media voice
             </span>
             <span className="text-foreground">, amplified.</span>
           </h1>
-          
+
           {/* Subtitle */}
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Federation is the ambient reasoning layer that coordinates specialized AI agents—
-            Strategist, Researcher, Analyst, Scribe—into a unified intelligence fabric. 
-            <span className="text-foreground font-medium"> Goal and delegate—not find and navigate.</span>
+            Social Media Command Center coordinates 7 specialized AI agents—
+            Strategist, Researcher, Scribe, Advisor—to create platform-perfect content.
+            <span className="text-foreground font-medium"> Describe your goal—agents handle the rest.</span>
           </p>
           
           {/* Intent Delegate Input */}
@@ -102,7 +102,7 @@ export function HeroSection() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
             <Button size="lg" className="text-lg px-8 py-6" asChild>
               <Link href="/chat">
-                Start Collaborating
+                Create Content
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Link>
             </Button>
@@ -117,9 +117,9 @@ export function HeroSection() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pt-16 border-t border-border mt-16">
             {[
               { value: "7", label: "Specialized Agents" },
-              { value: "< 5 min", label: "Proposal Generation" },
-              { value: "Instant", label: "Client Briefings" },
-              { value: "24/7", label: "Availability" },
+              { value: "3", label: "Reasoning Patterns" },
+              { value: "3", label: "Platform Targets" },
+              { value: "24/7", label: "Content Creation" },
             ].map((stat, i) => (
               <div key={i} className="text-center">
                 <div className="text-3xl md:text-4xl font-bold text-foreground">{stat.value}</div>

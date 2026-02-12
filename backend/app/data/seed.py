@@ -1,8 +1,10 @@
 """Seed script to populate the database with sample data and embeddings."""
 
 import asyncio
+import json
 import uuid
 from datetime import datetime, timedelta
+from pathlib import Path
 
 from app.models.database import (
     AsyncSessionLocal,
@@ -11,6 +13,9 @@ from app.models.database import (
     Engagement,
 )
 from app.services.llm_service import get_llm_service
+
+# Path to brand data files
+DATA_DIR = Path(__file__).resolve().parent.parent.parent / "data"
 
 
 # ============ Sample Engagements ============
@@ -535,3 +540,102 @@ async def seed_database():
 
 if __name__ == "__main__":
     asyncio.run(seed_database())
+
+
+async def seed_social_media_data():
+    """Seed the database with TechVista brand data for social media content creation.
+
+    Loads brand guidelines, past posts, and content calendar into the
+    knowledge_items table with embeddings for semantic retrieval by the
+    Memory agent.
+    """
+    print("🌱 Starting social media data seeding...")
+
+    await init_db()
+    print("✓ Database initialized")
+
+    llm_service = get_llm_service()
+
+    async with AsyncSessionLocal() as db:
+        # 1. Load brand guidelines as a single knowledge item
+        brand_guidelines_path = DATA_DIR / "brand_guidelines.md"
+        if brand_guidelines_path.exists():
+            print("\n📋 Seeding brand guidelines...")
+            content = brand_guidelines_path.read_text(encoding="utf-8")
+            embedding = await generate_embedding(llm_service, f"TechVista brand guidelines voice tone style {content[:500]}")
+
+            item = KnowledgeItem(
+                id=str(uuid.uuid4()),
+                title="TechVista Inc. — Brand & Social Media Guidelines",
+                content=content,
+                category="brand_guidelines",
+                industry="Technology",
+                tags=["brand", "guidelines", "social media", "voice", "tone", "TechVista"],
+                embedding=embedding,
+            )
+            db.add(item)
+            print("  ✓ Brand guidelines loaded")
+        else:
+            print(f"  ⚠ Brand guidelines not found at {brand_guidelines_path}")
+
+        # 2. Load past posts — one knowledge item per post for granular retrieval
+        past_posts_path = DATA_DIR / "past_posts.json"
+        if past_posts_path.exists():
+            print("\n📱 Seeding past post performance data...")
+            posts = json.loads(past_posts_path.read_text(encoding="utf-8"))
+
+            for post in posts:
+                embed_text = (
+                    f"{post['platform']} post performance:{post['performance']} "
+                    f"engagement:{post['engagement_rate']}% {post['content'][:200]}"
+                )
+                embedding = await generate_embedding(llm_service, embed_text)
+
+                success_factors = post.get("success_factors", [])
+                item = KnowledgeItem(
+                    id=str(uuid.uuid4()),
+                    title=f"Past Post: {post['platform'].title()} ({post['date']}) — {post['performance']}",
+                    content=json.dumps(post, indent=2),
+                    category="past_post",
+                    industry="Technology",
+                    tags=[
+                        "past post",
+                        post["platform"],
+                        post["performance"],
+                        "social media",
+                        "engagement",
+                    ] + success_factors[:3],
+                    embedding=embedding,
+                )
+                db.add(item)
+                print(f"  ✓ {post['platform'].title()} post ({post['date']}) — {post['performance']}")
+        else:
+            print(f"  ⚠ Past posts not found at {past_posts_path}")
+
+        # 3. Load content calendar as a single knowledge item
+        calendar_path = DATA_DIR / "content_calendar.json"
+        if calendar_path.exists():
+            print("\n📅 Seeding content calendar template...")
+            calendar_content = calendar_path.read_text(encoding="utf-8")
+            calendar_data = json.loads(calendar_content)
+            embedding = await generate_embedding(
+                llm_service,
+                f"TechVista content calendar weekly schedule {calendar_data.get('theme', '')}",
+            )
+
+            item = KnowledgeItem(
+                id=str(uuid.uuid4()),
+                title=f"Content Calendar: Week of {calendar_data.get('week_of', 'template')}",
+                content=calendar_content,
+                category="content_calendar",
+                industry="Technology",
+                tags=["calendar", "schedule", "content plan", "social media", "weekly"],
+                embedding=embedding,
+            )
+            db.add(item)
+            print("  ✓ Content calendar loaded")
+        else:
+            print(f"  ⚠ Content calendar not found at {calendar_path}")
+
+        await db.commit()
+        print("\n✅ Social media data seeding complete!")

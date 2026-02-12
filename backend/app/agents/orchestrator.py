@@ -1,4 +1,9 @@
-"""Orchestrator Agent - Coordinates all other agents using MAF workflow patterns."""
+"""Orchestrator Agent - Coordinates all other agents using MAF workflow patterns.
+
+Social Media Command Center variant with two-wave parallel dispatch:
+  Wave 1 (context gathering): researcher, strategist, memory, analyst
+  Wave 2 (creation + review): scribe, advisor
+"""
 
 import asyncio
 import uuid
@@ -31,7 +36,21 @@ INTENT_SCHEMA = {
         "properties": {
             "primary_intent": {
                 "type": "string",
-                "enum": ["proposal", "research", "analysis", "document", "question", "other"],
+                "enum": [
+                    "content_creation",
+                    "content_strategy",
+                    "content_review",
+                    "trend_research",
+                    "question",
+                    "other",
+                ],
+            },
+            "target_platforms": {
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "enum": ["linkedin", "twitter", "instagram"],
+                },
             },
             "required_agents": {
                 "type": "array",
@@ -46,8 +65,34 @@ INTENT_SCHEMA = {
             },
             "task_description": {"type": "string"},
         },
-        "required": ["primary_intent", "required_agents", "key_entities", "task_description"],
+        "required": [
+            "primary_intent",
+            "target_platforms",
+            "required_agents",
+            "key_entities",
+            "task_description",
+        ],
         "additionalProperties": False,
+    },
+}
+
+# Routing: which agents run in each wave per intent type
+_WAVE_CONFIG = {
+    "content_creation": {
+        "wave1": ["researcher", "strategist", "memory", "analyst"],
+        "wave2": ["scribe", "advisor"],
+    },
+    "content_strategy": {
+        "wave1": ["researcher", "strategist", "memory", "analyst"],
+        "wave2": ["advisor"],
+    },
+    "content_review": {
+        "wave1": ["memory"],
+        "wave2": ["advisor"],
+    },
+    "trend_research": {
+        "wave1": ["researcher", "analyst", "memory"],
+        "wave2": [],
     },
 }
 
@@ -59,19 +104,17 @@ async def process_message(
     ws_manager: ConnectionManager,
     db: AsyncSession,
 ) -> str:
-    """
-    Process a user message through the orchestrator.
-    
-    This is the main entry point that:
-    1. Analyzes intent
-    2. Routes to appropriate agents
-    3. Synthesizes the response
+    """Process a user message through the orchestrator.
+
+    Two-wave parallel dispatch:
+      Wave 1: Context gathering (researcher, strategist, memory, analyst)
+      Wave 2: Content creation + review (scribe, advisor) using Wave 1 outputs
     """
     llm = get_llm_service()
     trace_service = get_trace_service()
-    
+
     start_time = time.time()
-    
+
     # Start orchestrator trace
     trace = await trace_service.start_trace(
         db=db,
@@ -79,87 +122,120 @@ async def process_message(
         task_type="message_processing",
         input_data={"message": message_content, "metadata": message_metadata},
     )
-    
+
     # Notify WebSocket clients
     await ws_manager.send_agent_started(conversation_id, "orchestrator", "Analyzing request")
-    
+
     try:
-        # 1. Analyze intent using structured output
-        await ws_manager.send_agent_thinking(conversation_id, "orchestrator", "Understanding your request...", 0.1)
-        
+        # ── Step 1: Classify intent ────────────────────────────────
+        await ws_manager.send_agent_thinking(
+            conversation_id, "orchestrator", "Understanding your request...", 0.1
+        )
+
         intent = await llm.structured_output(
             prompt=f"""Analyze this user request and determine how to handle it:
 
 User Request: {message_content}
 
 Determine:
-1. The primary intent (proposal, research, analysis, document, question, other)
-2. Which specialist agents should be involved:
-   - For PROPOSALS: Include strategist, researcher, analyst, memory, scribe (all 5)
-   - For RESEARCH/BRIEFINGS: Include researcher, memory, advisor
-   - For ANALYSIS: Include analyst, memory
-   - For DOCUMENTS: Include scribe, advisor
-   - For QUESTIONS: Include memory (for knowledge queries) or minimal agents
-3. Key entities mentioned (companies, industries, topics)
-4. A clear task description""",
+1. The primary intent:
+   - content_creation: User wants to create social media posts for one or more platforms
+   - content_strategy: User wants a content plan, calendar, or strategy
+   - content_review: User wants existing content reviewed for brand alignment
+   - trend_research: User wants to understand current trends, topics, or competitor activity
+   - question: A general question about social media or the platform
+   - other: Anything else
+2. Target platforms mentioned or implied (linkedin, twitter, instagram). If none specified, include all three.
+3. Which specialist agents should be involved
+4. Key entities mentioned (brands, topics, platforms, campaigns)
+5. A clear task description""",
             output_schema=INTENT_SCHEMA,
             system_prompt=AGENT_PROMPTS["orchestrator"],
         )
-        
+
+        # Default to all platforms when none detected
+        if not intent["target_platforms"]:
+            intent["target_platforms"] = ["linkedin", "twitter", "instagram"]
+
+        platforms_str = ", ".join(intent["target_platforms"])
         await ws_manager.send_agent_thinking(
-            conversation_id, 
-            "orchestrator", 
-            f"Intent: {intent['primary_intent']}, involving {', '.join(intent['required_agents'])}",
-            0.2
+            conversation_id,
+            "orchestrator",
+            f"Intent: {intent['primary_intent']} | Platforms: {platforms_str} | Agents: {', '.join(intent['required_agents'])}",
+            0.2,
         )
-        
-        # 2. Execute agents in PARALLEL for speed
-        # For proposals, use all recommended agents to showcase full capabilities
-        # For other intents, cap at 3 for speed
-        if intent["primary_intent"] == "proposal":
-            # Ensure all key agents are included for proposals (demo showcase)
-            proposal_agents = ["strategist", "researcher", "analyst", "memory", "scribe"]
-            agents_to_run = list(dict.fromkeys(intent["required_agents"] + proposal_agents))[:6]
-        elif intent["primary_intent"] == "research":
-            # Research should include memory for past engagement context
-            research_agents = ["researcher", "memory", "advisor"]
-            agents_to_run = list(dict.fromkeys(intent["required_agents"] + research_agents))[:4]
-        else:
-            agents_to_run = intent["required_agents"][:3]  # Cap at 3 for simple queries
-        
-        # Send all handoff notifications first
-        for agent_name in agents_to_run:
-            await ws_manager.send_agent_handoff(
-                conversation_id, 
-                "orchestrator", 
-                agent_name,
-                intent["task_description"]
+
+        # ── Step 2: Determine waves ───────────────────────────────
+        waves = _WAVE_CONFIG.get(
+            intent["primary_intent"],
+            {"wave1": intent["required_agents"][:3], "wave2": []},
+        )
+
+        base_context = {
+            "message": message_content,
+            "entities": intent["key_entities"],
+            "intent": intent["primary_intent"],
+            "platforms": intent["target_platforms"],
+            "previous_results": {},
+        }
+
+        all_results: dict[str, str] = {}
+        all_tokens: dict[str, int] = {}
+
+        # ── Wave 1: Context gathering (parallel) ──────────────────
+        if waves["wave1"]:
+            for agent_name in waves["wave1"]:
+                await ws_manager.send_agent_handoff(
+                    conversation_id, "orchestrator", agent_name, intent["task_description"]
+                )
+
+            w1_results = await asyncio.gather(
+                *[
+                    _execute_agent(
+                        agent_name=name,
+                        task=intent["task_description"],
+                        context=base_context,
+                        conversation_id=conversation_id,
+                        ws_manager=ws_manager,
+                        db=db,
+                    )
+                    for name in waves["wave1"]
+                ]
             )
-        
-        # Run all agents in parallel
-        async def run_agent(agent_name: str) -> tuple[str, str, int]:
-            result, tokens = await _execute_agent(
-                agent_name=agent_name,
-                task=intent["task_description"],
-                context={
-                    "message": message_content,
-                    "entities": intent["key_entities"],
-                    "intent": intent["primary_intent"],
-                    "previous_results": {},  # No sequential dependency
-                },
-                conversation_id=conversation_id,
-                ws_manager=ws_manager,
-                db=db,
+
+            for name, (result, tokens) in zip(waves["wave1"], w1_results):
+                all_results[name] = result
+                all_tokens[name] = tokens
+
+        # ── Wave 2: Creation + review (parallel, with Wave 1 context) ─
+        if waves["wave2"]:
+            wave2_context = {**base_context, "previous_results": all_results}
+
+            for agent_name in waves["wave2"]:
+                await ws_manager.send_agent_handoff(
+                    conversation_id, "orchestrator", agent_name, intent["task_description"]
+                )
+
+            w2_results = await asyncio.gather(
+                *[
+                    _execute_agent(
+                        agent_name=name,
+                        task=intent["task_description"],
+                        context=wave2_context,
+                        conversation_id=conversation_id,
+                        ws_manager=ws_manager,
+                        db=db,
+                    )
+                    for name in waves["wave2"]
+                ]
             )
-            return agent_name, result, tokens
-        
-        # Execute all agents concurrently
-        results = await asyncio.gather(*[run_agent(name) for name in agents_to_run])
-        agent_results = {name: result for name, result, _ in results}
-        agent_tokens = {name: tokens for name, _, tokens in results}
-        
-        # Create traces for all agents after parallel execution
-        for agent_name, result, tokens in results:
+
+            for name, (result, tokens) in zip(waves["wave2"], w2_results):
+                all_results[name] = result
+                all_tokens[name] = tokens
+
+        # ── Record agent traces ───────────────────────────────────
+        for agent_name in all_results:
             agent_trace = await trace_service.start_trace(
                 db=db,
                 agent_name=agent_name,
@@ -169,78 +245,83 @@ Determine:
             await trace_service.complete_trace(
                 db=db,
                 trace=agent_trace,
-                output_data={"result_preview": result[:200]},
-                tokens_used=tokens,
+                output_data={"result_preview": all_results[agent_name][:200]},
+                tokens_used=all_tokens.get(agent_name, 0),
             )
-        
-        # 3. Synthesize final response
-        await ws_manager.send_agent_thinking(conversation_id, "orchestrator", "Synthesizing response...", 0.9)
-        
-        if agent_results:
+
+        # ── Step 3: Synthesize final response ─────────────────────
+        await ws_manager.send_agent_thinking(
+            conversation_id, "orchestrator", "Synthesizing response...", 0.9
+        )
+
+        if all_results:
             synthesis_prompt = f"""Based on the following agent outputs, synthesize a comprehensive response to the user's request.
 
 User Request: {message_content}
+Target Platforms: {platforms_str}
+Intent: {intent['primary_intent']}
 
 Agent Outputs:
-{_format_agent_results(agent_results)}
+{_format_agent_results(all_results)}
 
-Provide a well-structured, professional response that addresses the user's needs."""
-            
+Provide a well-structured response that:
+- Includes platform-specific content for each requested platform
+- References engagement data and best practices from the Analyst
+- Incorporates brand guidelines from the Memory agent
+- Notes any compliance feedback from the Advisor
+- Includes recommended posting schedule if applicable"""
+
             response = await llm.complete(
                 prompt=synthesis_prompt,
                 system_prompt=AGENT_PROMPTS["orchestrator"],
             )
         else:
-            # Direct response for simple questions
             response = await llm.complete(
                 prompt=message_content,
                 system_prompt=AGENT_PROMPTS["orchestrator"],
             )
-        
-        # If this was a proposal request, save it as a Document
-        if intent["primary_intent"] == "proposal" and agent_results:
+
+        # ── Save document for content intents ─────────────────────
+        if intent["primary_intent"] in ("content_creation", "content_strategy") and all_results:
             doc_service = get_document_service()
-            # Extract client name from entities or message
-            client_name = intent["key_entities"][0] if intent["key_entities"] else "Client"
-            
+            topic = intent["key_entities"][0] if intent["key_entities"] else "Social Media Content"
+
             doc = await doc_service.create_document(
                 db=db,
-                title=f"Proposal: {intent['task_description'][:50]}",
-                doc_type="proposal",
+                title=f"Social Post: {intent['task_description'][:60]}",
+                doc_type="social_post",
                 content=response,
                 metadata={
-                    "client_name": client_name,
+                    "topic": topic,
+                    "platforms": intent["target_platforms"],
+                    "intent": intent["primary_intent"],
                     "conversation_id": conversation_id,
                     "generated_via": "chat",
-                }
+                },
             )
-            
-            # Notify about document generation
+
             await ws_manager.send_document_generated(
-                conversation_id,
-                doc.id,
-                "proposal",
-                doc.title
+                conversation_id, doc.id, "social_post", doc.title
             )
-        
-        # Complete trace
+
+        # ── Complete orchestrator trace ────────────────────────────
         duration_ms = int((time.time() - start_time) * 1000)
         await trace_service.complete_trace(
             db=db,
             trace=trace,
-            output_data={"response": response[:500], "agents_used": list(agent_results.keys())},
+            output_data={"response": response[:500], "agents_used": list(all_results.keys())},
             tokens_used=llm.last_tokens_used,
         )
-        
+
         await ws_manager.send_agent_completed(
-            conversation_id, 
-            "orchestrator", 
-            f"Completed with {len(agent_results)} agents",
-            duration_ms
+            conversation_id,
+            "orchestrator",
+            f"Completed with {len(all_results)} agents",
+            duration_ms,
         )
-        
+
         return response
-        
+
     except Exception as e:
         await trace_service.fail_trace(db=db, trace=trace, error=str(e))
         raise
@@ -256,11 +337,10 @@ async def _execute_agent(
 ) -> tuple[str, int]:
     """Execute a specific agent and return its result with token usage."""
     start_time = time.time()
-    
+
     await ws_manager.send_agent_started(conversation_id, agent_name, task[:100])
-    
+
     try:
-        # Route to appropriate agent - all now return (result, tokens_used)
         if agent_name == "strategist":
             result, tokens_used = await run_strategist(task, context)
         elif agent_name == "researcher":
@@ -276,18 +356,15 @@ async def _execute_agent(
         else:
             result = f"Unknown agent: {agent_name}"
             tokens_used = 0
-        
+
         duration_ms = int((time.time() - start_time) * 1000)
-        
+
         await ws_manager.send_agent_completed(
-            conversation_id, 
-            agent_name, 
-            result[:100],
-            duration_ms
+            conversation_id, agent_name, result[:100], duration_ms
         )
-        
+
         return result, tokens_used
-        
+
     except Exception as e:
         await ws_manager.send_agent_completed(conversation_id, agent_name, f"Error: {str(e)}", 0)
         return f"Error from {agent_name}: {str(e)}", 0
@@ -301,58 +378,78 @@ def _format_agent_results(results: dict) -> str:
     return "\n".join(formatted)
 
 
-async def generate_proposal(
-    client_name: str,
-    client_industry: str,
-    engagement_type: str,
-    scope_description: str,
-    budget_range: Optional[str] = None,
-    timeline: Optional[str] = None,
+async def generate_social_content(
+    topic: str,
+    platforms: list[str],
+    content_type: str = "post",
     additional_context: Optional[str] = None,
     db: AsyncSession = None,
 ):
-    """Generate a full proposal document."""
+    """Generate social media content directly (API endpoint).
+
+    Args:
+        topic: The topic or announcement to create content about.
+        platforms: Target platforms (linkedin, twitter, instagram).
+        content_type: Type of content — post, thread, campaign, calendar.
+        additional_context: Extra context or instructions.
+        db: Database session.
+    """
     doc_service = get_document_service()
     llm = get_llm_service()
-    
-    # Gather context - agents now return (result, tokens_used)
-    research_context, _ = await run_researcher(
-        f"Research {client_name} in {client_industry}",
-        {"message": scope_description}
+
+    scope = f"Create {content_type} about '{topic}' for {', '.join(platforms)}"
+    if additional_context:
+        scope += f". Additional context: {additional_context}"
+
+    context = {"message": scope, "platforms": platforms}
+
+    # Wave 1: Gather context
+    research_result, _ = await run_researcher(scope, context)
+    memory_result, _ = await run_memory(scope, context)
+    strategy_result, _ = await run_strategist(scope, {**context, "previous_results": {"researcher": research_result, "memory": memory_result}})
+
+    # Wave 2: Generate + review
+    scribe_result, _ = await run_scribe(scope, {
+        **context,
+        "previous_results": {
+            "researcher": research_result,
+            "memory": memory_result,
+            "strategist": strategy_result,
+        },
+    })
+    advisor_result, _ = await run_advisor(scope, {
+        **context,
+        "previous_results": {"scribe": scribe_result},
+    })
+
+    # Synthesize
+    content = await llm.complete(
+        prompt=f"""Combine these outputs into final social media content:
+
+Topic: {topic}
+Platforms: {', '.join(platforms)}
+
+Research: {research_result[:500]}
+Strategy: {strategy_result[:500]}
+Draft Content: {scribe_result}
+Compliance Review: {advisor_result[:500]}
+
+Produce the final platform-specific posts ready for publishing.""",
+        system_prompt=AGENT_PROMPTS["orchestrator"],
     )
-    
-    memory_context, _ = await run_memory(
-        f"Find similar engagements for {engagement_type} in {client_industry}",
-        {"message": scope_description}
-    )
-    
-    # Generate proposal via strategist
-    proposal_content, _ = await run_strategist(
-        f"Generate a proposal for {client_name}",
-        {
-            "message": scope_description,
-            "client_name": client_name,
-            "client_industry": client_industry,
-            "engagement_type": engagement_type,
-            "budget_range": budget_range,
-            "timeline": timeline,
-            "additional_context": additional_context,
-            "research": research_context,
-            "similar_engagements": memory_context,
-        }
-    )
-    
-    # Create document
+
+    # Save document
     doc = await doc_service.create_document(
         db=db,
-        title=f"Proposal: {engagement_type} for {client_name}",
-        doc_type="proposal",
-        content=proposal_content,
+        title=f"Social Post: {topic[:60]}",
+        doc_type="social_post",
+        content=content,
         metadata={
-            "client_name": client_name,
-            "client_industry": client_industry,
-            "engagement_type": engagement_type,
-        }
+            "topic": topic,
+            "platforms": platforms,
+            "content_type": content_type,
+            "generated_via": "api",
+        },
     )
-    
+
     return doc

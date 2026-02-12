@@ -32,7 +32,7 @@ function MessageBubble({ message }: { message: Message }) {
           isUser ? "bg-primary text-primary-foreground" : "bg-muted"
         )}
       >
-        {isUser ? "U" : "F"}
+        {isUser ? "U" : "S"}
       </Avatar>
       <div
         className={cn(
@@ -267,9 +267,9 @@ export function ChatInterface() {
             ) : messages.length === 0 ? (
               <div className="flex h-full items-center justify-center text-muted-foreground">
                 <div className="text-center">
-                  <p className="text-lg font-medium">Welcome to Federation</p>
+                  <p className="text-lg font-medium">Welcome to Social Media Command Center</p>
                   <p className="text-sm">
-                    Start a conversation with our AI agents
+                    Tell me what content you need—I&apos;ll coordinate the agents
                   </p>
                 </div>
               </div>
@@ -280,7 +280,7 @@ export function ChatInterface() {
             {isLoading && (
               <div className="flex gap-3">
                 <Avatar className="h-8 w-8 shrink-0 flex items-center justify-center bg-muted text-sm font-medium">
-                  F
+                  S
                 </Avatar>
                 <div className="flex items-center gap-2 rounded-lg bg-muted px-4 py-2 text-sm">
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -298,7 +298,7 @@ export function ChatInterface() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Ask Federation anything..."
+              placeholder="Describe the content you need—LinkedIn post, tweet thread, campaign..."
               className="min-h-[44px] max-h-32 resize-none"
               disabled={isLoading}
             />

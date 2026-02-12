@@ -18,9 +18,9 @@ import { ThemeToggle } from "@/components/theme-toggle";
 
 const navigation = [
   { name: "Chat", href: "/chat", icon: MessageSquare },
-  { name: "Proposals", href: "/proposals", icon: FileText },
-  { name: "Research", href: "/research", icon: Search },
-  { name: "Knowledge", href: "/knowledge", icon: BookOpen },
+  { name: "Content", href: "/proposals", icon: FileText },
+  { name: "Trends", href: "/research", icon: Search },
+  { name: "Brand", href: "/knowledge", icon: BookOpen },
   { name: "Analytics", href: "/analytics", icon: BarChart3 },
 ];
 
@@ -50,9 +50,9 @@ export function Sidebar() {
         {/* Logo */}
         <Link href="/" className="flex h-16 items-center gap-2 border-b px-6 hover:bg-muted/50 transition-colors">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
-            F
+            S
           </div>
-          <span className="text-lg font-semibold">Federation</span>
+          <span className="text-lg font-semibold">Social Command</span>
         </Link>
 
         {/* Navigation */}
@@ -84,9 +84,9 @@ export function Sidebar() {
             <ThemeToggle />
           </div>
           <p className="text-xs text-muted-foreground">
-            Multi-Agent AI Platform
+            Social Media Command Center
           </p>
-          <p className="text-xs text-muted-foreground">for Professional Services</p>
+          <p className="text-xs text-muted-foreground">Multi-Agent Content Platform</p>
         </div>
       </aside>
     </>

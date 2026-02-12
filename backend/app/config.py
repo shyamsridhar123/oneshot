@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
 
     # Azure OpenAI
-    azure_openai_api_key: str
+    azure_openai_api_key: str | None = None  # Optional: falls back to DefaultAzureCredential
     azure_openai_endpoint: str
     azure_openai_api_version: str = "2024-12-01-preview"
     

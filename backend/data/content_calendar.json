@@ -1,0 +1,114 @@
+{
+  "brand": "TechVista Inc.",
+  "week_of": "2026-02-10",
+  "theme": "AI Collaboration Suite v3.0 Launch Momentum",
+  "calendar": [
+    {
+      "day": "Monday",
+      "date": "2026-02-10",
+      "platform": "linkedin",
+      "content_type": "thought_leadership",
+      "topic": "Industry insight: How AI collaboration is reshaping enterprise workflows in 2026",
+      "time": "9:00 AM PST",
+      "notes": "Lead with data from our 200+ enterprise deployment insights"
+    },
+    {
+      "day": "Monday",
+      "date": "2026-02-10",
+      "platform": "twitter",
+      "content_type": "engagement",
+      "topic": "Quick poll: What's your biggest collaboration pain point?",
+      "time": "11:00 AM PST",
+      "notes": "Poll format drives engagement, collect voice-of-customer data"
+    },
+    {
+      "day": "Tuesday",
+      "date": "2026-02-11",
+      "platform": "twitter",
+      "content_type": "announcement",
+      "topic": "#TechTuesday: Share a lesser-known feature of AI Collaboration Suite",
+      "time": "10:00 AM PST",
+      "notes": "Part of recurring #TechTuesday series"
+    },
+    {
+      "day": "Tuesday",
+      "date": "2026-02-11",
+      "platform": "instagram",
+      "content_type": "culture",
+      "topic": "Meet the team: Spotlight on our ML engineering lead",
+      "time": "12:00 PM PST",
+      "notes": "Carousel format with 5-6 slides about their journey"
+    },
+    {
+      "day": "Wednesday",
+      "date": "2026-02-12",
+      "platform": "linkedin",
+      "content_type": "thought_leadership",
+      "topic": "Lessons learned: What 200 enterprise AI deployments taught us about change management",
+      "time": "8:30 AM PST",
+      "notes": "High-performing format based on post_004 success pattern"
+    },
+    {
+      "day": "Wednesday",
+      "date": "2026-02-12",
+      "platform": "twitter",
+      "content_type": "engagement",
+      "topic": "Thread: 3 AI collaboration patterns we see in high-performing teams",
+      "time": "1:00 PM PST",
+      "notes": "Thread format performed well (post_007 was viral)"
+    },
+    {
+      "day": "Thursday",
+      "date": "2026-02-13",
+      "platform": "linkedin",
+      "content_type": "announcement",
+      "topic": "Customer success story: How [Industry] reduced documentation time by 45%",
+      "time": "9:00 AM PST",
+      "notes": "Reference healthcare deployment (post_006)"
+    },
+    {
+      "day": "Thursday",
+      "date": "2026-02-13",
+      "platform": "instagram",
+      "content_type": "culture",
+      "topic": "Behind the scenes: What hackathon week looks like at TechVista",
+      "time": "5:00 PM PST",
+      "notes": "Authentic content, reels format if possible"
+    },
+    {
+      "day": "Friday",
+      "date": "2026-02-14",
+      "platform": "twitter",
+      "content_type": "engagement",
+      "topic": "Valentine's Day special: Love letters to our favorite developer tools",
+      "time": "10:00 AM PST",
+      "notes": "Light humor for Friday engagement, reference tech community"
+    },
+    {
+      "day": "Friday",
+      "date": "2026-02-14",
+      "platform": "instagram",
+      "content_type": "culture",
+      "topic": "Friday vibes: Team celebrating a week of wins",
+      "time": "4:00 PM PST",
+      "notes": "Casual end-of-week content, high engagement historically"
+    }
+  ],
+  "weekly_goals": {
+    "linkedin": {
+      "posts": 3,
+      "target_engagement_rate": 4.0,
+      "focus": "Thought leadership + customer success"
+    },
+    "twitter": {
+      "posts": 4,
+      "target_engagement_rate": 3.5,
+      "focus": "Community engagement + product awareness"
+    },
+    "instagram": {
+      "posts": 3,
+      "target_engagement_rate": 5.0,
+      "focus": "Team culture + authentic storytelling"
+    }
+  }
+}

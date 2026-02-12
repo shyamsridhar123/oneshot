@@ -3,9 +3,23 @@
 import json
 from typing import AsyncIterator, Any
 
+from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 from openai import AsyncAzureOpenAI
 
 from app.config import settings
+
+_AZURE_COGSERVICES_SCOPE = "https://cognitiveservices.azure.com/.default"
+
+
+def _build_azure_openai_client() -> AsyncAzureOpenAI:
+    """Build an AsyncAzureOpenAI client using DefaultAzureCredential."""
+    credential = DefaultAzureCredential()
+    token_provider = get_bearer_token_provider(credential, _AZURE_COGSERVICES_SCOPE)
+    return AsyncAzureOpenAI(
+        azure_endpoint=settings.azure_openai_endpoint,
+        azure_ad_token_provider=token_provider,
+        api_version=settings.azure_openai_api_version,
+    )
 
 
 class LLMResponse:
@@ -19,11 +33,7 @@ class LLMService:
     """Service for interacting with Azure OpenAI models."""
 
     def __init__(self):
-        self.client = AsyncAzureOpenAI(
-            azure_endpoint=settings.azure_openai_endpoint,
-            api_key=settings.azure_openai_api_key,
-            api_version=settings.azure_openai_api_version,
-        )
+        self.client = _build_azure_openai_client()
         # Model deployments
         self.chat_deployment = settings.azure_openai_deployment_name  # gpt-5.2-chat
         self.gpt5_deployment = settings.azure_openai_gpt5_deployment_name  # gpt-5.1
