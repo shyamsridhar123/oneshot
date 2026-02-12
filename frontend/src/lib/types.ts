@@ -145,6 +145,7 @@ export type WSEventType =
   | "agent.completed"
   | "agent.handoff"
   | "agent.error"
+  | "agent.tool_call"
   | "stream.token"
   | "document.generated"
   | "connection.established"
@@ -187,6 +188,12 @@ export interface DocumentGeneratedEvent {
   document_id: string;
   doc_type: string;
   title: string;
+}
+
+export interface AgentToolCallEvent {
+  agent_name: AgentName;
+  tool: string;
+  tool_type: "tool" | "mcp";
 }
 
 // ============ Analytics Types ============

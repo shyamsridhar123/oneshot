@@ -10,6 +10,7 @@ import type {
   AgentThinkingEvent,
   AgentCompletedEvent,
   AgentHandoffEvent,
+  AgentToolCallEvent,
   StreamTokenEvent,
   DocumentGeneratedEvent,
   AgentName,
@@ -25,6 +26,7 @@ interface WSHandlers {
   onAgentThinking?: EventHandler<AgentThinkingEvent>;
   onAgentCompleted?: EventHandler<AgentCompletedEvent>;
   onAgentHandoff?: EventHandler<AgentHandoffEvent>;
+  onAgentToolCall?: EventHandler<AgentToolCallEvent>;
   onAgentError?: EventHandler<{ agent_name: AgentName; error: string }>;
   onStreamToken?: EventHandler<StreamTokenEvent>;
   onDocumentGenerated?: EventHandler<DocumentGeneratedEvent>;
@@ -135,6 +137,13 @@ class AgentWebSocket {
         }
         store.updateAgentStatus(data.to_agent, "waiting", data.context);
         this.handlers.onAgentHandoff?.(data);
+        break;
+      }
+
+      case "agent.tool_call": {
+        const data = event.data as AgentToolCallEvent;
+        store.addAgentToolCall(data.agent_name, data.tool, data.tool_type);
+        this.handlers.onAgentToolCall?.(data);
         break;
       }
 

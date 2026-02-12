@@ -24,6 +24,7 @@ interface AgentState {
   status: AgentStatusType;
   current_task: string | null;
   last_activity: string | null;
+  tool_calls: { name: string; type: "tool" | "mcp" }[];
 }
 
 const AGENT_NAMES: AgentName[] = [
@@ -44,6 +45,7 @@ function createInitialAgentStates(): Record<AgentName, AgentState> {
         status: "idle",
         current_task: null,
         last_activity: null,
+        tool_calls: [],
       };
       return acc;
     },
@@ -74,6 +76,11 @@ interface FederationStore {
     agentName: AgentName,
     status: AgentStatusType,
     task?: string | null
+  ) => void;
+  addAgentToolCall: (
+    agentName: AgentName,
+    toolName: string,
+    toolType: "tool" | "mcp"
   ) => void;
   resetAgentStates: () => void;
 
@@ -167,6 +174,22 @@ export const useStore = create<FederationStore>()(
               status,
               current_task: task,
               last_activity: new Date().toISOString(),
+              // Clear tool_calls when agent goes idle or starts fresh
+              tool_calls: status === "idle" ? [] : state.agentStates[agentName].tool_calls,
+            },
+          },
+        })),
+
+      addAgentToolCall: (agentName, toolName, toolType) =>
+        set((state) => ({
+          agentStates: {
+            ...state.agentStates,
+            [agentName]: {
+              ...state.agentStates[agentName],
+              tool_calls: [
+                ...state.agentStates[agentName].tool_calls,
+                { name: toolName, type: toolType },
+              ],
             },
           },
         })),

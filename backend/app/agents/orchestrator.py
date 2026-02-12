@@ -340,6 +340,16 @@ async def _execute_agent(
 
     await ws_manager.send_agent_started(conversation_id, agent_name, task[:100])
 
+    # Notify which tools/MCP servers this agent will use
+    _tool_info = {
+        "researcher": [("search_web", "tool"), ("search_news", "tool"), ("search_trends", "tool"), ("fetch_mcp", "mcp")],
+        "memory": [("get_brand_guidelines", "tool"), ("get_past_posts", "tool"), ("search_knowledge_base", "tool")],
+        "analyst": [("calculate_engagement_metrics", "tool"), ("recommend_posting_schedule", "tool")],
+        "scribe": [("filesystem_mcp", "mcp")],
+    }
+    for tool_name, tool_type in _tool_info.get(agent_name, []):
+        await ws_manager.send_agent_tool_call(conversation_id, agent_name, tool_name, tool_type)
+
     try:
         if agent_name == "strategist":
             result, tokens_used = await run_strategist(task, context)

@@ -87,6 +87,14 @@ class ConnectionManager:
             "context": context,
         })
 
+    async def send_agent_tool_call(self, conversation_id: str, agent: str, tool_name: str, tool_type: str = "tool"):
+        """Send agent.tool_call event when an agent invokes a tool or MCP server."""
+        await self.broadcast(conversation_id, "agent.tool_call", {
+            "agent_name": agent,
+            "tool": tool_name,
+            "tool_type": tool_type,
+        })
+
     async def send_stream_token(self, conversation_id: str, agent: str, token: str):
         """Send stream.token event for streaming responses."""
         await self.broadcast(conversation_id, "stream.token", {

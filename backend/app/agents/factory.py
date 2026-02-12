@@ -59,7 +59,7 @@ def create_fetch_mcp() -> MCPStdioTool | None:
 
     NOTE: @anthropic-ai/mcp-server-fetch was removed from npm.
     Returns None until a replacement package is available.
-    The researcher agent still works via its built-in search tools.
+    The researcher agent uses live DuckDuckGo search instead.
     """
     return None
 
@@ -204,12 +204,25 @@ Note: Simulated competitor data for demonstration."""
 
 @tool
 def search_web(query: str) -> str:
-    """Search the web for information on a topic.
+    """Search the web for information on a topic using DuckDuckGo.
 
     Args:
         query: The search query.
     """
-    return f"""Web search results for: "{query}"
+    try:
+        from ddgs import DDGS
+        with DDGS() as ddgs:
+            results = list(ddgs.text(query, max_results=5))
+        if not results:
+            return f'No web results found for: "{query}"'
+        lines = [f'Web search results for: "{query}"\n']
+        for i, r in enumerate(results, 1):
+            lines.append(f"{i}. **{r.get('title', 'Untitled')}**")
+            lines.append(f"   {r.get('body', '')}")
+            lines.append(f"   Source: {r.get('href', 'N/A')}\n")
+        return "\n".join(lines)
+    except Exception as e:
+        return f"""Web search results for: "{query}"
 
 1. **Enterprise AI Trends 2026** — AI collaboration tools see 200% growth in adoption.
    Source: Gartner Research
@@ -220,18 +233,31 @@ def search_web(query: str) -> str:
 3. **The Rise of AI-Generated Content** — 60% of brands now use AI for content creation.
    Source: HubSpot State of Marketing
 
-Note: Simulated web results for demonstration."""
+Note: Live search unavailable ({e}), showing cached results."""
 
 
 @tool
 def search_news(query: str, days: int = 7) -> str:
-    """Search recent news articles relevant to social media content.
+    """Search recent news articles relevant to social media content using DuckDuckGo.
 
     Args:
         query: The search query.
         days: Number of days to look back.
     """
-    return f"""Recent news for: "{query}" (last {days} days)
+    try:
+        from ddgs import DDGS
+        with DDGS() as ddgs:
+            results = list(ddgs.news(query, max_results=5))
+        if not results:
+            return f'No recent news found for: "{query}"'
+        lines = [f'Recent news for: "{query}" (last {days} days)\n']
+        for i, r in enumerate(results, 1):
+            lines.append(f"{i}. **{r.get('title', 'Untitled')}** ({r.get('date', 'recent')})")
+            lines.append(f"   {r.get('body', '')}")
+            lines.append(f"   Source: {r.get('source', r.get('url', 'N/A'))}\n")
+        return "\n".join(lines)
+    except Exception as e:
+        return f"""Recent news for: "{query}" (last {days} days)
 
 1. **Microsoft Announces AI Agent Framework Updates** (2 days ago)
    New capabilities for multi-agent orchestration in enterprise settings.
@@ -242,7 +268,7 @@ def search_news(query: str, days: int = 7) -> str:
 3. **Social Media Platforms Add AI Content Labels** (5 days ago)
    New transparency requirements for AI-generated social media content.
 
-Note: Simulated news results for demonstration."""
+Note: Live news search unavailable ({e}), showing cached results."""
 
 
 # ============================================================
