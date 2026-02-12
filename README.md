@@ -1,113 +1,111 @@
-# OneShot
+<p align="center">
+  <img src="docs/graphics/hero-banner.svg" alt="OneShot Hero Banner" width="100%"/>
+</p>
 
-## Multi-Agent AI Platform for Social Media Content Creation
+<h1 align="center">OneShot</h1>
 
-A multi-agent AI system that coordinates 7 specialized agents — each with distinct reasoning patterns — to create brand-aligned social media content for LinkedIn, Twitter/X, and Instagram. Built on Microsoft Agent Framework and Azure OpenAI with DefaultAzureCredential.
+<p align="center">
+  <strong>You only get one shot. Do not miss your chance to blow.</strong><br/>
+  <em>7 AI agents. Two parallel waves. One prompt. Platform-ready social content.</em>
+</p>
 
-![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi)
-![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript)
-![Azure OpenAI](https://img.shields.io/badge/Azure_OpenAI-GPT--5.x-0078D4?logo=microsoft-azure)
-
----
-
-## What It Does
-
-**OneShot** takes a content request (e.g., "Write a LinkedIn post about our AI launch") and orchestrates 7 AI agents in two parallel waves to produce platform-specific, brand-compliant social media content — complete with trend research, engagement benchmarks, and compliance scoring.
-
-### Architecture
-
-```
-+----------------------------------------------------------------------+
-|                               FRONTEND                               |
-|                    Next.js 14 · Shadcn/ui · Tailwind                 |
-|                        Zustand State Management                      |
-+----------------------------------+-----------------------------------+
-                                   |
-                          REST API / WebSocket
-                                   |
-+----------------------------------v-----------------------------------+
-|                               BACKEND                                |
-|                         FastAPI · Python 3.11                        |
-|                                                                      |
-|                      +--------------------+                          |
-|                      |    ORCHESTRATOR    |                          |
-|                      | Intent: content_   |                          |
-|                      |   creation,        |                          |
-|                      |   strategy,        |                          |
-|                      |   review, trends   |                          |
-|                      +---------+----------+                          |
-|                                |                                     |
-|              Two-wave parallel dispatch                               |
-|                                |                                     |
-|  Wave 1: Context Gathering (parallel)                                |
-|  +----------+----------+---------+---------+                         |
-|  |Researcher|Strategist| Memory  | Analyst |                         |
-|  |  (ReAct) |  (CoT)   |  (RAG)  | (Data)  |                         |
-|  | trends & | audience | brand   | engage- |                         |
-|  | hashtags | planning | context | ment    |                         |
-|  +----+-----+----+-----+---+-----+---+-----+                         |
-|       |          |         |         |                               |
-|       +----------+---------+---------+                               |
-|                       |                                              |
-|  Wave 2: Create + Review (parallel, with Wave 1 context)            |
-|  +-------------------+-------------------+                           |
-|  |      Scribe       |     Advisor       |                           |
-|  |  (Template-guided)|  (Self-Reflection)|                           |
-|  | platform-specific | brand compliance  |                           |
-|  | content writing   | scoring (1-10)    |                           |
-|  +-------------------+-------------------+                           |
-|                       |                                              |
-|  MCP Servers (subprocess, auto-registered on agents)                |
-|  +-----------------+-----------------+                               |
-|  | Filesystem MCP  |  Fetch MCP      |                               |
-|  | (draft saving)  |  (web content)  |                               |
-|  +-----------------+-----------------+                               |
-|                       |                                              |
-|              +--------v--------+                                     |
-|              |    SERVICES     |                                     |
-|              | LLM (Azure GPT) |                                     |
-|              | Knowledge (RAG)  |                                     |
-|              | Documents        |                                     |
-|              | Traces           |                                     |
-|              +--------+--------+                                     |
-|                       |                                              |
-|              +--------v--------+                                     |
-|              |   DATA LAYER    |                                     |
-|              | SQLite+aiosqlite|                                     |
-|              +-----------------+                                     |
-+----------------------------------------------------------------------+
-```
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-16-black?logo=next.js&logoColor=white" alt="Next.js 16"/>
+  <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black" alt="React 19"/>
+  <img src="https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi&logoColor=white" alt="FastAPI"/>
+  <img src="https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white" alt="Python 3.11+"/>
+  <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white" alt="TypeScript"/>
+  <img src="https://img.shields.io/badge/Azure_OpenAI-GPT--5.x-0078D4?logo=microsoft-azure&logoColor=white" alt="Azure OpenAI"/>
+  <img src="https://img.shields.io/badge/Tailwind-4-06B6D4?logo=tailwindcss&logoColor=white" alt="Tailwind 4"/>
+  <img src="https://img.shields.io/badge/tests-215_passing-2ecc71?logo=pytest&logoColor=white" alt="215 tests"/>
+  <img src="https://img.shields.io/badge/license-MIT-f39c12" alt="MIT License"/>
+</p>
 
 ---
 
-## Reasoning Patterns
+## The Problem
 
-Each agent uses an explicit reasoning pattern, demonstrating advanced prompt engineering:
+Enterprise social media teams hit the same bottleneck every day:
 
-| Agent | Reasoning Pattern | Description |
-|-------|-------------------|-------------|
-| **Orchestrator** | Step-by-Step Decomposition | Classifies intent, determines platforms, dispatches two-wave parallel execution |
-| **Strategist** | Chain-of-Thought (CoT) | Walks through audience → message → tone → calendar → CTA for each platform |
-| **Researcher** | ReAct (Reasoning + Acting) | Loops through Thought → Action → Observation to discover and validate trends |
-| **Analyst** | Data-Driven Benchmarking | Provides engagement benchmarks, optimal timing, and performance predictions |
-| **Scribe** | Template-Guided Generation | Follows platform-specific templates (hook → body → CTA → hashtags) |
-| **Advisor** | Self-Reflection | Initial review → metacognitive reflection → revised compliance score (1-10) |
-| **Memory** | Retrieval-Augmented Grounding | Grounds content in brand guidelines, past post performance, and content calendars |
+> Research → Strategy → Writing → Compliance → Analytics — **all sequential, all manual, all slow.**
+
+Different people. Different tools. Handoff friction at every stage. By the time content ships, the trend is over.
+
+## The Solution: OneShot
+
+**OneShot** takes a single prompt — *"Write a LinkedIn post about our AI launch"* — and fires 7 specialized AI agents in two parallel waves. Research, strategy, brand context, analytics, writing, and compliance review happen **simultaneously**, not sequentially. Content comes out platform-specific, brand-compliant, data-backed, and scored.
+
+Like a real content team — but in seconds. *You only get one shot at the first draft. Make it count.*
+
+---
+
+<p align="center">
+  <img src="docs/graphics/stage-banner.svg" alt="OneShot — The Stage Is Set" width="100%"/>
+</p>
+
+---
+
+## Two-Wave Parallel Architecture
+
+<p align="center">
+  <img src="docs/graphics/architecture-flow.svg" alt="Two-Wave Parallel Orchestration" width="100%"/>
+</p>
+
+```
+User Prompt
+     │
+     ▼
+ ORCHESTRATOR ──── intent classification, platform detection
+     │
+     ├── Wave 1: Context Gathering (parallel via asyncio.gather)
+     │   ├── Researcher  [ReAct]            → trends, hashtags, competitors
+     │   ├── Strategist  [Chain-of-Thought] → audience, messaging, tone
+     │   ├── Memory      [RAG]             → brand guidelines, past posts
+     │   └── Analyst     [Data-Driven]     → engagement benchmarks, timing
+     │
+     ├── Wave 1 context passed to Wave 2 via AgentContext
+     │
+     ├── Wave 2: Create + Review (parallel)
+     │   ├── Scribe      [Template-Guided]  → platform-specific content
+     │   └── Advisor     [Self-Reflection]  → compliance score (1-10)
+     │
+     ▼
+ Brand-Compliant, Data-Backed Content
+ (scored, traced, exportable to 4 formats)
+```
+
+**Key insight**: Wave 2 agents don't create blind — they receive all Wave 1 context. The Scribe writes *informed by* live trends, strategy, brand voice, and engagement data. The Advisor reviews against *actual* brand guidelines and past post patterns.
+
+---
+
+## The 7 Agents
+
+<p align="center">
+  <img src="docs/graphics/agent-roster.svg" alt="Meet the Agents" width="100%"/>
+</p>
+
+> *"This is not 7 copies of GPT with different system prompts."* — Each agent has a **named reasoning identity**.
+
+| # | Agent | Reasoning Pattern | What It Does |
+|:-:|-------|-------------------|-------------|
+| 🎯 | **Orchestrator** | Step-by-Step Decomposition | Classifies intent, detects platforms, dispatches two-wave parallel execution |
+| 🔍 | **Researcher** | ReAct (Reasoning + Acting) | Think → Act → Observe loops. Finds trends, analyzes hashtags, studies competitors |
+| ♛ | **Strategist** | Chain-of-Thought (CoT) | Audience → Message → Tone → Calendar → CTA. Deliberate, explainable strategy |
+| 🧠 | **Memory** | Retrieval-Augmented Grounding (RAG) | Retrieves brand guidelines, past post performance, content calendars. Zero hallucination |
+| 📊 | **Analyst** | Data-Driven Benchmarking | Engagement predictions, optimal posting times, performance comparisons. Numbers, not guesses |
+| ✍ | **Scribe** | Template-Guided Generation | Platform-specific templates: hook → body → CTA → hashtags. Saves drafts via MCP |
+| 🛡 | **Advisor** | Self-Reflection | Initial review → metacognitive reflection → revised compliance score (1-10) |
 
 ---
 
 ## MCP Tool Integration
 
-Agents connect to external capabilities via [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) servers, spawned as subprocesses and auto-registered on MAF agents at runtime.
+Agents extend beyond pure language generation via [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) servers — spawned as subprocesses and auto-registered on MAF agents at runtime.
 
 | MCP Server | Agent | Purpose |
 |------------|-------|---------|
-| **Filesystem MCP** (`@modelcontextprotocol/server-filesystem`) | Scribe | Saves generated content drafts to `./data/drafts/` for persistence and review |
-| **Fetch MCP** (`@anthropic-ai/mcp-server-fetch`) | Researcher | Retrieves real-time web content to ground trend research in current data |
-
-MCP integration is automatic via MAF's built-in `MCPStdioTool`:
+| **Filesystem MCP** (`@modelcontextprotocol/server-filesystem`) | Scribe | Saves generated content drafts to `./data/drafts/` |
+| **Fetch MCP** (`@anthropic-ai/mcp-server-fetch`) | Researcher | Retrieves real-time web content for trend grounding |
 
 ```python
 from agent_framework import MCPStdioTool
@@ -117,15 +115,10 @@ fs_mcp = MCPStdioTool(
     command="npx",
     args=["-y", "@modelcontextprotocol/server-filesystem", "./data/drafts"],
 )
-
-agent = client.create_agent(
-    name="scribe",
-    instructions=SCRIBE_PROMPT,
-    tools=[fs_mcp],  # MCP server auto-connects when agent.run() is called
-)
+agent = client.create_agent(name="scribe", instructions=SCRIBE_PROMPT, tools=[fs_mcp])
 ```
 
-MCP servers are optional — agents gracefully fall back to direct LLM calls if MCP is unavailable.
+MCP is optional — agents gracefully fall back to direct LLM calls when servers are unavailable.
 
 ---
 
@@ -133,13 +126,15 @@ MCP servers are optional — agents gracefully fall back to direct LLM calls if 
 
 | Layer | Technology |
 |-------|------------|
-| **Frontend** | Next.js 14, React 19, Shadcn/ui, Tailwind CSS, Zustand |
-| **Backend** | Python 3.11, FastAPI, SQLAlchemy 2.x, aiosqlite |
-| **AI** | Azure OpenAI GPT-5.x, Microsoft Agent Framework |
-| **Auth** | Azure Identity (DefaultAzureCredential) |
+| **Frontend** | Next.js 16, React 19, Shadcn/ui, Tailwind CSS 4, Zustand 5, Recharts |
+| **Backend** | Python 3.11+, FastAPI 0.115, SQLAlchemy 2.x, aiosqlite |
+| **AI** | Azure OpenAI GPT-5.x, Microsoft Agent Framework (MAF) |
+| **Auth** | Azure Identity (`DefaultAzureCredential`) — zero secrets in config |
 | **MCP** | Filesystem MCP (draft persistence), Fetch MCP (web grounding) |
+| **Search** | DuckDuckGo Search (`ddgs`) for live web/trend grounding |
 | **Database** | SQLite with async support |
-| **Real-time** | WebSocket for agent status streaming |
+| **Real-time** | WebSocket agent status streaming (6 event types) |
+| **Testing** | pytest + pytest-asyncio (215 tests) |
 
 ---
 
@@ -148,27 +143,27 @@ MCP servers are optional — agents gracefully fall back to direct LLM calls if 
 ### Prerequisites
 
 - Python 3.11+
-- Node.js 18+ (with pnpm recommended)
+- Node.js 18+ (pnpm recommended)
 - Azure OpenAI resource with deployed models
 - Azure CLI logged in (`az login`) for DefaultAzureCredential
 
-### Environment Setup
+### 1. Environment Setup
 
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` with your Azure OpenAI endpoint:
+Edit `.env`:
 
 ```env
 AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com
-AZURE_OPENAI_API_VERSION=2024-12-01-preview
+AZURE_OPENAI_API_VERSION=2025-03-01-preview
 AZURE_OPENAI_DEPLOYMENT_NAME=gpt-5.2-chat
 ```
 
-> **Note:** API key is optional. The app uses `DefaultAzureCredential` by default — just run `az login` first.
+> **No API key needed.** The app uses `DefaultAzureCredential` — just `az login` first.
 
-### Backend Setup
+### 2. Backend
 
 ```bash
 cd backend
@@ -176,82 +171,178 @@ python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 
-# Initialize database
+# Initialize database + seed data
 python setup_db.py
-
-# Seed with sample data (engagements + frameworks)
 python -c "from app.data.seed import seed_database; import asyncio; asyncio.run(seed_database())"
-
-# Seed with social media brand data (brand guidelines + past posts + content calendar)
 python -c "from app.data.seed import seed_social_media_data; import asyncio; asyncio.run(seed_social_media_data())"
 
-# Start the server
+# Start
 uvicorn app.main:app --reload --port 8000
 ```
 
-### Frontend Setup
+### 3. Frontend
 
 ```bash
 cd frontend
-pnpm install  # or npm install
-pnpm dev      # or npm run dev
+pnpm install
+pnpm dev
 ```
 
-Open http://localhost:3000 to access the application.
+Open **http://localhost:3000** → you're in.
+
+### Docker Alternative
+
+```bash
+cp .env.example .env
+docker-compose up
+```
 
 ---
 
 ## Demo Scenarios
 
-1. **Content Creation** — "Write a LinkedIn post about our AI Collaboration Suite launch"
-2. **Multi-Platform Campaign** — "Create content for all platforms about our healthcare deployment"
-3. **Trend Research** — "What AI topics are trending on social media this week?"
-4. **Content Review** — "Review this draft tweet for brand alignment"
+| Scenario | Prompt | What Fires |
+|----------|--------|------------|
+| **Content Creation** 🔥 | *"Write a LinkedIn post about our AI Collaboration Suite v3.0 launch"* | All 7 agents, both waves |
+| **Multi-Platform Campaign** | *"Create content for all platforms about our healthcare deployment"* | Orchestrator detects 3 platforms, dispatches per-platform |
+| **Trend Research** | *"What AI topics are trending on social media this week?"* | Researcher (ReAct loops with live web search) |
+| **Content Review** | *"Review this draft tweet for brand alignment"* | Advisor (Self-Reflection pattern) + Memory (RAG) |
 
 ---
 
 ## Pages & Features
 
-| Page | Route | Features |
-|------|-------|----------|
+| Page | Route | What You See |
+|------|-------|-------------|
+| **Landing** | `/` | Project overview, agent showcase |
 | **Chat** | `/chat` | Multi-agent conversation, real-time agent status panel |
-| **Content** | `/proposals` | Generated social media content library |
-| **Trends** | `/research` | Trend research and competitor analysis |
+| **Content** | `/proposals` | Generated social media content library, export |
+| **Trends** | `/research` | Trend research, competitor analysis, hashtag data |
 | **Brand** | `/knowledge` | Brand guidelines, past post performance, content calendar |
-| **Analytics** | `/analytics` | Agent metrics, execution traces, token usage |
+| **Analytics** | `/analytics` | Agent metrics, execution traces, token usage, charts |
+
+---
+
+## Real-Time Agent Streaming
+
+WebSocket at `/ws/agents/{conversation_id}` streams live as agents work:
+
+```
+agent.started      → "Orchestrator: Analyzing request"
+agent.thinking     → "Researcher: Searching AI trends..." (progress: 0.3)
+agent.handoff      → "Orchestrator → Scribe: Generate content"
+agent.completed    → "Advisor: Brand score 9/10" (duration: 600ms)
+stream.token       → Token-by-token LLM streaming
+document.generated → "Social Post: AI Launch Campaign"
+```
+
+6 event types. Full visibility into multi-agent execution.
+
+---
+
+## By The Numbers
+
+| Metric | Value |
+|--------|:-----:|
+| Specialized AI agents | **7** |
+| Named reasoning patterns | **7** |
+| Agent tool functions | **14** |
+| MCP server integrations | **2** |
+| Supported platforms | **3** (LinkedIn, Twitter/X, Instagram) |
+| Export formats | **4** (Markdown, HTML, PDF, DOCX) |
+| WebSocket event types | **6** |
+| REST API endpoints | **15+** |
+| Automated tests | **215** |
+| Intent types | **4** (creation, strategy, review, research) |
+| Brand data files | **3** (guidelines, past posts, content calendar) |
+| Hardcoded secrets | **0** |
 
 ---
 
 ## Project Structure
 
 ```
-social-media-command-center/
-├── frontend/                  # Next.js application
+oneshot/
+├── frontend/                    # Next.js 16 + React 19
 │   └── src/
-│       ├── app/               # App router pages
-│       ├── components/        # React components (landing, chat, sidebar)
-│       └── lib/               # API client, store, utilities
-├── backend/                   # FastAPI application
+│       ├── app/                 # App Router pages (chat, proposals, research, knowledge, analytics)
+│       ├── components/          # Shadcn/ui components (landing, chat, sidebar, agent panel)
+│       └── lib/                 # API client, Zustand store, WebSocket, types
+├── backend/                     # FastAPI + Python 3.11
 │   ├── app/
-│   │   ├── agents/            # 7 AI agents with reasoning patterns
+│   │   ├── agents/              # 7 AI agents with named reasoning patterns
 │   │   │   ├── orchestrator.py  # Two-wave parallel dispatch
-│   │   │   ├── prompts.py       # All agent prompts with patterns
-│   │   │   └── factory.py       # MAF agent factory + tools
-│   │   ├── api/               # REST endpoints + WebSocket
-│   │   ├── models/            # Database models & schemas
-│   │   ├── services/          # LLM, documents, knowledge, traces
-│   │   └── data/              # Seed data
-│   ├── data/                  # Brand data files
-│   │   ├── brand_guidelines.md
-│   │   ├── past_posts.json
-│   │   └── content_calendar.json
-│   └── requirements.txt
-├── .env.example
-└── README.md
+│   │   │   ├── prompts.py       # All agent prompts with reasoning patterns
+│   │   │   └── factory.py       # MAF agent factory + MCP tool registration
+│   │   ├── api/                 # REST endpoints + WebSocket handler
+│   │   ├── models/              # SQLAlchemy models + Pydantic schemas
+│   │   ├── services/            # LLM, documents, knowledge, traces
+│   │   └── data/                # Seed data
+│   ├── data/                    # Brand data (guidelines, posts, calendar, drafts/)
+│   └── tests/                   # 215 tests across 12 modules
+├── docs/
+│   ├── graphics/                # SVG artwork (hero, agents, architecture, logo, stage)
+│   ├── TRD.md                   # Technical Requirements Document
+│   └── API.md                   # API documentation
+├── .env.example                 # Environment template (zero secrets)
+├── DEMO.md                      # Demo presentation script
+├── SETUP.md                     # Detailed setup guide
+└── Makefile                     # Common commands
 ```
+
+---
+
+## Testing
+
+```bash
+cd backend
+source .venv/bin/activate
+pytest                    # 215 tests, 12 modules, 100% pass rate
+python demo_e2e.py        # 85 E2E demo checks
+```
+
+| Category | Count |
+|----------|------:|
+| Agent & tool tests | 53 |
+| API endpoint tests | 37 |
+| Analytics & trace tests | 26 |
+| Document & proposal tests | 37 |
+| WebSocket tests | 15 |
+| Core & seed tests | 47 |
+| **Total** | **215** |
+
+---
+
+## What Makes This Different
+
+**It's not a chatbot — it's a team.** Most AI demos show one model answering one question. OneShot shows 7 agents with different specialties collaborating in parallel.
+
+**Every agent has a reasoning identity.** ReAct for research. Chain-of-Thought for strategy. Self-Reflection for review. RAG for memory. These are the same patterns from academic AI research, implemented as production prompts.
+
+**Two-wave architecture mirrors real workflows.** Wave 1 gathers context. Wave 2 creates with that context. Research and strategy happen before writing. Review happens after. We automated the workflow, not just the writing.
+
+**MCP makes agents more than language models.** The Scribe saves files. The Researcher fetches live web content. MCP turns models into agents that interact with the real world.
+
+**Zero secrets.** `DefaultAzureCredential` everywhere. `az login` for dev, Managed Identity for prod, service principals for CI — same code, no API keys.
+
+**The AI reviews its own AI.** The Advisor uses Self-Reflection: generate an initial review, reflect on whether the review was thorough enough, then produce a revised score. Metacognition applied to content compliance.
+
+---
+
+<p align="center">
+  <img src="docs/graphics/logo-badge.svg" alt="OneShot Logo" width="200"/>
+</p>
+
+<p align="center">
+  <em>"Look — if you had one shot, or one opportunity, to seize everything you ever wanted, in one moment — would you capture it, or just let it slip?"</em>
+</p>
+
+<p align="center">
+  <strong>We didn't let it slip.</strong>
+</p>
 
 ---
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details.
+MIT License — see [LICENSE](LICENSE) for details.

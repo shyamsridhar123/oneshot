@@ -1,0 +1,252 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0a0a0a"/>
+      <stop offset="50%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#0a0a0a"/>
+    </linearGradient>
+    <linearGradient id="fireGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#e74c3c"/>
+      <stop offset="100%" stop-color="#f39c12"/>
+    </linearGradient>
+    <!-- Agent accent colors -->
+    <linearGradient id="accentOrch" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e74c3c"/>
+      <stop offset="100%" stop-color="#f39c12"/>
+    </linearGradient>
+    <linearGradient id="accentRes" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e74c3c"/>
+      <stop offset="100%" stop-color="#c0392b"/>
+    </linearGradient>
+    <linearGradient id="accentStr" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3498db"/>
+      <stop offset="100%" stop-color="#2980b9"/>
+    </linearGradient>
+    <linearGradient id="accentMem" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2ecc71"/>
+      <stop offset="100%" stop-color="#27ae60"/>
+    </linearGradient>
+    <linearGradient id="accentAna" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f39c12"/>
+      <stop offset="100%" stop-color="#e67e22"/>
+    </linearGradient>
+    <linearGradient id="accentScr" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#9b59b6"/>
+      <stop offset="100%" stop-color="#8e44ad"/>
+    </linearGradient>
+    <linearGradient id="accentAdv" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1abc9c"/>
+      <stop offset="100%" stop-color="#16a085"/>
+    </linearGradient>
+    <linearGradient id="bottomBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e74c3c"/>
+      <stop offset="25%" stop-color="#3498db"/>
+      <stop offset="50%" stop-color="#2ecc71"/>
+      <stop offset="75%" stop-color="#f39c12"/>
+      <stop offset="100%" stop-color="#e74c3c"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="0.5"/>
+    </pattern>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="cardShadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="800" fill="url(#bgGrad)"/>
+  <rect width="1200" height="800" fill="url(#grid)"/>
+
+  <!-- Header -->
+  <text x="600" y="46" text-anchor="middle" font-family="'Courier New', monospace" font-size="12" fill="#e74c3c" letter-spacing="4" font-weight="700">// THE SQUAD — "EVERY AGENT GETS ONE SHOT TO DO THEIR JOB RIGHT"</text>
+  <text x="600" y="82" text-anchor="middle" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="42" font-weight="900" fill="#ffffff" letter-spacing="-1">Meet the Agents</text>
+  <text x="600" y="108" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" fill="rgba(255,255,255,0.45)" font-style="italic">"7 different personalities, one common goal — content that never misses"</text>
+
+  <!-- Wave labels -->
+  <g transform="translate(48, 140)">
+    <rect x="0" y="0" width="820" height="30" rx="6" fill="rgba(52,152,219,0.06)" stroke="rgba(52,152,219,0.12)" stroke-width="0.5"/>
+    <text x="410" y="20" text-anchor="middle" font-family="'Courier New', monospace" font-size="11" fill="rgba(52,152,219,0.6)" letter-spacing="2">▼ WAVE 1 — CONTEXT GATHERING (PARALLEL)</text>
+  </g>
+  <g transform="translate(888, 140)">
+    <rect x="0" y="0" width="264" height="30" rx="6" fill="rgba(46,204,113,0.06)" stroke="rgba(46,204,113,0.12)" stroke-width="0.5"/>
+    <text x="132" y="20" text-anchor="middle" font-family="'Courier New', monospace" font-size="11" fill="rgba(46,204,113,0.6)" letter-spacing="2">▼ WAVE 2</text>
+  </g>
+
+  <!-- Agent Card Template: Researcher (01) -->
+  <g transform="translate(48, 185)" filter="url(#cardShadow)">
+    <rect width="260" height="220" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    <rect width="260" height="3" rx="2" fill="url(#accentRes)"/>
+    <text x="222" y="42" font-family="'Courier New', monospace" font-size="48" font-weight="700" fill="#ffffff" fill-opacity="0.06">01</text>
+    <!-- Icon bg -->
+    <rect x="18" y="18" width="40" height="40" rx="10" fill="rgba(231,76,60,0.15)"/>
+    <text x="38" y="46" text-anchor="middle" font-size="20">🔍</text>
+    <!-- Name -->
+    <text x="18" y="82" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#ffffff">Researcher</text>
+    <!-- Pattern badge -->
+    <rect x="18" y="90" width="54" height="18" rx="4" fill="rgba(231,76,60,0.1)"/>
+    <text x="45" y="103" text-anchor="middle" font-family="'Courier New', monospace" font-size="9" fill="#e74c3c" letter-spacing="1">REACT</text>
+    <!-- Description -->
+    <text x="18" y="128" font-family="Arial, sans-serif" font-size="12" fill="rgba(255,255,255,0.5)" line-height="1.5">
+      <tspan x="18" dy="0">Think → Act → Observe loops.</tspan>
+      <tspan x="18" dy="17">Finds trends, analyzes hashtags,</tspan>
+      <tspan x="18" dy="17">studies competitors. Grounded in</tspan>
+      <tspan x="18" dy="17">real data, not vibes.</tspan>
+    </text>
+    <text x="18" y="206" font-family="'Courier New', monospace" font-size="10" fill="rgba(255,255,255,0.2)" letter-spacing="1">█████ 5 TOOLS</text>
+  </g>
+
+  <!-- Agent Card: Strategist (02) -->
+  <g transform="translate(324, 185)" filter="url(#cardShadow)">
+    <rect width="260" height="220" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    <rect width="260" height="3" rx="2" fill="url(#accentStr)"/>
+    <text x="222" y="42" font-family="'Courier New', monospace" font-size="48" font-weight="700" fill="#ffffff" fill-opacity="0.06">02</text>
+    <rect x="18" y="18" width="40" height="40" rx="10" fill="rgba(52,152,219,0.15)"/>
+    <text x="38" y="46" text-anchor="middle" font-size="20">♕</text>
+    <text x="18" y="82" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#ffffff">Strategist</text>
+    <rect x="18" y="90" width="115" height="18" rx="4" fill="rgba(52,152,219,0.1)"/>
+    <text x="75" y="103" text-anchor="middle" font-family="'Courier New', monospace" font-size="9" fill="#3498db" letter-spacing="1">CHAIN-OF-THOUGHT</text>
+    <text x="18" y="128" font-family="Arial, sans-serif" font-size="12" fill="rgba(255,255,255,0.5)">
+      <tspan x="18" dy="0">Audience → Message → Tone →</tspan>
+      <tspan x="18" dy="17">Calendar → CTA. Deliberate,</tspan>
+      <tspan x="18" dy="17">explainable strategy. Every move</tspan>
+      <tspan x="18" dy="17">is calculated.</tspan>
+    </text>
+    <text x="18" y="206" font-family="'Courier New', monospace" font-size="10" fill="rgba(255,255,255,0.2)" letter-spacing="1">███ COT</text>
+  </g>
+
+  <!-- Agent Card: Memory (03) -->
+  <g transform="translate(600, 185)" filter="url(#cardShadow)">
+    <rect width="260" height="220" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    <rect width="260" height="3" rx="2" fill="url(#accentMem)"/>
+    <text x="222" y="42" font-family="'Courier New', monospace" font-size="48" font-weight="700" fill="#ffffff" fill-opacity="0.06">03</text>
+    <rect x="18" y="18" width="40" height="40" rx="10" fill="rgba(46,204,113,0.15)"/>
+    <text x="38" y="46" text-anchor="middle" font-size="20">🧠</text>
+    <text x="18" y="82" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#ffffff">Memory</text>
+    <rect x="18" y="90" width="38" height="18" rx="4" fill="rgba(46,204,113,0.1)"/>
+    <text x="37" y="103" text-anchor="middle" font-family="'Courier New', monospace" font-size="9" fill="#2ecc71" letter-spacing="1">RAG</text>
+    <text x="18" y="128" font-family="Arial, sans-serif" font-size="12" fill="rgba(255,255,255,0.5)">
+      <tspan x="18" dy="0">Retrieves brand guidelines, past</tspan>
+      <tspan x="18" dy="17">post performance, and content</tspan>
+      <tspan x="18" dy="17">calendars. Zero hallucination.</tspan>
+      <tspan x="18" dy="17">The elephant never forgets.</tspan>
+    </text>
+    <text x="18" y="206" font-family="'Courier New', monospace" font-size="10" fill="rgba(255,255,255,0.2)" letter-spacing="1">████ 4 TOOLS</text>
+  </g>
+
+  <!-- Agent Card: Analyst (04) -->
+  <g transform="translate(48, 425)" filter="url(#cardShadow)">
+    <rect width="260" height="220" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    <rect width="260" height="3" rx="2" fill="url(#accentAna)"/>
+    <text x="222" y="42" font-family="'Courier New', monospace" font-size="48" font-weight="700" fill="#ffffff" fill-opacity="0.06">04</text>
+    <rect x="18" y="18" width="40" height="40" rx="10" fill="rgba(243,156,18,0.15)"/>
+    <text x="38" y="46" text-anchor="middle" font-size="20">📊</text>
+    <text x="18" y="82" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#ffffff">Analyst</text>
+    <rect x="18" y="90" width="88" height="18" rx="4" fill="rgba(243,156,18,0.1)"/>
+    <text x="62" y="103" text-anchor="middle" font-family="'Courier New', monospace" font-size="9" fill="#f39c12" letter-spacing="1">DATA-DRIVEN</text>
+    <text x="18" y="128" font-family="Arial, sans-serif" font-size="12" fill="rgba(255,255,255,0.5)">
+      <tspan x="18" dy="0">Engagement benchmarks, optimal</tspan>
+      <tspan x="18" dy="17">posting times, performance</tspan>
+      <tspan x="18" dy="17">predictions. Numbers, not guesses.</tspan>
+      <tspan x="18" dy="17">The data doesn't lie.</tspan>
+    </text>
+    <text x="18" y="206" font-family="'Courier New', monospace" font-size="10" fill="rgba(255,255,255,0.2)" letter-spacing="1">██ 2 TOOLS</text>
+  </g>
+
+  <!-- Agent Card: Scribe (05) -->
+  <g transform="translate(324, 425)" filter="url(#cardShadow)">
+    <rect width="260" height="220" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    <rect width="260" height="3" rx="2" fill="url(#accentScr)"/>
+    <text x="222" y="42" font-family="'Courier New', monospace" font-size="48" font-weight="700" fill="#ffffff" fill-opacity="0.06">05</text>
+    <rect x="18" y="18" width="40" height="40" rx="10" fill="rgba(155,89,182,0.15)"/>
+    <text x="38" y="46" text-anchor="middle" font-size="20">✍</text>
+    <text x="18" y="82" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#ffffff">Scribe</text>
+    <rect x="18" y="90" width="118" height="18" rx="4" fill="rgba(155,89,182,0.1)"/>
+    <text x="77" y="103" text-anchor="middle" font-family="'Courier New', monospace" font-size="9" fill="#9b59b6" letter-spacing="1">TEMPLATE-GUIDED</text>
+    <text x="18" y="128" font-family="Arial, sans-serif" font-size="12" fill="rgba(255,255,255,0.5)">
+      <tspan x="18" dy="0">Platform-specific templates:</tspan>
+      <tspan x="18" dy="17">hook → body → CTA → hashtags.</tspan>
+      <tspan x="18" dy="17">Saves drafts via MCP filesystem.</tspan>
+      <tspan x="18" dy="17">Words are weapons.</tspan>
+    </text>
+    <text x="18" y="206" font-family="'Courier New', monospace" font-size="10" fill="rgba(255,255,255,0.2)" letter-spacing="1">█ MCP:FS</text>
+  </g>
+
+  <!-- Agent Card: Advisor (06) -->
+  <g transform="translate(600, 425)" filter="url(#cardShadow)">
+    <rect width="260" height="220" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    <rect width="260" height="3" rx="2" fill="url(#accentAdv)"/>
+    <text x="222" y="42" font-family="'Courier New', monospace" font-size="48" font-weight="700" fill="#ffffff" fill-opacity="0.06">06</text>
+    <rect x="18" y="18" width="40" height="40" rx="10" fill="rgba(26,188,156,0.15)"/>
+    <text x="38" y="46" text-anchor="middle" font-size="20">🛡</text>
+    <text x="18" y="82" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#ffffff">Advisor</text>
+    <rect x="18" y="90" width="110" height="18" rx="4" fill="rgba(26,188,156,0.1)"/>
+    <text x="73" y="103" text-anchor="middle" font-family="'Courier New', monospace" font-size="9" fill="#1abc9c" letter-spacing="1">SELF-REFLECTION</text>
+    <text x="18" y="128" font-family="Arial, sans-serif" font-size="12" fill="rgba(255,255,255,0.5)">
+      <tspan x="18" dy="0">Review → Metacognition → Revised</tspan>
+      <tspan x="18" dy="17">Score. The AI that reviews its own</tspan>
+      <tspan x="18" dy="17">AI. Compliance 1-10. No ego,</tspan>
+      <tspan x="18" dy="17">just the truth.</tspan>
+    </text>
+    <text x="18" y="206" font-family="'Courier New', monospace" font-size="10" fill="rgba(255,255,255,0.2)" letter-spacing="1">███ META</text>
+  </g>
+
+  <!-- Agent Card: Orchestrator (00) — the boss — full width right column -->
+  <g transform="translate(876, 185)" filter="url(#cardShadow)">
+    <rect width="276" height="460" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(231,76,60,0.15)" stroke-width="1"/>
+    <rect width="276" height="3" rx="2" fill="url(#accentOrch)"/>
+    <text x="230" y="52" font-family="'Courier New', monospace" font-size="60" font-weight="700" fill="#ffffff" fill-opacity="0.05">00</text>
+    <!-- Crosshair icon -->
+    <rect x="18" y="18" width="48" height="48" rx="12" fill="rgba(231,76,60,0.12)"/>
+    <text x="42" y="50" text-anchor="middle" font-size="24">🎯</text>
+    <text x="18" y="92" font-family="'Arial Black', sans-serif" font-size="22" font-weight="900" fill="#ffffff">Orchestrator</text>
+    <rect x="18" y="102" width="175" height="20" rx="4" fill="rgba(231,76,60,0.1)"/>
+    <text x="105" y="116" text-anchor="middle" font-family="'Courier New', monospace" font-size="9" fill="#e74c3c" letter-spacing="1">STEP-BY-STEP DECOMPOSITION</text>
+    <!-- Lyric -->
+    <text x="18" y="148" font-family="Arial, sans-serif" font-size="13" fill="#e74c3c" fill-opacity="0.6" font-style="italic">"The shot-caller."</text>
+
+    <text x="18" y="176" font-family="Arial, sans-serif" font-size="12" fill="rgba(255,255,255,0.5)">
+      <tspan x="18" dy="0">Classifies intent, detects</tspan>
+      <tspan x="18" dy="17">platforms, dispatches two-wave</tspan>
+      <tspan x="18" dy="17">parallel execution.</tspan>
+    </text>
+    <text x="18" y="236" font-family="Arial, sans-serif" font-size="12" fill="rgba(255,255,255,0.5)">
+      <tspan x="18" dy="0">Every agent answers to this one.</tspan>
+      <tspan x="18" dy="17">One shot to decompose right.</tspan>
+    </text>
+
+    <!-- Flow diagram mini -->
+    <g transform="translate(18, 286)">
+      <rect x="0" y="0" width="240" height="1" fill="rgba(255,255,255,0.06)"/>
+      <text x="0" y="22" font-family="'Courier New', monospace" font-size="10" fill="rgba(255,255,255,0.3)" letter-spacing="1">DISPATCH FLOW:</text>
+      <!-- Mini flow -->
+      <rect x="0" y="34" width="240" height="24" rx="4" fill="rgba(52,152,219,0.08)" stroke="rgba(52,152,219,0.15)" stroke-width="0.5"/>
+      <text x="120" y="50" text-anchor="middle" font-family="'Courier New', monospace" font-size="10" fill="#3498db">WAVE 1: 4 AGENTS ∥ PARALLEL</text>
+      <!-- Arrow -->
+      <text x="120" y="72" text-anchor="middle" font-size="12" fill="rgba(243,156,18,0.5)">▼</text>
+      <rect x="0" y="78" width="240" height="24" rx="4" fill="rgba(46,204,113,0.08)" stroke="rgba(46,204,113,0.15)" stroke-width="0.5"/>
+      <text x="120" y="94" text-anchor="middle" font-family="'Courier New', monospace" font-size="10" fill="#2ecc71">WAVE 2: 2 AGENTS ∥ PARALLEL</text>
+      <!-- Arrow -->
+      <text x="120" y="116" text-anchor="middle" font-size="12" fill="rgba(243,156,18,0.5)">▼</text>
+      <rect x="0" y="122" width="240" height="24" rx="4" fill="rgba(231,76,60,0.08)" stroke="rgba(231,76,60,0.15)" stroke-width="0.5"/>
+      <text x="120" y="138" text-anchor="middle" font-family="'Courier New', monospace" font-size="10" fill="#e74c3c">SYNTHESIZE → RESPOND</text>
+    </g>
+  </g>
+
+  <!-- Bottom tagline -->
+  <text x="600" y="675" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="rgba(255,255,255,0.3)" font-style="italic">
+    "This is not 7 copies of GPT with different system prompts." — Each agent has a
+    <tspan fill="#e74c3c" font-weight="700" font-style="normal"> named reasoning identity</tspan>
+  </text>
+
+  <!-- Lose Yourself micro-quote -->
+  <text x="600" y="700" text-anchor="middle" font-family="'Courier New', monospace" font-size="11" fill="rgba(231,76,60,0.3)" letter-spacing="2">
+    "LOOK — IF YOU HAD ONE SHOT, OR ONE OPPORTUNITY..."
+  </text>
+
+  <!-- Bottom bar -->
+  <rect x="0" y="797" width="1200" height="3" fill="url(#bottomBar)"/>
+</svg>

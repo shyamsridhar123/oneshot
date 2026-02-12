@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@700&display=swap');
+
+  body {
+    width: 1200px;
+    height: 630px;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+    background: #0a0a0a;
+  }
+
+  .container {
+    width: 1200px;
+    height: 630px;
+    position: relative;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 40%, #16213e 70%, #0a0a0a 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  /* Animated grid background */
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* Glowing orbs */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+  }
+  .orb-1 { width: 300px; height: 300px; background: #e74c3c; top: -50px; left: -50px; }
+  .orb-2 { width: 250px; height: 250px; background: #3498db; bottom: -50px; right: 100px; }
+  .orb-3 { width: 200px; height: 200px; background: #f39c12; top: 50px; right: -30px; opacity: 0.3; }
+
+  /* Crosshair / target */
+  .crosshair {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    height: 500px;
+    border: 1px solid rgba(231, 76, 60, 0.15);
+    border-radius: 50%;
+  }
+  .crosshair::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px;
+    height: 350px;
+    border: 1px solid rgba(231, 76, 60, 0.1);
+    border-radius: 50%;
+  }
+  .crosshair-line-h {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(231, 76, 60, 0.2), transparent);
+  }
+  .crosshair-line-v {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1px;
+    height: 600px;
+    background: linear-gradient(180deg, transparent, rgba(231, 76, 60, 0.2), transparent);
+  }
+
+  .content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 0 60px;
+  }
+
+  .tagline-top {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: #e74c3c;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    opacity: 0.9;
+  }
+
+  .title {
+    font-size: 96px;
+    font-weight: 900;
+    color: #ffffff;
+    line-height: 1;
+    margin-bottom: 8px;
+    letter-spacing: -2px;
+    text-shadow: 0 0 60px rgba(231, 76, 60, 0.3);
+  }
+
+  .title span {
+    background: linear-gradient(135deg, #e74c3c, #f39c12);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    font-size: 22px;
+    color: rgba(255,255,255,0.7);
+    font-weight: 400;
+    margin-bottom: 32px;
+    line-height: 1.4;
+  }
+
+  .subtitle strong {
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  .lyric-quote {
+    font-size: 16px;
+    color: rgba(231, 76, 60, 0.8);
+    font-style: italic;
+    margin-bottom: 36px;
+    letter-spacing: 1px;
+  }
+
+  .stats-bar {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 36px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 4px;
+  }
+
+  .stat-divider {
+    width: 1px;
+    height: 40px;
+    background: rgba(255,255,255,0.15);
+  }
+
+  /* Bottom bar */
+  .bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #e74c3c, #f39c12, #e74c3c);
+  }
+
+  /* Tech badges */
+  .tech-badges {
+    position: absolute;
+    bottom: 24px;
+    right: 40px;
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+  }
+
+  .badge {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Corner decorations */
+  .corner-tl {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 30px;
+    height: 30px;
+    border-top: 2px solid rgba(231, 76, 60, 0.5);
+    border-left: 2px solid rgba(231, 76, 60, 0.5);
+  }
+  .corner-tr {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 30px;
+    height: 30px;
+    border-top: 2px solid rgba(231, 76, 60, 0.5);
+    border-right: 2px solid rgba(231, 76, 60, 0.5);
+  }
+  .corner-bl {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: 30px;
+    height: 30px;
+    border-bottom: 2px solid rgba(231, 76, 60, 0.5);
+    border-left: 2px solid rgba(231, 76, 60, 0.5);
+  }
+  .corner-br {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 30px;
+    height: 30px;
+    border-bottom: 2px solid rgba(231, 76, 60, 0.5);
+    border-right: 2px solid rgba(231, 76, 60, 0.5);
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="grid-bg"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="crosshair"></div>
+    <div class="crosshair-line-h"></div>
+    <div class="crosshair-line-v"></div>
+    <div class="corner-tl"></div>
+    <div class="corner-tr"></div>
+    <div class="corner-bl"></div>
+    <div class="corner-br"></div>
+
+    <div class="content">
+      <div class="tagline-top">// YOU ONLY GET</div>
+      <div class="title"><span>One</span>Shot</div>
+      <div class="subtitle">
+        <strong>7 AI agents.</strong> Two parallel waves. <strong>One prompt.</strong><br>
+        Platform-ready social content &mdash; do not miss your chance to blow.
+      </div>
+      <div class="lyric-quote">"Success is my only option, failure's not." &mdash; adapted for AI</div>
+      <div class="stats-bar">
+        <div class="stat">
+          <div class="stat-number">7</div>
+          <div class="stat-label">AI Agents</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <div class="stat-number">7</div>
+          <div class="stat-label">Reasoning Patterns</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <div class="stat-number">3</div>
+          <div class="stat-label">Platforms</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <div class="stat-number">208</div>
+          <div class="stat-label">Tests Passing</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tech-badges">
+      <span class="badge">Azure OpenAI</span>
+      <span class="badge">MAF</span>
+      <span class="badge">MCP</span>
+      <span class="badge">Next.js</span>
+      <span class="badge">FastAPI</span>
+    </div>
+
+    <div class="bottom-bar"></div>
+  </div>
+</body>
+</html>

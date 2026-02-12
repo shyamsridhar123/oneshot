@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@600;700&display=swap');
+
+  body {
+    width: 1200px;
+    height: 800px;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+    background: #0a0a0a;
+  }
+
+  .container {
+    width: 1200px;
+    height: 800px;
+    position: relative;
+    background: linear-gradient(180deg, #0a0a0a 0%, #111827 50%, #0a0a0a 100%);
+    padding: 40px;
+    overflow: hidden;
+  }
+
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .header {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .header-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: #e74c3c;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .header-title {
+    font-size: 42px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -1px;
+  }
+
+  .header-subtitle {
+    font-size: 15px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 6px;
+    font-style: italic;
+  }
+
+  .agents-grid {
+    position: relative;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding: 0 20px;
+  }
+
+  .agent-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 24px 20px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .agent-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+  }
+
+  .agent-card:nth-child(1)::before { background: linear-gradient(90deg, #e74c3c, #c0392b); }
+  .agent-card:nth-child(2)::before { background: linear-gradient(90deg, #3498db, #2980b9); }
+  .agent-card:nth-child(3)::before { background: linear-gradient(90deg, #2ecc71, #27ae60); }
+  .agent-card:nth-child(4)::before { background: linear-gradient(90deg, #f39c12, #e67e22); }
+  .agent-card:nth-child(5)::before { background: linear-gradient(90deg, #9b59b6, #8e44ad); }
+  .agent-card:nth-child(6)::before { background: linear-gradient(90deg, #1abc9c, #16a085); }
+  .agent-card:nth-child(7)::before { background: linear-gradient(90deg, #e74c3c, #f39c12); }
+
+  .agent-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 48px;
+    font-weight: 700;
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    opacity: 0.08;
+    color: #fff;
+  }
+
+  .agent-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+
+  .agent-card:nth-child(1) .agent-icon { background: rgba(231, 76, 60, 0.2); }
+  .agent-card:nth-child(2) .agent-icon { background: rgba(52, 152, 219, 0.2); }
+  .agent-card:nth-child(3) .agent-icon { background: rgba(46, 204, 113, 0.2); }
+  .agent-card:nth-child(4) .agent-icon { background: rgba(243, 156, 18, 0.2); }
+  .agent-card:nth-child(5) .agent-icon { background: rgba(155, 89, 182, 0.2); }
+  .agent-card:nth-child(6) .agent-icon { background: rgba(26, 188, 156, 0.2); }
+  .agent-card:nth-child(7) .agent-icon { background: rgba(231, 76, 60, 0.15); }
+
+  .agent-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+
+  .agent-pattern {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    display: inline-block;
+  }
+
+  .agent-card:nth-child(1) .agent-pattern { color: #e74c3c; background: rgba(231, 76, 60, 0.1); }
+  .agent-card:nth-child(2) .agent-pattern { color: #3498db; background: rgba(52, 152, 219, 0.1); }
+  .agent-card:nth-child(3) .agent-pattern { color: #2ecc71; background: rgba(46, 204, 113, 0.1); }
+  .agent-card:nth-child(4) .agent-pattern { color: #f39c12; background: rgba(243, 156, 18, 0.1); }
+  .agent-card:nth-child(5) .agent-pattern { color: #9b59b6; background: rgba(155, 89, 182, 0.1); }
+  .agent-card:nth-child(6) .agent-pattern { color: #1abc9c; background: rgba(26, 188, 156, 0.1); }
+  .agent-card:nth-child(7) .agent-pattern { color: #f39c12; background: rgba(243, 156, 18, 0.1); }
+
+  .agent-desc {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.5;
+  }
+
+  .agent-bar {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: rgba(255,255,255,0.25);
+    margin-top: 10px;
+    letter-spacing: 1px;
+  }
+
+  /* Bottom tagline */
+  .bottom-tagline {
+    position: absolute;
+    bottom: 28px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 10;
+  }
+
+  .bottom-tagline-text {
+    font-size: 14px;
+    color: rgba(255,255,255,0.35);
+    font-style: italic;
+  }
+
+  .bottom-tagline-text span {
+    color: #e74c3c;
+    font-weight: 700;
+    font-style: normal;
+  }
+
+  /* Spanning card for orchestrator */
+  .agent-card.orchestrator {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 20px 28px;
+  }
+
+  .orchestrator .agent-desc {
+    flex: 1;
+  }
+
+  .wave-labels {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    gap: 16px;
+    padding: 0 20px;
+    margin-bottom: 12px;
+  }
+
+  .wave-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .wave-label.w1 { flex: 3; text-align: center; }
+  .wave-label.w2 { flex: 1; text-align: center; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="grid-bg"></div>
+
+    <div class="header">
+      <div class="header-tag">// The Squad</div>
+      <div class="header-title">Meet the Agents</div>
+      <div class="header-subtitle">"7 different personalities, one common goal &mdash; content that never misses"</div>
+    </div>
+
+    <div class="wave-labels">
+      <div class="wave-label w1">&#9660; Wave 1 &mdash; Context Gathering (Parallel)</div>
+      <div class="wave-label w2">&#9660; Wave 2</div>
+    </div>
+
+    <div class="agents-grid">
+      <!-- Wave 1 -->
+      <div class="agent-card">
+        <div class="agent-number">01</div>
+        <div class="agent-icon">&#128269;</div>
+        <div class="agent-name">Researcher</div>
+        <div class="agent-pattern">ReAct</div>
+        <div class="agent-desc">Think &rarr; Act &rarr; Observe loops. Finds trends, analyzes hashtags, studies competitors. Grounded in real data.</div>
+        <div class="agent-bar">&#9608;&#9608;&#9608;&#9608;&#9608; 5 TOOLS</div>
+      </div>
+
+      <div class="agent-card">
+        <div class="agent-number">02</div>
+        <div class="agent-icon">&#9813;</div>
+        <div class="agent-name">Strategist</div>
+        <div class="agent-pattern">Chain-of-Thought</div>
+        <div class="agent-desc">Audience &rarr; Message &rarr; Tone &rarr; Calendar &rarr; CTA. Deliberate, explainable strategy.</div>
+        <div class="agent-bar">&#9608;&#9608;&#9608; COT</div>
+      </div>
+
+      <div class="agent-card">
+        <div class="agent-number">03</div>
+        <div class="agent-icon">&#129504;</div>
+        <div class="agent-name">Memory</div>
+        <div class="agent-pattern">RAG</div>
+        <div class="agent-desc">Retrieves brand guidelines, past post performance, and content calendars. Zero hallucination.</div>
+        <div class="agent-bar">&#9608;&#9608;&#9608;&#9608; 4 TOOLS</div>
+      </div>
+
+      <div class="agent-card">
+        <div class="agent-number">04</div>
+        <div class="agent-icon">&#128200;</div>
+        <div class="agent-name">Analyst</div>
+        <div class="agent-pattern">Data-Driven</div>
+        <div class="agent-desc">Engagement benchmarks, optimal posting times, performance predictions. Numbers, not guesses.</div>
+        <div class="agent-bar">&#9608;&#9608; 2 TOOLS</div>
+      </div>
+
+      <!-- Wave 2 -->
+      <div class="agent-card">
+        <div class="agent-number">05</div>
+        <div class="agent-icon">&#9997;</div>
+        <div class="agent-name">Scribe</div>
+        <div class="agent-pattern">Template-Guided</div>
+        <div class="agent-desc">Platform-specific templates: hook &rarr; body &rarr; CTA &rarr; hashtags. Saves drafts via MCP.</div>
+        <div class="agent-bar">&#9608; MCP:FS</div>
+      </div>
+
+      <div class="agent-card">
+        <div class="agent-number">06</div>
+        <div class="agent-icon">&#128737;</div>
+        <div class="agent-name">Advisor</div>
+        <div class="agent-pattern">Self-Reflection</div>
+        <div class="agent-desc">Review &rarr; Metacognition &rarr; Revised Score. The AI that reviews its own AI. Compliance 1-10.</div>
+        <div class="agent-bar">&#9608;&#9608;&#9608; META</div>
+      </div>
+
+      <!-- Orchestrator spanning bottom -->
+      <div class="agent-card orchestrator" style="grid-column: span 2;">
+        <div class="agent-icon" style="background: rgba(231,76,60,0.15); min-width: 40px;">&#127919;</div>
+        <div>
+          <div class="agent-name">Orchestrator</div>
+          <div class="agent-pattern" style="color: #e74c3c; background: rgba(231,76,60,0.1);">Step-by-Step Decomposition</div>
+          <div class="agent-desc">The shot-caller. Classifies intent, detects platforms, dispatches two-wave parallel execution. Every agent answers to this one.</div>
+        </div>
+        <div class="agent-number" style="top: 8px;">00</div>
+      </div>
+    </div>
+
+    <div class="bottom-tagline">
+      <div class="bottom-tagline-text">"This is not 7 copies of GPT with different system prompts." &mdash; Each agent has a <span>named reasoning identity</span></div>
+    </div>
+  </div>
+</body>
+</html>

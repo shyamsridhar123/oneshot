@@ -1,0 +1,234 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#050505"/>
+      <stop offset="30%" stop-color="#0d0d1a"/>
+      <stop offset="70%" stop-color="#1a0a0a"/>
+      <stop offset="100%" stop-color="#050505"/>
+    </linearGradient>
+    <linearGradient id="fireGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#e74c3c"/>
+      <stop offset="100%" stop-color="#f39c12"/>
+    </linearGradient>
+    <linearGradient id="spotlightGrad" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#f39c12" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#f39c12" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="stageGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1a1a1a"/>
+      <stop offset="100%" stop-color="#0a0a0a"/>
+    </linearGradient>
+    <radialGradient id="spotlight1" cx="30%" cy="0%" r="60%">
+      <stop offset="0%" stop-color="#f39c12" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#f39c12" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="spotlight2" cx="70%" cy="0%" r="60%">
+      <stop offset="0%" stop-color="#e74c3c" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#e74c3c" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="crowdGlow" cx="50%" cy="100%" r="60%">
+      <stop offset="0%" stop-color="#e74c3c" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#e74c3c" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="bottomBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e74c3c"/>
+      <stop offset="50%" stop-color="#f39c12"/>
+      <stop offset="100%" stop-color="#e74c3c"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="bigGlow">
+      <feGaussianBlur stdDeviation="15" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.015)" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Background - dark venue -->
+  <rect width="1200" height="630" fill="url(#bgGrad)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <!-- Spotlights from top -->
+  <polygon points="300,0 200,630 400,630" fill="url(#spotlightGrad)" opacity="0.6"/>
+  <polygon points="900,0 800,630 1000,630" fill="url(#spotlightGrad)" opacity="0.4"/>
+  <rect width="1200" height="630" fill="url(#spotlight1)"/>
+  <rect width="1200" height="630" fill="url(#spotlight2)"/>
+
+  <!-- Stage floor -->
+  <rect x="0" y="440" width="1200" height="190" fill="url(#stageGrad)" opacity="0.8"/>
+  <line x1="0" y1="440" x2="1200" y2="440" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+  <!-- Stage floor planks (subtle) -->
+  <line x1="0" y1="480" x2="1200" y2="480" stroke="rgba(255,255,255,0.02)" stroke-width="0.5"/>
+  <line x1="0" y1="520" x2="1200" y2="520" stroke="rgba(255,255,255,0.02)" stroke-width="0.5"/>
+  <line x1="0" y1="560" x2="1200" y2="560" stroke="rgba(255,255,255,0.02)" stroke-width="0.5"/>
+
+  <!-- Crowd silhouette (abstract hands/heads) -->
+  <g opacity="0.04" fill="#ffffff">
+    <!-- Row of abstract crowd shapes at bottom -->
+    <circle cx="50" cy="610" r="12"/>
+    <circle cx="85" cy="605" r="10"/>
+    <circle cx="120" cy="612" r="11"/>
+    <circle cx="155" cy="608" r="9"/>
+    <circle cx="190" cy="614" r="12"/>
+    <circle cx="225" cy="606" r="10"/>
+    <circle cx="260" cy="611" r="11"/>
+    <circle cx="295" cy="607" r="13"/>
+    <circle cx="330" cy="613" r="10"/>
+    <circle cx="365" cy="609" r="11"/>
+    <circle cx="400" cy="615" r="9"/>
+    <circle cx="435" cy="608" r="12"/>
+    <circle cx="470" cy="612" r="10"/>
+    <circle cx="505" cy="606" r="11"/>
+    <circle cx="540" cy="614" r="13"/>
+    <circle cx="575" cy="609" r="10"/>
+    <circle cx="610" cy="613" r="11"/>
+    <circle cx="645" cy="607" r="12"/>
+    <circle cx="680" cy="611" r="9"/>
+    <circle cx="715" cy="615" r="11"/>
+    <circle cx="750" cy="608" r="10"/>
+    <circle cx="785" cy="612" r="12"/>
+    <circle cx="820" cy="606" r="11"/>
+    <circle cx="855" cy="614" r="10"/>
+    <circle cx="890" cy="609" r="13"/>
+    <circle cx="925" cy="613" r="9"/>
+    <circle cx="960" cy="607" r="11"/>
+    <circle cx="995" cy="611" r="12"/>
+    <circle cx="1030" cy="615" r="10"/>
+    <circle cx="1065" cy="608" r="11"/>
+    <circle cx="1100" cy="612" r="9"/>
+    <circle cx="1135" cy="606" r="12"/>
+    <circle cx="1170" cy="610" r="10"/>
+    <!-- Raised hands (scattered) -->
+    <rect x="100" y="575" width="5" height="30" rx="2"/>
+    <rect x="250" y="570" width="5" height="35" rx="2"/>
+    <rect x="400" y="572" width="5" height="33" rx="2"/>
+    <rect x="550" y="568" width="5" height="37" rx="2"/>
+    <rect x="700" y="573" width="5" height="32" rx="2"/>
+    <rect x="850" y="569" width="5" height="36" rx="2"/>
+    <rect x="1000" y="574" width="5" height="31" rx="2"/>
+    <rect x="1100" y="571" width="5" height="34" rx="2"/>
+  </g>
+
+  <!-- Microphone stand (center stage) -->
+  <g transform="translate(600, 300)" opacity="0.07">
+    <!-- Mic head -->
+    <ellipse cx="0" cy="-110" rx="22" ry="32" fill="#fff"/>
+    <rect x="-3" y="-78" width="6" height="4" fill="#fff"/>
+    <!-- Mic body/stand -->
+    <rect x="-4" y="-74" width="8" height="180" rx="3" fill="#fff"/>
+    <!-- Stand base -->
+    <ellipse cx="0" cy="110" rx="35" ry="8" fill="#fff"/>
+    <!-- Stand tripod legs -->
+    <line x1="0" y1="106" x2="-30" y2="120" stroke="#fff" stroke-width="3"/>
+    <line x1="0" y1="106" x2="30" y2="120" stroke="#fff" stroke-width="3"/>
+    <line x1="0" y1="106" x2="0" y2="122" stroke="#fff" stroke-width="3"/>
+  </g>
+
+  <!-- THE MAIN EVENT -->
+
+  <!-- "// THE STAGE IS SET" -->
+  <text x="600" y="80" text-anchor="middle" font-family="'Courier New', monospace" font-size="12" fill="#e74c3c" fill-opacity="0.7" letter-spacing="6" font-weight="700">// THE STAGE IS SET</text>
+
+  <!-- Lyric lines (stacked, building intensity) -->
+  <text x="600" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="rgba(255,255,255,0.25)" font-style="italic" letter-spacing="1">
+    Look — if you had one shot, or one opportunity
+  </text>
+  <text x="600" y="158" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="rgba(255,255,255,0.35)" font-style="italic" letter-spacing="1">
+    To seize everything you ever wanted, in one moment
+  </text>
+  <text x="600" y="186" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="rgba(255,255,255,0.5)" font-style="italic" letter-spacing="1" font-weight="600">
+    Would you capture it, or just let it slip?
+  </text>
+
+  <!-- BIG TITLE -->
+  <text x="600" y="280" text-anchor="middle" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="110" font-weight="900" letter-spacing="-3" filter="url(#bigGlow)">
+    <tspan fill="url(#fireGrad)">One</tspan><tspan fill="#ffffff">Shot</tspan>
+  </text>
+
+  <!-- "We didn't let it slip" -->
+  <text x="600" y="320" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="rgba(255,255,255,0.6)" letter-spacing="1">
+    We didn't let it slip.
+  </text>
+
+  <!-- Agent lineup (like a band on stage) -->
+  <g transform="translate(600, 382)">
+    <!-- 7 agent "figures" as abstract vertical bars with glow dots -->
+    <!-- Orchestrator (center, tallest) -->
+    <g transform="translate(0, 0)">
+      <rect x="-4" y="-40" width="8" height="50" rx="3" fill="#e74c3c" opacity="0.35"/>
+      <circle cx="0" cy="-48" r="5" fill="#e74c3c" opacity="0.6" filter="url(#glow)"/>
+      <text x="0" y="24" text-anchor="middle" font-family="'Courier New', monospace" font-size="8" fill="rgba(255,255,255,0.3)">ORCH</text>
+    </g>
+    <!-- Researcher -->
+    <g transform="translate(-180, 0)">
+      <rect x="-3" y="-30" width="6" height="40" rx="2" fill="#e74c3c" opacity="0.25"/>
+      <circle cx="0" cy="-36" r="4" fill="#e74c3c" opacity="0.5"/>
+      <text x="0" y="24" text-anchor="middle" font-family="'Courier New', monospace" font-size="7" fill="rgba(255,255,255,0.2)">RES</text>
+    </g>
+    <!-- Strategist -->
+    <g transform="translate(-120, 0)">
+      <rect x="-3" y="-32" width="6" height="42" rx="2" fill="#3498db" opacity="0.25"/>
+      <circle cx="0" cy="-38" r="4" fill="#3498db" opacity="0.5"/>
+      <text x="0" y="24" text-anchor="middle" font-family="'Courier New', monospace" font-size="7" fill="rgba(255,255,255,0.2)">STR</text>
+    </g>
+    <!-- Memory -->
+    <g transform="translate(-60, 0)">
+      <rect x="-3" y="-28" width="6" height="38" rx="2" fill="#2ecc71" opacity="0.25"/>
+      <circle cx="0" cy="-34" r="4" fill="#2ecc71" opacity="0.5"/>
+      <text x="0" y="24" text-anchor="middle" font-family="'Courier New', monospace" font-size="7" fill="rgba(255,255,255,0.2)">MEM</text>
+    </g>
+    <!-- Analyst -->
+    <g transform="translate(60, 0)">
+      <rect x="-3" y="-28" width="6" height="38" rx="2" fill="#f39c12" opacity="0.25"/>
+      <circle cx="0" cy="-34" r="4" fill="#f39c12" opacity="0.5"/>
+      <text x="0" y="24" text-anchor="middle" font-family="'Courier New', monospace" font-size="7" fill="rgba(255,255,255,0.2)">ANA</text>
+    </g>
+    <!-- Scribe -->
+    <g transform="translate(120, 0)">
+      <rect x="-3" y="-32" width="6" height="42" rx="2" fill="#9b59b6" opacity="0.25"/>
+      <circle cx="0" cy="-38" r="4" fill="#9b59b6" opacity="0.5"/>
+      <text x="0" y="24" text-anchor="middle" font-family="'Courier New', monospace" font-size="7" fill="rgba(255,255,255,0.2)">SCR</text>
+    </g>
+    <!-- Advisor -->
+    <g transform="translate(180, 0)">
+      <rect x="-3" y="-30" width="6" height="40" rx="2" fill="#1abc9c" opacity="0.25"/>
+      <circle cx="0" cy="-36" r="4" fill="#1abc9c" opacity="0.5"/>
+      <text x="0" y="24" text-anchor="middle" font-family="'Courier New', monospace" font-size="7" fill="rgba(255,255,255,0.2)">ADV</text>
+    </g>
+  </g>
+
+  <!-- Bottom info bar -->
+  <g transform="translate(600, 472)">
+    <text x="0" y="0" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="rgba(255,255,255,0.7)">
+      <tspan fill="#ffffff">7 agents.</tspan>
+      <tspan fill="rgba(255,255,255,0.5)"> 7 reasoning patterns. </tspan>
+      <tspan fill="#ffffff">2 parallel waves.</tspan>
+      <tspan fill="rgba(255,255,255,0.5)"> One prompt in, content out.</tspan>
+    </text>
+  </g>
+
+  <!-- Tech stack whisper -->
+  <text x="600" y="510" text-anchor="middle" font-family="'Courier New', monospace" font-size="11" fill="rgba(255,255,255,0.2)" letter-spacing="3">
+    AZURE OPENAI  •  MAF  •  MCP  •  NEXT.JS  •  FASTAPI
+  </text>
+
+  <!-- "Success is my only option" -->
+  <text x="600" y="545" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="rgba(231,76,60,0.4)" font-style="italic">
+    "Success is my only option, failure's not." — adapted for AI agents
+  </text>
+
+  <!-- Corner brackets -->
+  <g stroke="#e74c3c" stroke-opacity="0.35" stroke-width="1.5" fill="none">
+    <path d="M 15,15 L 15,45 M 15,15 L 45,15"/>
+    <path d="M 1185,15 L 1185,45 M 1185,15 L 1155,15"/>
+    <path d="M 15,615 L 15,585 M 15,615 L 45,615"/>
+    <path d="M 1185,615 L 1185,585 M 1185,615 L 1155,615"/>
+  </g>
+
+  <!-- Bottom fire bar -->
+  <rect x="0" y="626" width="1200" height="4" fill="url(#bottomBar)"/>
+</svg>

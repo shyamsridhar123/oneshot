@@ -264,11 +264,46 @@ Intent: {intent['primary_intent']}
 Agent Outputs:
 {_format_agent_results(all_results)}
 
+## CRITICAL: Rich Output Formatting Rules
+
+The frontend renders special fenced code blocks as interactive visual components. You MUST preserve and include these rich blocks from agent outputs.
+
+### Rules:
+1. **PRESERVE all rich code blocks** from agent outputs — copy them EXACTLY as-is into your response. These include:
+   - `chart-bar`, `chart-line`, `chart-pie`, `chart-area`, `chart-radar` — rendered as interactive charts
+   - `platform-linkedin`, `platform-twitter`, `platform-x`, `platform-instagram` — rendered as platform post mockups
+   - `metrics`, `metric-cards`, `kpi` — rendered as KPI dashboard cards
+   - `callout`, `insight`, `tip`, `warning` — rendered as styled callout boxes
+   - `comparison`, `comparison-table` — rendered as styled comparison tables
+
+2. **ADD your own rich blocks** where it helps the user. For example:
+   - Add a `callout` block for key recommendations or warnings
+   - Add a `metrics` block summarizing key projected numbers
+   - Add a `comparison` block when comparing platform strategies
+
+3. **Structure your response clearly** with markdown headings (##, ###) to organize sections
+
+4. **Include platform preview cards** for every platform where content was generated (from Scribe output)
+
+5. **Include chart visualizations** for analytics data (from Analyst output)
+
+### Callout block format:
+```callout
+{{"type":"insight","title":"Title Here","content":"Your insight text here"}}
+```
+Types: "info", "warning", "success", "tip", "insight", "action"
+
+### Comparison table format:
+```comparison
+{{"title":"Platform Strategy Comparison","headers":["LinkedIn","Twitter","Instagram"],"rows":[{{"label":"Tone","values":["Professional","Conversational","Authentic"]}},{{"label":"Format","values":["Article","Thread","Carousel"]}}]}}
+```
+
 Provide a well-structured response that:
-- Includes platform-specific content for each requested platform
-- References engagement data and best practices from the Analyst
-- Incorporates brand guidelines from the Memory agent
-- Notes any compliance feedback from the Advisor
+- Opens with a brief strategic overview
+- Includes platform-specific content WITH preview cards for each requested platform
+- Includes engagement data visualizations (charts) from the Analyst
+- References brand guidelines from the Memory agent
+- Notes any compliance feedback from the Advisor with a callout block
 - Includes recommended posting schedule if applicable"""
 
             response = await llm.complete(

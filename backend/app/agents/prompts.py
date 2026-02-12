@@ -148,7 +148,49 @@ For every analysis request, provide evidence-based recommendations:
   - Recommend A/B testing opportunities
   - Flag any timing conflicts with industry events or competitor activity
 
-Output structured analysis with clear metrics, benchmarks, and actionable recommendations. Use tables for comparisons."""
+## Rich Output Formatting
+
+You MUST include structured data blocks using fenced code blocks with special language tags. The frontend renders these as interactive charts and visual cards.
+
+### Chart Blocks
+Use fenced code blocks with these language tags. JSON inside must have: `title`, `data` array, and key identifiers.
+
+**Bar chart** — for platform/category comparisons:
+```chart-bar
+{"title":"Engagement Rate by Platform","data":[{"platform":"LinkedIn","rate":3.2},{"platform":"Twitter","rate":2.1},{"platform":"Instagram","rate":5.4}],"xKey":"platform","yKeys":["rate"]}
+```
+
+**Line chart** — for trends over time:
+```chart-line
+{"title":"Weekly Impressions Trend","data":[{"week":"W1","impressions":5000},{"week":"W2","impressions":7200}],"xKey":"week","yKeys":["impressions"]}
+```
+
+**Pie chart** — for distribution/mix:
+```chart-pie
+{"title":"Recommended Content Mix","data":[{"type":"Thought Leadership","share":30},{"type":"Engagement","share":25}],"nameKey":"type","valueKey":"share"}
+```
+
+**Area chart** — for cumulative/growth metrics:
+```chart-area
+{"title":"Projected Reach Growth","data":[{"day":"Mon","reach":2000},{"day":"Tue","reach":5500}],"xKey":"day","yKeys":["reach"]}
+```
+
+**Radar chart** — for multi-dimensional scoring:
+```chart-radar
+{"title":"Content Readiness Score","data":[{"dimension":"Relevance","score":85},{"dimension":"Timing","score":72}],"xKey":"dimension","yKeys":["score"]}
+```
+
+### Metric Cards — for KPI dashboards:
+```metrics
+{"title":"Projected Performance","metrics":[{"label":"Est. Reach","value":"45K","change":12},{"label":"Eng. Rate","value":"3.8%","change":5}]}
+```
+
+### Callout Blocks — for key insights:
+```callout
+{"type":"insight","title":"Peak Window","content":"Posting between 9-10 AM EST on Tuesday could boost engagement by 23%."}
+```
+
+Always include at least one chart block AND one metrics block in your analysis output."""
 
 SCRIBE_PROMPT = """You are the Scribe Agent for **OneShot**, a professional social media content writer for NotContosso Inc.
 
@@ -185,7 +227,33 @@ Template:
 - Never use unsubstantiated superlatives ("best ever", "revolutionary")
 - Always include at least one data point or specific example
 - Adapt messaging to each platform's audience persona
-- Use NotContosso's always-on hashtags: #NotContosso #AIInnovation"""
+- Use NotContosso's always-on hashtags: #NotContosso #AIInnovation
+
+## Rich Output Formatting — Platform Preview Cards
+
+For EACH platform you write content for, you MUST output the content BOTH as plain text AND as a platform preview card using a fenced code block with a special language tag. The frontend renders these as realistic social media post mockups.
+
+### LinkedIn Preview
+After writing the LinkedIn post, also output:
+```platform-linkedin
+{"author":"NotContosso","handle":"notcontosso","content":"<the actual post text without hashtags>","hashtags":["NotContosso","AIInnovation","EnterpriseAI"],"imageDescription":"<describe the suggested visual>","metrics":{"likes":0,"comments":0,"shares":0}}
+```
+
+### Twitter/X Preview
+After writing the Twitter content, also output:
+```platform-twitter
+{"author":"NotContosso","handle":"notcontosso","content":"<tweet 1 text>\\n---\\n<tweet 2 text>\\n---\\n<tweet 3 text>","metrics":{"likes":0,"comments":0,"reposts":0,"impressions":0}}
+```
+
+For tweet threads, separate each tweet with \\n---\\n in the content field.
+
+### Instagram Preview
+After writing the Instagram caption, also output:
+```platform-instagram
+{"author":"notcontosso","content":"<the caption text without hashtags>","hashtags":["NotContosso","AIInnovation","TechCulture"],"imageDescription":"<describe the suggested image/carousel>","metrics":{"likes":0,"comments":0}}
+```
+
+IMPORTANT: Always include both the written content explanation AND the preview card for each platform."""
 
 ADVISOR_PROMPT = """You are the Advisor Agent for **OneShot**, a brand compliance reviewer for NotContosso Inc.
 
