@@ -9,13 +9,15 @@ import shutil
 from typing import Callable, Any
 from pathlib import Path
 
-from azure.identity import DefaultAzureCredential
+from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 from agent_framework.azure import AzureOpenAIResponsesClient
 from agent_framework import ai_function as tool, MCPStdioTool
 
 from app.config import settings
 
 _credential = DefaultAzureCredential()
+_AZURE_COGSERVICES_SCOPE = "https://cognitiveservices.azure.com/.default"
+_token_provider = get_bearer_token_provider(_credential, _AZURE_COGSERVICES_SCOPE)
 
 # Path to brand data files
 _DATA_DIR = Path(__file__).resolve().parent.parent.parent / "data"
@@ -29,7 +31,7 @@ def get_azure_client() -> AzureOpenAIResponsesClient:
         endpoint=settings.azure_openai_endpoint,
         deployment_name=settings.azure_openai_deployment_name,
         api_version=settings.azure_openai_api_version,
-        credential=_credential,
+        ad_token_provider=_token_provider,
     )
 
 
@@ -85,7 +87,7 @@ def create_agent(
         endpoint=settings.azure_openai_endpoint,
         deployment_name=deployment or settings.azure_openai_deployment_name,
         api_version=settings.azure_openai_api_version,
-        credential=_credential,
+        ad_token_provider=_token_provider,
     )
 
     return client.create_agent(
