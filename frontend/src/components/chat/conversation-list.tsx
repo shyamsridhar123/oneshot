@@ -45,7 +45,7 @@ export function ConversationList({
               <div className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-0.5 rounded-full bg-gradient-to-b from-violet-400 to-blue-400" />
             )}
             <div className={cn(
-              "font-medium truncate text-xs",
+              "font-medium text-xs break-words",
               activeId === conv.id ? "text-violet-300" : "text-foreground/70 group-hover:text-foreground/90"
             )}>
               {conv.title || "Untitled"}

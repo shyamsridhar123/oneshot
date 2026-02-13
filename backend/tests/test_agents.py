@@ -206,6 +206,10 @@ class TestAgentToolMapping:
         assert "researcher" in AGENT_TOOLS
         assert len(AGENT_TOOLS["researcher"]) >= 4
 
+    def test_strategist_has_tools(self):
+        assert "strategist" in AGENT_TOOLS
+        assert len(AGENT_TOOLS["strategist"]) >= 2
+
     def test_memory_has_tools(self):
         assert "memory" in AGENT_TOOLS
         assert len(AGENT_TOOLS["memory"]) >= 3
@@ -213,6 +217,10 @@ class TestAgentToolMapping:
     def test_analyst_has_tools(self):
         assert "analyst" in AGENT_TOOLS
         assert len(AGENT_TOOLS["analyst"]) >= 2
+
+    def test_advisor_has_tools(self):
+        assert "advisor" in AGENT_TOOLS
+        assert len(AGENT_TOOLS["advisor"]) >= 2
 
     def test_researcher_tools_include_search(self):
         tool_funcs = AGENT_TOOLS["researcher"]
@@ -299,6 +307,101 @@ class TestMCPToolCreation:
             tools = get_agent_tools("analyst", include_mcp=True)
             mcp_tools = [t for t in tools if hasattr(t, "name") and t.name in ("filesystem", "fetch")]
             assert len(mcp_tools) == 0
+
+
+class TestStrategyAgent:
+    """Tests for the strategist agent module."""
+
+    async def test_strategist_fallback_on_auth_error(self):
+        """Strategist should fall back to direct LLM when MAF agent fails."""
+        from unittest.mock import AsyncMock
+
+        mock_llm = MagicMock()
+        mock_response = MagicMock()
+        mock_response.content = "Strategic plan"
+        mock_response.tokens_used = 120
+        mock_llm.complete_with_usage = AsyncMock(return_value=mock_response)
+
+        with patch("app.agents.strategist.create_agent", side_effect=Exception("Auth failed")), \
+             patch("app.agents.strategist.get_llm_service", return_value=mock_llm):
+            from app.agents.strategist import run_strategist
+            text, tokens = await run_strategist("Create strategy", {"message": "AI launch"})
+            assert text == "Strategic plan"
+            assert tokens == 120
+            mock_llm.complete_with_usage.assert_awaited_once()
+
+
+class TestAnalystAgent:
+    """Tests for the analyst agent module."""
+
+    async def test_analyst_fallback_on_auth_error(self):
+        """Analyst should fall back to direct LLM when MAF agent fails."""
+        from unittest.mock import AsyncMock
+
+        mock_llm = MagicMock()
+        mock_response = MagicMock()
+        mock_response.content = "Analytics report"
+        mock_response.tokens_used = 90
+        mock_llm.complete_with_usage = AsyncMock(return_value=mock_response)
+
+        with patch("app.agents.analyst.create_agent", side_effect=Exception("Auth failed")), \
+             patch("app.agents.analyst.get_llm_service", return_value=mock_llm):
+            from app.agents.analyst import run_analyst
+            text, tokens = await run_analyst("Analyze engagement", {"message": "engagement report"})
+            assert text == "Analytics report"
+            assert tokens == 90
+            mock_llm.complete_with_usage.assert_awaited_once()
+
+
+class TestAdvisorAgent:
+    """Tests for the advisor agent module."""
+
+    async def test_advisor_fallback_on_auth_error(self):
+        """Advisor should fall back to direct LLM when MAF agent fails."""
+        from unittest.mock import AsyncMock
+
+        mock_llm = MagicMock()
+        mock_response = MagicMock()
+        mock_response.content = "Compliance review"
+        mock_response.tokens_used = 80
+        mock_llm.complete_with_usage = AsyncMock(return_value=mock_response)
+
+        with patch("app.agents.advisor.create_agent", side_effect=Exception("Auth failed")), \
+             patch("app.agents.advisor.get_llm_service", return_value=mock_llm):
+            from app.agents.advisor import run_advisor
+            text, tokens = await run_advisor("Review content", {"message": "review", "previous_results": {"scribe": "Draft post"}})
+            assert text == "Compliance review"
+            assert tokens == 80
+            mock_llm.complete_with_usage.assert_awaited_once()
+
+
+class TestMemoryAgent:
+    """Tests for the memory agent module."""
+
+    async def test_memory_fallback_on_auth_error(self):
+        """Memory should fall back to direct LLM when MAF agent fails."""
+        from unittest.mock import AsyncMock
+
+        mock_llm = MagicMock()
+        mock_response = MagicMock()
+        mock_response.content = "Brand context"
+        mock_response.tokens_used = 60
+        mock_llm.complete_with_usage = AsyncMock(return_value=mock_response)
+
+        mock_ks = MagicMock()
+        mock_ks.search = AsyncMock(return_value=[])
+        mock_ks.find_similar_engagements = AsyncMock(return_value=[])
+
+        mock_db = AsyncMock()
+
+        with patch("app.agents.memory.create_agent", side_effect=Exception("Auth failed")), \
+             patch("app.agents.memory.get_llm_service", return_value=mock_llm), \
+             patch("app.agents.memory.get_knowledge_service", return_value=mock_ks):
+            from app.agents.memory import run_memory
+            text, tokens = await run_memory("Get brand info", {"message": "brand"}, db=mock_db)
+            assert text == "Brand context"
+            assert tokens == 60
+            mock_llm.complete_with_usage.assert_awaited_once()
 
 
 # ============================================================

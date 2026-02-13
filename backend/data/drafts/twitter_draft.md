@@ -1,20 +1,16 @@
-1/ 🚀 40% fewer meetings. 3× faster docs.
+AI tools shouldn’t work in isolation—and neither should teams.
 
-That’s what teams are seeing with **NotContosso AI Collaboration Suite v3.0**.
+Today, we’re launching the **NotContosso AI Collaboration Suite**. 🧵👇
 
-Less sync. More shipping.
+1/ One shared AI across meetings, docs, and workflows—so teams operate from the same context.
 
-2/ v3.0 is built for real enterprise workflows:
-• AI-driven context instead of status meetings
-• Faster drafting, review, and alignment
-• Fewer handoffs, clearer decisions
+2/ Built for enterprise scale: security, governance, and control by design.
 
-3/ The goal isn’t more AI tools.
+3/ Early teams saw **40% fewer meetings** and **3× faster documentation** by aligning decisions in real time.
 
-It’s giving teams their time back — and letting them focus on building, not coordinating.
+4/ AI shouldn’t just help individuals.
+It should help teams move together.
 
-4/ NotContosso v3.0 is live.
+What’s the biggest collaboration challenge your team faces today?
 
-👉 What would your team do with 40% fewer meetings?
-
-#NotContosso #AIInnovation
+#NotContosso #AIInnovation #EnterpriseAI

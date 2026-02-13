@@ -78,10 +78,10 @@ function MessageBubble({
       </div>
       {/* Glass card response */}
       <div className="flex-1 min-w-0 overflow-hidden group">
-        <div className="relative rounded-2xl rounded-tl-md border border-white/[0.08] bg-card/80 backdrop-blur-xl shadow-xl shadow-black/5 dark:shadow-black/20 px-5 py-4 transition-all duration-300 hover:border-white/[0.12] hover:shadow-2xl">
+        <div className="relative overflow-hidden rounded-2xl rounded-tl-md border border-white/[0.08] bg-card/80 backdrop-blur-xl shadow-xl shadow-black/5 dark:shadow-black/20 px-5 py-4 transition-all duration-300 hover:border-white/[0.12] hover:shadow-2xl">
           {/* Subtle top gradient accent */}
           <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-violet-500/40 to-transparent" />
-          <div className="prose prose-sm dark:prose-invert prose-p:my-1.5 prose-p:leading-relaxed prose-headings:mt-4 prose-headings:mb-1.5 prose-headings:leading-snug prose-h2:text-base prose-h2:font-bold prose-h3:text-sm prose-h3:font-semibold prose-h4:text-[13px] prose-h4:font-semibold prose-ul:my-1.5 prose-ol:my-1.5 prose-li:my-0.5 prose-li:leading-relaxed prose-pre:my-2 prose-blockquote:my-2 prose-hr:my-3 prose-strong:text-foreground max-w-none text-sm text-foreground/90 break-words [overflow-wrap:anywhere]">
+          <div className="prose prose-sm dark:prose-invert prose-p:my-1.5 prose-p:leading-relaxed prose-headings:mt-4 prose-headings:mb-1.5 prose-headings:leading-snug prose-h2:text-base prose-h2:font-bold prose-h3:text-sm prose-h3:font-semibold prose-h4:text-[13px] prose-h4:font-semibold prose-ul:my-1.5 prose-ol:my-1.5 prose-li:my-0.5 prose-li:leading-relaxed prose-pre:my-2 prose-blockquote:my-2 prose-hr:my-3 prose-strong:text-foreground max-w-none text-sm text-foreground/90 break-words [overflow-wrap:anywhere] overflow-x-auto">
             <MemoizedMarkdown content={message.content} id={message.id} />
           </div>
           <div className="mt-3 flex items-center gap-2 text-[10px] text-muted-foreground/50 font-medium">
@@ -221,6 +221,7 @@ export function ChatInterface() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [input, setInput] = useState("");
   const [inputFocused, setInputFocused] = useState(false);
+  const streamingMsgIdRef = useRef<string | null>(null);
 
   const activeConversationId = useStore((s) => s.activeConversationId);
   const setActiveConversation = useStore((s) => s.setActiveConversation);
@@ -230,6 +231,8 @@ export function ChatInterface() {
   const addMessage = useStore((s) => s.addMessage);
   const isLoading = useStore((s) => s.isLoading);
   const setLoading = useStore((s) => s.setLoading);
+  const setStreaming = useStore((s) => s.setStreaming);
+  const isStreaming = useStore((s) => s.isStreaming);
 
   const messages = useStore((s) =>
     s.activeConversationId
@@ -284,11 +287,31 @@ export function ChatInterface() {
       return chatApi.sendMessage(conversationId, { content });
     },
     onSuccess: (response, { conversationId }) => {
-      addMessage(conversationId, response);
+      // If we created a streaming placeholder, update it with the final
+      // server response (authoritative content). Otherwise add normally.
+      const placeholderId = streamingMsgIdRef.current;
+      if (placeholderId) {
+        const state = useStore.getState();
+        const msgs = state.messages[conversationId];
+        if (msgs) {
+          const updated = msgs.map((m) =>
+            m.id === placeholderId
+              ? { ...m, id: response.id, content: response.content, created_at: response.created_at }
+              : m
+          );
+          state.setMessages(conversationId, updated);
+        }
+        streamingMsgIdRef.current = null;
+      } else {
+        addMessage(conversationId, response);
+      }
+      setStreaming(false, null);
       setLoading(false);
       queryClient.invalidateQueries({ queryKey: ["conversations"] });
     },
     onError: () => {
+      streamingMsgIdRef.current = null;
+      setStreaming(false, null);
       setLoading(false);
     },
   });
@@ -342,8 +365,23 @@ export function ChatInterface() {
         metadata: {},
       };
       addMessage(conversationId, userMessage);
+
+      // Add an empty assistant placeholder so stream.token events can append to it
+      const placeholderId = uuidv4();
+      streamingMsgIdRef.current = placeholderId;
+      const placeholderMessage: Message = {
+        id: placeholderId,
+        conversation_id: conversationId,
+        role: "assistant",
+        content: "",
+        created_at: new Date().toISOString(),
+        metadata: {},
+      };
+      addMessage(conversationId, placeholderMessage);
+
       setInput("");
       setLoading(true);
+      setStreaming(true, placeholderId);
 
       sendMutation.mutate({ conversationId, content: content.trim() });
     },
@@ -379,7 +417,7 @@ export function ChatInterface() {
   return (
     <div className="flex h-full overflow-hidden">
       {/* Conversation sidebar — frosted glass */}
-      <div className="hidden md:flex w-56 shrink-0 flex-col border-r border-white/[0.06] bg-card/30 backdrop-blur-md overflow-hidden">
+      <div className="hidden md:flex w-56 shrink-0 flex-col border-r border-white/[0.06] bg-card/30 backdrop-blur-md overflow-hidden min-h-0">
         <div className="flex h-14 shrink-0 items-center justify-between border-b border-white/[0.06] px-4">
           <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">Chats</h2>
           <Button
@@ -428,16 +466,19 @@ export function ChatInterface() {
               ) : messages.length === 0 ? (
                 <EmptyState onAction={doSend} />
               ) : (
-                messages.map((msg, i) => (
-                  <MessageBubble
-                    key={msg.id}
-                    message={msg}
-                    isLatest={i === messages.length - 1}
-                  />
-                ))
+                messages.map((msg, i) =>
+                  msg.role === "assistant" && !msg.content ? null : (
+                    <MessageBubble
+                      key={msg.id}
+                      message={msg}
+                      isLatest={i === messages.length - 1}
+                    />
+                  )
+                )
               )}
 
-              {isLoading && <ThinkingIndicator />}
+              {isLoading && !isStreaming && <ThinkingIndicator />}
+              {isLoading && isStreaming && messages.length > 0 && messages[messages.length - 1].content === "" && <ThinkingIndicator />}
             </div>
           </div>
         </div>

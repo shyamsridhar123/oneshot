@@ -10,19 +10,20 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { proposalsApi, documentsApi } from "@/lib/api";
 import type { Document } from "@/lib/types";
+import { MemoizedMarkdown } from "@/components/chat/memoized-markdown";
 
 function ProposalCard({ proposal }: { proposal: Document }) {
   const [viewOpen, setViewOpen] = useState(false);
 
   async function handleExport() {
-    const response = await documentsApi.export(proposal.id, "markdown");
+    const response = await documentsApi.export(proposal.id, "html");
     if (!response.ok) return;
     const blob = await response.blob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     const disposition = response.headers.get("Content-Disposition");
-    const filename = disposition?.match(/filename="(.+)"/)?.[1] ?? `${proposal.title}.md`;
+    const filename = disposition?.match(/filename="(.+)"/)?.[1] ?? `${proposal.title}.html`;
     a.download = filename;
     document.body.appendChild(a);
     a.click();
@@ -62,15 +63,15 @@ function ProposalCard({ proposal }: { proposal: Document }) {
       </Card>
 
       <Dialog open={viewOpen} onOpenChange={setViewOpen}>
-        <DialogContent className="max-w-2xl max-h-[80vh]">
+        <DialogContent className="max-h-[80vh]" style={{ maxWidth: "48rem" }}>
           <DialogHeader>
             <DialogTitle>{proposal.title}</DialogTitle>
           </DialogHeader>
-          <ScrollArea className="max-h-[60vh] pr-4">
-            <div className="prose prose-sm dark:prose-invert whitespace-pre-wrap">
-              {proposal.content}
+          <div className="overflow-y-auto overflow-x-hidden min-w-0 max-h-[60vh] pr-4">
+            <div className="prose prose-sm dark:prose-invert prose-p:my-1.5 prose-p:leading-relaxed prose-headings:mt-4 prose-headings:mb-1.5 prose-headings:leading-snug prose-h2:text-base prose-h2:font-bold prose-h3:text-sm prose-h3:font-semibold prose-h4:text-[13px] prose-h4:font-semibold prose-ul:my-1.5 prose-ol:my-1.5 prose-li:my-0.5 prose-li:leading-relaxed prose-pre:my-2 prose-blockquote:my-2 prose-hr:my-3 prose-strong:text-foreground max-w-none text-sm text-foreground/90 break-words [overflow-wrap:anywhere]">
+              <MemoizedMarkdown content={proposal.content} id={proposal.id} />
             </div>
-          </ScrollArea>
+          </div>
         </DialogContent>
       </Dialog>
     </>

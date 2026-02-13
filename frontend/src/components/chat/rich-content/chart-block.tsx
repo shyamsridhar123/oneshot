@@ -81,11 +81,13 @@ function buildConfig(keys: string[]): ChartConfig {
 
 const BarChartBlock = memo(({ raw }: { raw: string }) => {
   const chart = useMemo(() => parseChartData(raw), [raw]);
+  const { xKey, yKeys, config } = useMemo(() => {
+    if (!chart) return { xKey: "", yKeys: [] as string[], config: {} as ChartConfig };
+    const x = chart.xKey || Object.keys(chart.data[0])[0];
+    const y = chart.yKeys || Object.keys(chart.data[0]).filter((k) => k !== x);
+    return { xKey: x, yKeys: y, config: buildConfig(y) };
+  }, [chart]);
   if (!chart) return <FallbackBlock raw={raw} />;
-
-  const xKey = chart.xKey || Object.keys(chart.data[0])[0];
-  const yKeys = chart.yKeys || Object.keys(chart.data[0]).filter((k) => k !== xKey);
-  const config = useMemo(() => buildConfig(yKeys), [yKeys]);
 
   return (
     <div className="my-4 rounded-xl border bg-card p-5 shadow-sm">
@@ -114,11 +116,13 @@ BarChartBlock.displayName = "BarChartBlock";
 
 const LineChartBlock = memo(({ raw }: { raw: string }) => {
   const chart = useMemo(() => parseChartData(raw), [raw]);
+  const { xKey, yKeys, config } = useMemo(() => {
+    if (!chart) return { xKey: "", yKeys: [] as string[], config: {} as ChartConfig };
+    const x = chart.xKey || Object.keys(chart.data[0])[0];
+    const y = chart.yKeys || Object.keys(chart.data[0]).filter((k) => k !== x);
+    return { xKey: x, yKeys: y, config: buildConfig(y) };
+  }, [chart]);
   if (!chart) return <FallbackBlock raw={raw} />;
-
-  const xKey = chart.xKey || Object.keys(chart.data[0])[0];
-  const yKeys = chart.yKeys || Object.keys(chart.data[0]).filter((k) => k !== xKey);
-  const config = useMemo(() => buildConfig(yKeys), [yKeys]);
 
   return (
     <div className="my-4 rounded-xl border bg-card p-5 shadow-sm">
@@ -150,11 +154,13 @@ LineChartBlock.displayName = "LineChartBlock";
 
 const AreaChartBlock = memo(({ raw }: { raw: string }) => {
   const chart = useMemo(() => parseChartData(raw), [raw]);
+  const { xKey, yKeys, config } = useMemo(() => {
+    if (!chart) return { xKey: "", yKeys: [] as string[], config: {} as ChartConfig };
+    const x = chart.xKey || Object.keys(chart.data[0])[0];
+    const y = chart.yKeys || Object.keys(chart.data[0]).filter((k) => k !== x);
+    return { xKey: x, yKeys: y, config: buildConfig(y) };
+  }, [chart]);
   if (!chart) return <FallbackBlock raw={raw} />;
-
-  const xKey = chart.xKey || Object.keys(chart.data[0])[0];
-  const yKeys = chart.yKeys || Object.keys(chart.data[0]).filter((k) => k !== xKey);
-  const config = useMemo(() => buildConfig(yKeys), [yKeys]);
 
   return (
     <div className="my-4 rounded-xl border bg-card p-5 shadow-sm">
@@ -186,12 +192,17 @@ AreaChartBlock.displayName = "AreaChartBlock";
 
 const PieChartBlock = memo(({ raw }: { raw: string }) => {
   const chart = useMemo(() => parseChartData(raw), [raw]);
-  if (!chart) return <FallbackBlock raw={raw} />;
 
-  const nameKey = chart.nameKey || Object.keys(chart.data[0])[0];
-  const valueKey = chart.valueKey || Object.keys(chart.data[0])[1];
+  const { nameKey, valueKey } = useMemo(() => {
+    if (!chart) return { nameKey: "", valueKey: "" };
+    return {
+      nameKey: chart.nameKey || Object.keys(chart.data[0])[0],
+      valueKey: chart.valueKey || Object.keys(chart.data[0])[1],
+    };
+  }, [chart]);
 
   const config = useMemo<ChartConfig>(() => {
+    if (!chart) return {};
     const c: ChartConfig = { [valueKey]: { label: valueKey } };
     chart.data.forEach((d, i) => {
       const name = String(d[nameKey] ?? `item-${i}`);
@@ -201,16 +212,20 @@ const PieChartBlock = memo(({ raw }: { raw: string }) => {
       };
     });
     return c;
-  }, [chart.data, nameKey, valueKey]);
+  }, [chart, nameKey, valueKey]);
 
   const dataWithFill = useMemo(
     () =>
-      chart.data.map((d, i) => ({
-        ...d,
-        fill: COLORS[i % COLORS.length],
-      })),
-    [chart.data]
+      chart
+        ? chart.data.map((d, i) => ({
+            ...d,
+            fill: COLORS[i % COLORS.length],
+          }))
+        : [],
+    [chart]
   );
+
+  if (!chart) return <FallbackBlock raw={raw} />;
 
   return (
     <div className="my-4 rounded-xl border bg-card p-5 shadow-sm">
@@ -244,11 +259,13 @@ PieChartBlock.displayName = "PieChartBlock";
 
 const RadarChartBlock = memo(({ raw }: { raw: string }) => {
   const chart = useMemo(() => parseChartData(raw), [raw]);
+  const { subjectKey, valueKeys, config } = useMemo(() => {
+    if (!chart) return { subjectKey: "", valueKeys: [] as string[], config: {} as ChartConfig };
+    const s = chart.xKey || chart.nameKey || Object.keys(chart.data[0])[0];
+    const v = chart.yKeys || Object.keys(chart.data[0]).filter((k) => k !== s);
+    return { subjectKey: s, valueKeys: v, config: buildConfig(v) };
+  }, [chart]);
   if (!chart) return <FallbackBlock raw={raw} />;
-
-  const subjectKey = chart.xKey || chart.nameKey || Object.keys(chart.data[0])[0];
-  const valueKeys = chart.yKeys || Object.keys(chart.data[0]).filter((k) => k !== subjectKey);
-  const config = useMemo(() => buildConfig(valueKeys), [valueKeys]);
 
   return (
     <div className="my-4 rounded-xl border bg-card p-5 shadow-sm">
