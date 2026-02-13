@@ -4,7 +4,6 @@ import { useStore } from "@/lib/store";
 import type { AgentName, AgentStatusType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Brain,
   Search,
@@ -44,12 +43,11 @@ const statusColors: Record<AgentStatusType, string> = {
 };
 
 const TOOL_LABELS: Record<string, string> = {
-  search_web: "Web Search",
-  search_news: "News Search",
+  search_web: "DuckDuckGo Search",
+  search_news: "DuckDuckGo News",
   search_trends: "Trend Search",
   analyze_hashtags: "Hashtags",
   search_competitor_content: "Competitors",
-  fetch_mcp: "Fetch (MCP)",
   filesystem_mcp: "File Save (MCP)",
   get_brand_guidelines: "Brand Guide",
   get_past_posts: "Past Posts",
@@ -74,7 +72,7 @@ export function AgentStatusPanel() {
         variant="ghost"
         size="icon"
         onClick={() => setCollapsed(!collapsed)}
-        className="hidden md:flex fixed top-20 right-0 z-50 h-8 w-8 rounded-l-md rounded-r-none border border-r-0 bg-card shadow-sm"
+        className="hidden xl:flex absolute top-4 -left-4 z-50 h-8 w-8 rounded-full border bg-card shadow-sm"
         aria-label={collapsed ? "Show agent panel" : "Hide agent panel"}
       >
         {collapsed ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
@@ -82,7 +80,7 @@ export function AgentStatusPanel() {
 
       <aside
         className={cn(
-          "hidden md:flex flex-col border-l bg-card fixed top-0 right-0 h-screen z-40 transition-all duration-200",
+          "hidden xl:flex flex-col border-l bg-card shrink-0 relative transition-all duration-200",
           collapsed ? "w-0 overflow-hidden border-l-0" : "w-72"
         )}
       >
@@ -95,7 +93,7 @@ export function AgentStatusPanel() {
           )}
         </div>
 
-        <ScrollArea className="flex-1 p-4">
+        <div className="flex-1 overflow-y-auto p-4">
           <div className="space-y-3">
             {Object.entries(agentStates).map(([name, state]) => {
               const config = agentConfig[name as AgentName];
@@ -168,7 +166,7 @@ export function AgentStatusPanel() {
               );
             })}
           </div>
-        </ScrollArea>
+        </div>
       </aside>
     </>
   );

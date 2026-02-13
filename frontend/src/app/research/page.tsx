@@ -42,13 +42,13 @@ export default function ResearchPage() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex h-14 items-center border-b px-6">
-        <h1 className="text-xl font-semibold">Trends</h1>
+      <div className="flex h-14 items-center border-b px-4">
+        <h1 className="text-lg font-semibold">Trends</h1>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-6">
+      <div className="flex-1 overflow-y-auto p-4">
         <Tabs defaultValue="query" className="w-full">
-          <TabsList className="mb-6">
+          <TabsList className="mb-4">
             <TabsTrigger value="query">Research Query</TabsTrigger>
             <TabsTrigger value="briefing">Client Briefing</TabsTrigger>
           </TabsList>

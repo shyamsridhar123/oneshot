@@ -26,7 +26,7 @@ make run-frontend             # Terminal 2  →  http://localhost:3000
 | Git | any | `git --version` |
 
 **Optional** (for MCP tool integration):
-- npx (bundled with npm) -- enables Filesystem MCP and Fetch MCP servers
+- npx (bundled with npm) -- enables Filesystem MCP server for draft persistence
 
 ---
 

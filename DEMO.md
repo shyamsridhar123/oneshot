@@ -154,18 +154,18 @@ response = await agent.run(prompt)
 
 **Why it matters**: MAF gives us structured agent creation, tool registration, usage tracking, and MCP integration out of the box.
 
-### 2. MCP (Model Context Protocol) Integration
+### 2. MCP & Tool Integration
 
-Two MCP servers extend agent capabilities beyond LLM:
+One MCP server and direct tool integrations extend agent capabilities beyond LLM:
 
-| MCP Server | Agent | What It Does |
-|-----------|-------|-------------|
-| **Filesystem** (`server-filesystem`) | Scribe | Saves drafts to `./data/drafts/` -- the AI persists its own work |
-| **Fetch** (`mcp-server-fetch`) | Researcher | Retrieves real-time web content for trend grounding |
+| Integration | Type | Agent | What It Does |
+|-------------|------|-------|-------------|
+| **Filesystem** (`server-filesystem`) | MCP Server | Scribe | Saves drafts to `./data/drafts/` — the AI persists its own work |
+| **DuckDuckGo Search** (`ddgs`) | Python Tool | Researcher | Live web and news search for trend grounding — no API key required |
 
-MCP servers spawn as subprocesses and auto-register on agents. If unavailable, agents gracefully fall back to direct LLM calls.
+MCP servers spawn as subprocesses and auto-register on agents. DuckDuckGo is integrated as a direct Python tool via the `ddgs` library. If any tool is unavailable, agents gracefully fall back to direct LLM calls.
 
-**Talking point**: *"MCP is the open standard for extending AI agents with real-world tools. Our Scribe agent can save files. Our Researcher can fetch live web pages. And if those tools aren't available, the agents still work -- they just fall back gracefully."*
+**Talking point**: *"MCP is the open standard for extending AI agents with real-world tools. Our Scribe agent can save files via MCP. Our Researcher searches live web content via DuckDuckGo. And if those tools aren't available, the agents still work — they just fall back gracefully."*
 
 ### 3. Azure Identity (Zero Secrets)
 
@@ -224,9 +224,9 @@ This isn't "7 copies of GPT with different system prompts." Each agent uses a na
 
 Wave 1 gathers all the context. Wave 2 creates with that context. This is exactly how a content team works -- research and strategy happen before writing, and review happens after. We automated the workflow, not just the writing.
 
-### 4. MCP makes agents more than language models
+### 4. Agents interact with the real world
 
-The Scribe doesn't just generate text -- it *saves files* via MCP. The Researcher doesn't just know about trends -- it *fetches live web content*. MCP turns language models into agents that interact with the real world.
+The Scribe doesn't just generate text -- it *saves files* via MCP. The Researcher doesn't just know about trends -- it *searches live web content* via DuckDuckGo. Tool integrations turn language models into agents that act, not just generate.
 
 ### 5. It's production-shaped, not demo-shaped
 
@@ -250,7 +250,7 @@ The Advisor agent doesn't just check a box. It uses a Self-Reflection pattern: g
 | Specialized AI agents | 7 |
 | Named reasoning patterns | 7 (CoT, ReAct, RAG, Self-Reflection, Template-Guided, Data-Driven, Decomposition) |
 | Agent tool functions | 14 |
-| MCP server integrations | 2 (Filesystem + Fetch) |
+| MCP server integrations | 1 (Filesystem) |
 | Supported platforms | 3 (LinkedIn, Twitter/X, Instagram) |
 | Export formats | 4 (Markdown, HTML, PDF, DOCX) |
 | WebSocket event types | 6 |
@@ -269,7 +269,7 @@ Frontend:  Next.js 16 + React 19 + Shadcn/ui + Tailwind 4 + Zustand 5
 Backend:   Python 3.11 + FastAPI + SQLAlchemy 2.x + aiosqlite
 AI:        Azure OpenAI + Microsoft Agent Framework (MAF)
 Auth:      Azure Identity (DefaultAzureCredential)
-MCP:       Filesystem MCP + Fetch MCP (via MCPStdioTool)
+MCP:       Filesystem MCP (via MCPStdioTool) + DuckDuckGo Search (ddgs)
 Real-time: WebSocket agent status streaming
 Testing:   pytest + pytest-asyncio (208 tests)
 ```

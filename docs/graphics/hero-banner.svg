@@ -1,197 +1,297 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
   <defs>
-    <!-- Gradients -->
+    <!-- Core gradients -->
     <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0a0a0a"/>
-      <stop offset="40%" stop-color="#1a1a2e"/>
-      <stop offset="70%" stop-color="#16213e"/>
-      <stop offset="100%" stop-color="#0a0a0a"/>
+      <stop offset="0%" stop-color="#050508"/>
+      <stop offset="30%" stop-color="#0f0f23"/>
+      <stop offset="60%" stop-color="#1a0a14"/>
+      <stop offset="100%" stop-color="#050508"/>
     </linearGradient>
     <linearGradient id="fireGrad" x1="0%" y1="100%" x2="0%" y2="0%">
-      <stop offset="0%" stop-color="#e74c3c"/>
+      <stop offset="0%" stop-color="#c0392b"/>
+      <stop offset="40%" stop-color="#e74c3c"/>
       <stop offset="100%" stop-color="#f39c12"/>
     </linearGradient>
-    <linearGradient id="bottomBar" x1="0%" y1="0%" x2="100%" y2="0%">
+    <linearGradient id="fireGradH" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#e74c3c"/>
       <stop offset="50%" stop-color="#f39c12"/>
       <stop offset="100%" stop-color="#e74c3c"/>
     </linearGradient>
+    <linearGradient id="bottomBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e74c3c" stop-opacity="0"/>
+      <stop offset="20%" stop-color="#e74c3c"/>
+      <stop offset="50%" stop-color="#f39c12"/>
+      <stop offset="80%" stop-color="#e74c3c"/>
+      <stop offset="100%" stop-color="#e74c3c" stop-opacity="0"/>
+    </linearGradient>
+    <!-- Glow orbs -->
     <radialGradient id="orbRed" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#e74c3c" stop-opacity="0.5"/>
+      <stop offset="0%" stop-color="#e74c3c" stop-opacity="0.18"/>
+      <stop offset="60%" stop-color="#e74c3c" stop-opacity="0.04"/>
       <stop offset="100%" stop-color="#e74c3c" stop-opacity="0"/>
     </radialGradient>
     <radialGradient id="orbBlue" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#3498db" stop-opacity="0.4"/>
+      <stop offset="0%" stop-color="#3498db" stop-opacity="0.12"/>
+      <stop offset="60%" stop-color="#3498db" stop-opacity="0.03"/>
       <stop offset="100%" stop-color="#3498db" stop-opacity="0"/>
     </radialGradient>
     <radialGradient id="orbGold" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#f39c12" stop-opacity="0.35"/>
+      <stop offset="0%" stop-color="#f39c12" stop-opacity="0.12"/>
+      <stop offset="60%" stop-color="#f39c12" stop-opacity="0.03"/>
       <stop offset="100%" stop-color="#f39c12" stop-opacity="0"/>
     </radialGradient>
-    <linearGradient id="crosshairH" x1="0%" y1="0%" x2="100%" y2="0%">
+    <radialGradient id="centerFlare" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f39c12" stop-opacity="0.3"/>
+      <stop offset="30%" stop-color="#e74c3c" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#e74c3c" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Crosshair gradients -->
+    <linearGradient id="crossH" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#e74c3c" stop-opacity="0"/>
-      <stop offset="50%" stop-color="#e74c3c" stop-opacity="0.25"/>
+      <stop offset="40%" stop-color="#e74c3c" stop-opacity="0.4"/>
+      <stop offset="50%" stop-color="#f39c12" stop-opacity="0.6"/>
+      <stop offset="60%" stop-color="#e74c3c" stop-opacity="0.4"/>
       <stop offset="100%" stop-color="#e74c3c" stop-opacity="0"/>
     </linearGradient>
-    <linearGradient id="crosshairV" x1="0%" y1="0%" x2="0%" y2="100%">
+    <linearGradient id="crossV" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stop-color="#e74c3c" stop-opacity="0"/>
-      <stop offset="50%" stop-color="#e74c3c" stop-opacity="0.25"/>
+      <stop offset="35%" stop-color="#e74c3c" stop-opacity="0.3"/>
+      <stop offset="50%" stop-color="#f39c12" stop-opacity="0.5"/>
+      <stop offset="65%" stop-color="#e74c3c" stop-opacity="0.3"/>
       <stop offset="100%" stop-color="#e74c3c" stop-opacity="0"/>
     </linearGradient>
-    <!-- Glow filter -->
+    <!-- Filters -->
     <filter id="glow">
       <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="titleGlow">
+      <feGaussianBlur stdDeviation="20" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="1.2 0 0 0 0  0 0.6 0 0 0  0 0 0.2 0 0  0 0 0 1 0" result="colorBlur"/>
       <feMerge>
+        <feMergeNode in="colorBlur"/>
         <feMergeNode in="blur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
-    <filter id="bigGlow">
-      <feGaussianBlur stdDeviation="30" result="blur"/>
-      <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
-    <!-- Grid pattern -->
-    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/>
+    <!-- Scan-line pattern -->
+    <pattern id="scanlines" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="2" fill="rgba(255,255,255,0.008)"/>
     </pattern>
-    <!-- Mic silhouette clip -->
-    <clipPath id="micClip">
-      <circle cx="600" cy="265" r="200"/>
-    </clipPath>
+    <!-- Grid pattern -->
+    <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+      <path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(255,255,255,0.025)" stroke-width="0.5"/>
+    </pattern>
+    <!-- Diamond grid pattern for HUD -->
+    <pattern id="diamonds" width="20" height="20" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="20" height="20" fill="none"/>
+      <rect width="1" height="1" x="10" y="10" fill="rgba(231,76,60,0.04)"/>
+    </pattern>
   </defs>
 
-  <!-- Background -->
+  <!-- === BACKGROUND LAYERS === -->
   <rect width="1200" height="630" fill="url(#bgGrad)"/>
   <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect width="1200" height="630" fill="url(#scanlines)"/>
+  <rect width="1200" height="630" fill="url(#diamonds)"/>
 
-  <!-- Glowing orbs -->
-  <ellipse cx="80" cy="80" rx="200" ry="200" fill="url(#orbRed)"/>
-  <ellipse cx="1100" cy="550" rx="180" ry="180" fill="url(#orbBlue)"/>
-  <ellipse cx="1150" cy="100" rx="140" ry="140" fill="url(#orbGold)"/>
+  <!-- Atmospheric orbs -->
+  <ellipse cx="100" cy="60" rx="280" ry="250" fill="url(#orbRed)"/>
+  <ellipse cx="1100" cy="570" rx="250" ry="220" fill="url(#orbBlue)"/>
+  <ellipse cx="1120" cy="80" rx="200" ry="180" fill="url(#orbGold)"/>
+  <ellipse cx="500" cy="600" rx="200" ry="150" fill="url(#orbBlue)" opacity="0.5"/>
 
-  <!-- Crosshair / target scope (the "one shot" motif) -->
-  <circle cx="600" cy="285" r="250" fill="none" stroke="#e74c3c" stroke-opacity="0.12" stroke-width="1"/>
-  <circle cx="600" cy="285" r="175" fill="none" stroke="#e74c3c" stroke-opacity="0.08" stroke-width="1"/>
-  <circle cx="600" cy="285" r="100" fill="none" stroke="#e74c3c" stroke-opacity="0.06" stroke-width="1"/>
-  <!-- Crosshair lines -->
-  <line x1="300" y1="285" x2="900" y2="285" stroke="url(#crosshairH)" stroke-width="1"/>
-  <line x1="600" y1="0" x2="600" y2="570" stroke="url(#crosshairV)" stroke-width="1"/>
-  <!-- Tick marks on crosshair -->
-  <line x1="560" y1="282" x2="560" y2="288" stroke="#e74c3c" stroke-opacity="0.2" stroke-width="1"/>
-  <line x1="520" y1="282" x2="520" y2="288" stroke="#e74c3c" stroke-opacity="0.15" stroke-width="1"/>
-  <line x1="640" y1="282" x2="640" y2="288" stroke="#e74c3c" stroke-opacity="0.2" stroke-width="1"/>
-  <line x1="680" y1="282" x2="680" y2="288" stroke="#e74c3c" stroke-opacity="0.15" stroke-width="1"/>
-  <line x1="597" y1="245" x2="603" y2="245" stroke="#e74c3c" stroke-opacity="0.2" stroke-width="1"/>
-  <line x1="597" y1="325" x2="603" y2="325" stroke="#e74c3c" stroke-opacity="0.2" stroke-width="1"/>
+  <!-- Center lens flare -->
+  <ellipse cx="600" cy="270" rx="180" ry="180" fill="url(#centerFlare)"/>
 
-  <!-- Corner brackets (tactical/scope aesthetic) -->
-  <g stroke="#e74c3c" stroke-opacity="0.5" stroke-width="2" fill="none">
-    <path d="M 20,20 L 20,50 M 20,20 L 50,20"/>
-    <path d="M 1180,20 L 1180,50 M 1180,20 L 1150,20"/>
-    <path d="M 20,610 L 20,580 M 20,610 L 50,610"/>
-    <path d="M 1180,610 L 1180,580 M 1180,610 L 1150,610"/>
+  <!-- === CROSSHAIR / TARGETING SCOPE === -->
+  <!-- Outer rings with varying weight -->
+  <circle cx="600" cy="270" r="260" fill="none" stroke="#e74c3c" stroke-opacity="0.08" stroke-width="0.5" stroke-dasharray="4 8"/>
+  <circle cx="600" cy="270" r="220" fill="none" stroke="#e74c3c" stroke-opacity="0.12" stroke-width="1"/>
+  <circle cx="600" cy="270" r="160" fill="none" stroke="#e74c3c" stroke-opacity="0.15" stroke-width="1.2"/>
+  <circle cx="600" cy="270" r="100" fill="none" stroke="#f39c12" stroke-opacity="0.1" stroke-width="0.8"/>
+  <!-- Inner targeting diamond -->
+  <rect x="580" y="250" width="40" height="40" rx="2" fill="none" stroke="#e74c3c" stroke-opacity="0.2" stroke-width="0.8" transform="rotate(45,600,270)"/>
+
+  <!-- Crosshair lines - thicker, more visible -->
+  <line x1="200" y1="270" x2="560" y2="270" stroke="url(#crossH)" stroke-width="1.2"/>
+  <line x1="640" y1="270" x2="1000" y2="270" stroke="url(#crossH)" stroke-width="1.2"/>
+  <line x1="600" y1="0" x2="600" y2="230" stroke="url(#crossV)" stroke-width="1.2"/>
+  <line x1="600" y1="310" x2="600" y2="560" stroke="url(#crossV)" stroke-width="1.2"/>
+
+  <!-- Tick marks on crosshair - more visible -->
+  <g stroke="#e74c3c" stroke-width="1">
+    <line x1="560" y1="266" x2="560" y2="274" stroke-opacity="0.35"/>
+    <line x1="520" y1="267" x2="520" y2="273" stroke-opacity="0.25"/>
+    <line x1="480" y1="268" x2="480" y2="272" stroke-opacity="0.15"/>
+    <line x1="640" y1="266" x2="640" y2="274" stroke-opacity="0.35"/>
+    <line x1="680" y1="267" x2="680" y2="273" stroke-opacity="0.25"/>
+    <line x1="720" y1="268" x2="720" y2="272" stroke-opacity="0.15"/>
+    <line x1="596" y1="230" x2="604" y2="230" stroke-opacity="0.35"/>
+    <line x1="596" y1="310" x2="604" y2="310" stroke-opacity="0.35"/>
+    <line x1="597" y1="195" x2="603" y2="195" stroke-opacity="0.2"/>
+    <line x1="597" y1="345" x2="603" y2="345" stroke-opacity="0.2"/>
   </g>
 
-  <!-- Microphone silhouette (subtle, the "stage" motif) -->
-  <g opacity="0.04" transform="translate(600,315)">
-    <!-- Mic head -->
-    <ellipse cx="0" cy="-120" rx="28" ry="40" fill="#fff"/>
-    <!-- Mic body -->
-    <rect x="-8" y="-80" width="16" height="100" rx="4" fill="#fff"/>
-    <!-- Mic stand base -->
-    <ellipse cx="0" cy="30" rx="30" ry="6" fill="#fff"/>
+  <!-- Crosshair center dot - glowing target -->
+  <circle cx="600" cy="270" r="3" fill="#f39c12" opacity="0.8" filter="url(#softGlow)"/>
+
+  <!-- === CORNER BRACKETS (HUD FRAME) === -->
+  <g stroke="#e74c3c" stroke-opacity="0.6" stroke-width="2" fill="none">
+    <path d="M 18,18 L 18,58 M 18,18 L 58,18"/>
+    <path d="M 1182,18 L 1182,58 M 1182,18 L 1142,18"/>
+    <path d="M 18,612 L 18,572 M 18,612 L 58,612"/>
+    <path d="M 1182,612 L 1182,572 M 1182,612 L 1142,612"/>
   </g>
+  <!-- Inner corners (second frame layer) -->
+  <g stroke="#e74c3c" stroke-opacity="0.15" stroke-width="1" fill="none">
+    <path d="M 32,32 L 32,52 M 32,32 L 52,32"/>
+    <path d="M 1168,32 L 1168,52 M 1168,32 L 1148,32"/>
+    <path d="M 32,598 L 32,578 M 32,598 L 52,598"/>
+    <path d="M 1168,598 L 1168,578 M 1168,598 L 1148,598"/>
+  </g>
+
+  <!-- HUD corner data readouts -->
+  <text x="62" y="34" font-family="'Courier New', monospace" font-size="9" fill="#e74c3c" fill-opacity="0.4" letter-spacing="1">SYS:ACTIVE</text>
+  <text x="1138" y="34" text-anchor="end" font-family="'Courier New', monospace" font-size="9" fill="#e74c3c" fill-opacity="0.4" letter-spacing="1">v3.0</text>
+  <text x="62" y="604" font-family="'Courier New', monospace" font-size="9" fill="#e74c3c" fill-opacity="0.3" letter-spacing="1">MULTI-AGENT FRAMEWORK</text>
+  <text x="1138" y="604" text-anchor="end" font-family="'Courier New', monospace" font-size="9" fill="#e74c3c" fill-opacity="0.3" letter-spacing="1">AZURE OPENAI</text>
+
+  <!-- === MICROPHONE SILHOUETTE (visible this time) === -->
+  <g opacity="0.08" transform="translate(600,320)">
+    <ellipse cx="0" cy="-130" rx="32" ry="45" fill="#fff"/>
+    <rect x="-4" y="-85" width="8" height="5" rx="2" fill="#fff"/>
+    <rect x="-6" y="-80" width="12" height="110" rx="4" fill="#fff"/>
+    <ellipse cx="0" cy="36" rx="35" ry="8" fill="#fff"/>
+    <line x1="0" y1="30" x2="-28" y2="46" stroke="#fff" stroke-width="3"/>
+    <line x1="0" y1="30" x2="28" y2="46" stroke="#fff" stroke-width="3"/>
+  </g>
+
+  <!-- === BULLET HOLE ACCENTS (visible) === -->
+  <g opacity="0.12">
+    <circle cx="135" cy="510" r="4" fill="#fff"/>
+    <circle cx="135" cy="510" r="9" fill="none" stroke="#fff" stroke-width="0.7"/>
+    <circle cx="135" cy="510" r="15" fill="none" stroke="#fff" stroke-width="0.3"/>
+    <circle cx="1060" cy="140" r="3.5" fill="#fff"/>
+    <circle cx="1060" cy="140" r="8" fill="none" stroke="#fff" stroke-width="0.6"/>
+    <circle cx="1060" cy="140" r="13" fill="none" stroke="#fff" stroke-width="0.25"/>
+    <circle cx="190" cy="120" r="2.5" fill="#fff"/>
+    <circle cx="190" cy="120" r="6" fill="none" stroke="#fff" stroke-width="0.5"/>
+    <circle cx="1020" cy="480" r="3" fill="#fff"/>
+    <circle cx="1020" cy="480" r="7" fill="none" stroke="#fff" stroke-width="0.5"/>
+  </g>
+
+  <!-- === SCATTERED SPARK PARTICLES === -->
+  <g fill="#f39c12">
+    <circle cx="320" cy="150" r="1" opacity="0.4"/>
+    <circle cx="850" cy="180" r="1.2" opacity="0.35"/>
+    <circle cx="420" cy="420" r="0.8" opacity="0.3"/>
+    <circle cx="780" cy="400" r="1" opacity="0.25"/>
+    <circle cx="250" cy="350" r="0.6" opacity="0.35"/>
+    <circle cx="950" cy="320" r="0.8" opacity="0.3"/>
+    <circle cx="180" cy="250" r="1" opacity="0.2"/>
+    <circle cx="1030" cy="260" r="0.8" opacity="0.25"/>
+  </g>
+  <g fill="#e74c3c">
+    <circle cx="380" cy="200" r="0.8" opacity="0.3"/>
+    <circle cx="820" cy="130" r="1" opacity="0.25"/>
+    <circle cx="470" cy="480" r="0.6" opacity="0.35"/>
+    <circle cx="730" cy="450" r="0.8" opacity="0.2"/>
+  </g>
+
+  <!-- === TYPOGRAPHY === -->
 
   <!-- "// YOU ONLY GET" tagline -->
-  <text x="600" y="170" text-anchor="middle" font-family="'Courier New', monospace" font-size="14" font-weight="700" fill="#e74c3c" letter-spacing="6" opacity="0.9">// YOU ONLY GET</text>
+  <text x="600" y="168" text-anchor="middle" font-family="'Courier New', monospace" font-size="13" font-weight="700" fill="#e74c3c" letter-spacing="8" opacity="0.85">// YOU ONLY GET</text>
 
   <!-- "OneShot" title -->
-  <text x="600" y="275" text-anchor="middle" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="100" font-weight="900" letter-spacing="-3">
-    <tspan fill="url(#fireGrad)" filter="url(#bigGlow)">One</tspan><tspan fill="#ffffff">Shot</tspan>
+  <text x="600" y="278" text-anchor="middle" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="108" font-weight="900" letter-spacing="-4" filter="url(#titleGlow)">
+    <tspan fill="url(#fireGrad)">One</tspan><tspan fill="#ffffff">Shot</tspan>
   </text>
 
-  <!-- Subtitle -->
-  <text x="600" y="320" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="rgba(255,255,255,0.7)">
-    <tspan font-weight="700" fill="#ffffff">7 AI agents.</tspan>
-    <tspan> Two parallel waves. </tspan>
-    <tspan font-weight="700" fill="#ffffff">One prompt.</tspan>
+  <!-- Subtitle line -->
+  <text x="600" y="322" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="rgba(255,255,255,0.85)">
+    <tspan font-weight="800">7 AI agents.</tspan>
+    <tspan fill="rgba(255,255,255,0.55)"> Two parallel waves. </tspan>
+    <tspan font-weight="800">One prompt.</tspan>
   </text>
-  <text x="600" y="350" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="rgba(255,255,255,0.55)">
+  <text x="600" y="352" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="rgba(255,255,255,0.45)">
     Platform-ready social content — do not miss your chance to blow.
   </text>
 
   <!-- Lyric quote -->
-  <text x="600" y="392" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" fill="#e74c3c" fill-opacity="0.7" font-style="italic" letter-spacing="0.5">
+  <text x="600" y="390" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#e74c3c" fill-opacity="0.5" font-style="italic" letter-spacing="0.5">
     "You only get one shot, do not miss your chance to blow" — adapted for AI
   </text>
 
-  <!-- Stats bar -->
-  <g transform="translate(600, 460)">
+  <!-- === STATS BAR === -->
+  <g transform="translate(600, 458)">
+    <!-- Background bar -->
+    <rect x="-380" y="-30" width="760" height="70" rx="12" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
+
     <!-- Stat: 7 AI Agents -->
     <g transform="translate(-260,0)">
-      <text x="0" y="0" text-anchor="middle" font-family="'Courier New', monospace" font-size="38" font-weight="700" fill="#ffffff">7</text>
-      <text x="0" y="22" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="rgba(255,255,255,0.5)" letter-spacing="2" text-transform="uppercase">AI AGENTS</text>
+      <text x="0" y="-2" text-anchor="middle" font-family="'Courier New', monospace" font-size="36" font-weight="700" fill="#e74c3c" filter="url(#glow)">7</text>
+      <text x="0" y="22" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.5)" letter-spacing="2.5">AI AGENTS</text>
     </g>
     <!-- Divider -->
-    <line x1="-155" y1="-15" x2="-155" y2="25" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+    <line x1="-160" y1="-18" x2="-160" y2="28" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
     <!-- Stat: 7 Reasoning Patterns -->
-    <g transform="translate(-70,0)">
-      <text x="0" y="0" text-anchor="middle" font-family="'Courier New', monospace" font-size="38" font-weight="700" fill="#ffffff">7</text>
-      <text x="0" y="22" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="rgba(255,255,255,0.5)" letter-spacing="2">REASONING PATTERNS</text>
+    <g transform="translate(-75,0)">
+      <text x="0" y="-2" text-anchor="middle" font-family="'Courier New', monospace" font-size="36" font-weight="700" fill="#f39c12" filter="url(#glow)">7</text>
+      <text x="0" y="22" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.5)" letter-spacing="2.5">PATTERNS</text>
     </g>
     <!-- Divider -->
-    <line x1="35" y1="-15" x2="35" y2="25" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+    <line x1="20" y1="-18" x2="20" y2="28" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
     <!-- Stat: 3 Platforms -->
-    <g transform="translate(120,0)">
-      <text x="0" y="0" text-anchor="middle" font-family="'Courier New', monospace" font-size="38" font-weight="700" fill="#ffffff">3</text>
-      <text x="0" y="22" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="rgba(255,255,255,0.5)" letter-spacing="2">PLATFORMS</text>
+    <g transform="translate(105,0)">
+      <text x="0" y="-2" text-anchor="middle" font-family="'Courier New', monospace" font-size="36" font-weight="700" fill="#3498db" filter="url(#glow)">3</text>
+      <text x="0" y="22" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.5)" letter-spacing="2.5">PLATFORMS</text>
     </g>
     <!-- Divider -->
-    <line x1="195" y1="-15" x2="195" y2="25" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-    <!-- Stat: 208 Tests -->
-    <g transform="translate(280,0)">
-      <text x="0" y="0" text-anchor="middle" font-family="'Courier New', monospace" font-size="38" font-weight="700" fill="#ffffff">208</text>
-      <text x="0" y="22" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="rgba(255,255,255,0.5)" letter-spacing="2">TESTS PASSING</text>
+    <line x1="195" y1="-18" x2="195" y2="28" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+    <!-- Stat: 215 Tests -->
+    <g transform="translate(275,0)">
+      <text x="0" y="-2" text-anchor="middle" font-family="'Courier New', monospace" font-size="36" font-weight="700" fill="#2ecc71" filter="url(#glow)">215</text>
+      <text x="0" y="22" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.5)" letter-spacing="2.5">TESTS PASSING</text>
     </g>
   </g>
 
-  <!-- Tech badges -->
-  <g transform="translate(1160, 600)">
-    <g transform="translate(0,0)">
-      <rect x="-390" y="-16" width="70" height="22" rx="3" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
-      <text x="-355" y="-1" text-anchor="middle" font-family="'Courier New', monospace" font-size="10" fill="rgba(255,255,255,0.6)">Azure AI</text>
+  <!-- === TECH BADGES (bottom bar) === -->
+  <g transform="translate(600, 562)">
+    <g transform="translate(-230,0)">
+      <rect x="-42" y="-12" width="84" height="24" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+      <text x="0" y="4" text-anchor="middle" font-family="'Courier New', monospace" font-size="10" fill="rgba(255,255,255,0.55)">Azure AI</text>
     </g>
-    <g transform="translate(0,0)">
-      <rect x="-310" y="-16" width="48" height="22" rx="3" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
-      <text x="-286" y="-1" text-anchor="middle" font-family="'Courier New', monospace" font-size="10" fill="rgba(255,255,255,0.6)">MAF</text>
+    <g transform="translate(-125,0)">
+      <rect x="-30" y="-12" width="60" height="24" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+      <text x="0" y="4" text-anchor="middle" font-family="'Courier New', monospace" font-size="10" fill="rgba(255,255,255,0.55)">MAF</text>
     </g>
-    <g transform="translate(0,0)">
-      <rect x="-252" y="-16" width="48" height="22" rx="3" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
-      <text x="-228" y="-1" text-anchor="middle" font-family="'Courier New', monospace" font-size="10" fill="rgba(255,255,255,0.6)">MCP</text>
+    <g transform="translate(-40,0)">
+      <rect x="-30" y="-12" width="60" height="24" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+      <text x="0" y="4" text-anchor="middle" font-family="'Courier New', monospace" font-size="10" fill="rgba(255,255,255,0.55)">MCP</text>
     </g>
-    <g transform="translate(0,0)">
-      <rect x="-194" y="-16" width="62" height="22" rx="3" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
-      <text x="-163" y="-1" text-anchor="middle" font-family="'Courier New', monospace" font-size="10" fill="rgba(255,255,255,0.6)">Next.js</text>
+    <g transform="translate(50,0)">
+      <rect x="-38" y="-12" width="76" height="24" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+      <text x="0" y="4" text-anchor="middle" font-family="'Courier New', monospace" font-size="10" fill="rgba(255,255,255,0.55)">Next.js</text>
     </g>
-    <g transform="translate(0,0)">
-      <rect x="-122" y="-16" width="66" height="22" rx="3" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
-      <text x="-89" y="-1" text-anchor="middle" font-family="'Courier New', monospace" font-size="10" fill="rgba(255,255,255,0.6)">FastAPI</text>
+    <g transform="translate(150,0)">
+      <rect x="-38" y="-12" width="76" height="24" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+      <text x="0" y="4" text-anchor="middle" font-family="'Courier New', monospace" font-size="10" fill="rgba(255,255,255,0.55)">FastAPI</text>
+    </g>
+    <g transform="translate(240,0)">
+      <rect x="-38" y="-12" width="76" height="24" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+      <text x="0" y="4" text-anchor="middle" font-family="'Courier New', monospace" font-size="10" fill="rgba(255,255,255,0.55)">Python</text>
     </g>
   </g>
 
-  <!-- Bottom fire bar -->
-  <rect x="0" y="626" width="1200" height="4" fill="url(#bottomBar)"/>
+  <!-- === BOTTOM FIRE BAR === -->
+  <rect x="0" y="624" width="1200" height="6" fill="url(#bottomBar)"/>
 
-  <!-- Bullet hole accents (scattered, subtle) -->
-  <g opacity="0.06">
-    <circle cx="150" cy="520" r="4" fill="#fff"/>
-    <circle cx="150" cy="520" r="8" fill="none" stroke="#fff" stroke-width="0.5"/>
-    <circle cx="1050" cy="150" r="3" fill="#fff"/>
-    <circle cx="1050" cy="150" r="7" fill="none" stroke="#fff" stroke-width="0.5"/>
-    <circle cx="200" cy="130" r="2.5" fill="#fff"/>
-    <circle cx="200" cy="130" r="6" fill="none" stroke="#fff" stroke-width="0.5"/>
-  </g>
+  <!-- Thin top accent line -->
+  <rect x="200" y="0" width="800" height="1" fill="url(#fireGradH)" opacity="0.3"/>
 </svg>
