@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "361545341476448220"
+      "templateHash": "4634519510092005887"
     }
   },
   "parameters": {
@@ -213,6 +213,41 @@
       "defaultValue": "2Gi",
       "metadata": {
         "description": "Memory allocated to the frontend container app revision."
+      }
+    },
+    "backendChatDeploymentName": {
+      "type": "string",
+      "defaultValue": "gpt-4o",
+      "metadata": {
+        "description": "Primary chat deployment name used by the backend API in Azure OpenAI."
+      }
+    },
+    "backendSecondaryDeploymentName": {
+      "type": "string",
+      "defaultValue": "gpt-4o-mini",
+      "metadata": {
+        "description": "Secondary deployment name used by the backend API for fallback/specialized tasks."
+      }
+    },
+    "backendCodexDeploymentName": {
+      "type": "string",
+      "defaultValue": "gpt-4o-mini",
+      "metadata": {
+        "description": "Code-focused deployment name used by the backend API for coding tasks."
+      }
+    },
+    "backendEmbeddingDeploymentName": {
+      "type": "string",
+      "defaultValue": "text-embedding-3-small",
+      "metadata": {
+        "description": "Embedding deployment name used by the backend API for semantic search/RAG."
+      }
+    },
+    "backendOpenAiApiVersion": {
+      "type": "string",
+      "defaultValue": "2025-03-01-preview",
+      "metadata": {
+        "description": "API version used by the backend API for Azure OpenAI."
       }
     }
   },
@@ -31388,6 +31423,34 @@
                   {
                     "name": "APP_PORT",
                     "value": "8000"
+                  },
+                  {
+                    "name": "DATABASE_URL",
+                    "value": "sqlite+aiosqlite:///tmp/oneshot.db"
+                  },
+                  {
+                    "name": "AZURE_OPENAI_ENDPOINT",
+                    "value": "[format('https://{0}.openai.azure.com/', reference(resourceId('Microsoft.Resources/deployments', format('{0}-ai-foundry', parameters('baseName'))), '2025-04-01').outputs.aiServicesName.value)]"
+                  },
+                  {
+                    "name": "AZURE_OPENAI_API_VERSION",
+                    "value": "[parameters('backendOpenAiApiVersion')]"
+                  },
+                  {
+                    "name": "AZURE_OPENAI_DEPLOYMENT_NAME",
+                    "value": "[parameters('backendChatDeploymentName')]"
+                  },
+                  {
+                    "name": "AZURE_OPENAI_GPT5_DEPLOYMENT_NAME",
+                    "value": "[parameters('backendSecondaryDeploymentName')]"
+                  },
+                  {
+                    "name": "AZURE_OPENAI_CODEX_DEPLOYMENT_NAME",
+                    "value": "[parameters('backendCodexDeploymentName')]"
+                  },
+                  {
+                    "name": "AZURE_OPENAI_TEXTEMBEDDING_DEPLOYMENT_NAME",
+                    "value": "[parameters('backendEmbeddingDeploymentName')]"
                   }
                 ]
               }
@@ -32919,6 +32982,7 @@
         }
       },
       "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', format('{0}-ai-foundry', parameters('baseName')))]",
         "[resourceId('Microsoft.Resources/deployments', take(format('avm.res.app.managed-environment.{0}', variables('containerAppsEnvironmentName')), 64))]",
         "[resourceId('Microsoft.Resources/deployments', take(format('avm.res.container-registry.registry.{0}', variables('acrName')), 64))]"
       ]
@@ -32982,7 +33046,17 @@
                 "resources": {
                   "cpu": "[parameters('frontendCpu')]",
                   "memory": "[parameters('frontendMemory')]"
-                }
+                },
+                "env": [
+                  {
+                    "name": "NEXT_PUBLIC_API_URL",
+                    "value": "[format('https://{0}', reference(resourceId('Microsoft.Resources/deployments', take(format('avm.res.app.container-app.{0}', variables('backendContainerAppName')), 64)), '2025-04-01').outputs.fqdn.value)]"
+                  },
+                  {
+                    "name": "NEXT_PUBLIC_WS_URL",
+                    "value": "[format('wss://{0}', reference(resourceId('Microsoft.Resources/deployments', take(format('avm.res.app.container-app.{0}', variables('backendContainerAppName')), 64)), '2025-04-01').outputs.fqdn.value)]"
+                  }
+                ]
               }
             ]
           },
@@ -34512,6 +34586,7 @@
         }
       },
       "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', take(format('avm.res.app.container-app.{0}', variables('backendContainerAppName')), 64))]",
         "[resourceId('Microsoft.Resources/deployments', take(format('avm.res.app.managed-environment.{0}', variables('containerAppsEnvironmentName')), 64))]",
         "[resourceId('Microsoft.Resources/deployments', take(format('avm.res.container-registry.registry.{0}', variables('acrName')), 64))]"
       ]

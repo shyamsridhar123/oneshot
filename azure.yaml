@@ -1,11 +1,11 @@
-name: techvista-smc
+name: oneshot-ctr
 metadata:
   template: ai-foundry-avm
 infra:
   provider: bicep
-  path: infra/ai-foundry
+  path: infra
   parameters:
-    - path: infra/ai-foundry/params/main.bicepparam
+    - path: infra/params/main.bicepparam
   outputs:
     aiFoundryAccountName: AI_FOUNDRY_ACCOUNT_NAME
     aiProjectName: AI_FOUNDRY_PROJECT_NAME
@@ -23,6 +23,10 @@ infra:
     frontendContainerAppName: FRONTEND_CONTAINER_APP_NAME
     backendEndpoint: BACKEND_ENDPOINT
     frontendEndpoint: FRONTEND_ENDPOINT
+    sqlServerNameOutput: AZURE_SQL_SERVER_NAME
+    sqlServerResourceId: AZURE_SQL_SERVER_RESOURCE_ID
+    sqlServerFullyQualifiedDomainName: AZURE_SQL_SERVER_FQDN
+    sqlDatabaseNameOutput: AZURE_SQL_DATABASE_NAME
 services:
   backend:
     project: ./backend

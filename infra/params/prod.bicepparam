@@ -1,6 +1,6 @@
 using '../main.bicep'
 
-param baseName = 'techvista-smc-prod'
+param baseName = 'oneshot-prod'
 param location = 'westus3'
 param aiFoundrySku = 'S1'
 param tags = {
@@ -37,3 +37,9 @@ param aiModelDeployments = [
 param brandDataContainerName = 'brand-knowledge'
 param draftsContainerName = 'mcp-drafts'
 param draftsShareName = 'publish-ready'
+param sqlAdministratorLogin = 'oneshotprodsqladmin'
+param sqlAdministratorLoginPassword = readEnvironmentVariable('AZURE_SQL_ADMIN_PASSWORD', '')
+param sqlDatabaseName = 'oneshotproddb'
+param sqlDatabaseSkuName = 'S2'
+param sqlDatabaseSkuTier = 'Standard'
+param sqlAllowAzureServices = true

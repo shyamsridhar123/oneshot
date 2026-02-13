@@ -1,6 +1,6 @@
 using '../main.bicep'
 
-param baseName = 'techvista-smc-dev'
+param baseName = 'oneshot-dev'
 param location = 'eastus2'
 param tags = {
   environment: 'dev'
@@ -24,3 +24,9 @@ param aiModelDeployments = [
 param brandDataContainerName = 'dev-brand-data'
 param draftsContainerName = 'dev-agent-drafts'
 param draftsShareName = 'dev-drafts'
+param sqlAdministratorLogin = 'oneshotdevsqladmin'
+param sqlAdministratorLoginPassword = readEnvironmentVariable('AZURE_SQL_ADMIN_PASSWORD', '')
+param sqlDatabaseName = 'oneshotdevdb'
+param sqlDatabaseSkuName = 'S0'
+param sqlDatabaseSkuTier = 'Standard'
+param sqlAllowAzureServices = true

@@ -1,5 +1,6 @@
 """Application configuration using pydantic-settings."""
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
 from functools import lru_cache
 
@@ -13,9 +14,9 @@ class Settings(BaseSettings):
     azure_openai_api_version: str = "2025-03-01-preview"
     
     # Deployments
-    azure_openai_deployment_name: str = "gpt-5.2-chat"  # Primary chat model
-    azure_openai_gpt5_deployment_name: str = "gpt-5.1"  # Secondary model
-    azure_openai_codex_deployment_name: str = "gpt-5.1-codex-max"  # Code tasks
+    azure_openai_deployment_name: str = "gpt-4o"  # Primary chat model
+    azure_openai_gpt5_deployment_name: str = "gpt-4o-mini"  # Secondary model
+    azure_openai_codex_deployment_name: str = "gpt-4o-mini"  # Code tasks fallback when codex access is unavailable
     azure_openai_textembedding_deployment_name: str = "text-embedding-3-small"
 
     # Database
@@ -34,6 +35,14 @@ class Settings(BaseSettings):
 
     # CORS
     allowed_origins: list[str] = ["http://localhost:3000", "http://127.0.0.1:3000"]
+
+    @field_validator("allowed_origins", mode="before")
+    @classmethod
+    def parse_allowed_origins(cls, value: object) -> object:
+        """Accept comma-separated origins from environment variables."""
+        if isinstance(value, str):
+            return [origin.strip() for origin in value.split(",") if origin.strip()]
+        return value
 
     class Config:
         env_file = "../.env"
