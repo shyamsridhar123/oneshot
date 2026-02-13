@@ -46,18 +46,56 @@ class AgentWebSocket {
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
   private reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
+  /** Monotonically increasing ID to guard against stale WS callbacks. */
+  private connectionEpoch = 0;
+  /** True while an intentional disconnect is in progress. */
+  private intentionalClose = false;
 
   connect(conversationId: string, handlers: WSHandlers = {}): void {
-    this.disconnect();
+    // Skip if already connected to the same conversation
+    if (
+      this.conversationId === conversationId &&
+      this.ws?.readyState === WebSocket.OPEN
+    ) {
+      this.handlers = handlers;
+      return;
+    }
+
+    this.closeExistingConnection();
     this.conversationId = conversationId;
     this.handlers = handlers;
     this.reconnectAttempts = 0;
+    this.intentionalClose = false;
     this.createConnection();
+  }
+
+  /**
+   * Close the current WebSocket without triggering reconnect and
+   * invalidate any in-flight callbacks by bumping the epoch.
+   */
+  private closeExistingConnection(): void {
+    this.connectionEpoch++;
+
+    if (this.reconnectTimeout) {
+      clearTimeout(this.reconnectTimeout);
+      this.reconnectTimeout = null;
+    }
+
+    if (this.ws) {
+      // Prevent stale handlers from firing on the old socket
+      this.ws.onopen = null;
+      this.ws.onmessage = null;
+      this.ws.onerror = null;
+      this.ws.onclose = null;
+      this.ws.close();
+      this.ws = null;
+    }
   }
 
   private createConnection(): void {
     if (!this.conversationId) return;
 
+    const epoch = this.connectionEpoch;
     const url = `${WS_BASE}/ws/agents/${this.conversationId}`;
     
     try {
@@ -69,12 +107,14 @@ class AgentWebSocket {
     }
 
     this.ws.onopen = () => {
+      if (epoch !== this.connectionEpoch) return; // stale
       console.log("[WS] Connected to", url);
       this.reconnectAttempts = 0;
       this.handlers.onConnectionEstablished?.();
     };
 
     this.ws.onmessage = (event) => {
+      if (epoch !== this.connectionEpoch) return; // stale
       try {
         const wsEvent = JSON.parse(event.data) as WSEvent;
         this.handleEvent(wsEvent);
@@ -84,7 +124,7 @@ class AgentWebSocket {
     };
 
     this.ws.onerror = () => {
-      // WebSocket onerror provides an Event, not Error - check readyState for context
+      if (epoch !== this.connectionEpoch) return; // stale
       const state = this.ws?.readyState;
       const stateNames = ["CONNECTING", "OPEN", "CLOSING", "CLOSED"];
       const stateName = state !== undefined ? stateNames[state] : "UNKNOWN";
@@ -98,11 +138,16 @@ class AgentWebSocket {
     };
 
     this.ws.onclose = (event) => {
+      if (epoch !== this.connectionEpoch) return; // stale
       const reason = event.reason || "No reason provided";
       const wasClean = event.wasClean ? "clean" : "unclean";
       console.log(`[WS] Connection closed (${wasClean}, code: ${event.code}, reason: ${reason})`);
       this.handlers.onClose?.();
-      this.attemptReconnect();
+
+      // Only reconnect on unexpected closures
+      if (!this.intentionalClose) {
+        this.attemptReconnect();
+      }
     };
   }
 
@@ -223,16 +268,8 @@ class AgentWebSocket {
   }
 
   disconnect(): void {
-    if (this.reconnectTimeout) {
-      clearTimeout(this.reconnectTimeout);
-      this.reconnectTimeout = null;
-    }
-
-    if (this.ws) {
-      this.ws.close();
-      this.ws = null;
-    }
-
+    this.intentionalClose = true;
+    this.closeExistingConnection();
     this.conversationId = null;
     useStore.getState().resetAgentStates();
   }
@@ -268,7 +305,7 @@ export function useAgentWebSocket(
     agentWs.connect(conversationId, handlersRef.current);
 
     return () => {
-      // Don't disconnect on cleanup - let it persist across re-renders
+      agentWs.disconnect();
     };
   }, [conversationId]);
 

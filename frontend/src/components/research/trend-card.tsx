@@ -167,14 +167,14 @@ export const TrendCard = memo(function TrendCard({
       )}
 
       {/* Content */}
-      <div className="px-5 pb-4">
+      <div className="px-5 pb-4 overflow-hidden">
         <div
           className={cn(
             "overflow-hidden transition-all duration-300",
             expanded ? "max-h-none" : "max-h-64"
           )}
         >
-          <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-1 prose-p:leading-relaxed prose-headings:mt-3 prose-headings:mb-1 prose-headings:leading-snug prose-h2:text-sm prose-h2:font-bold prose-h3:text-[13px] prose-h3:font-semibold prose-ul:my-1 prose-ol:my-1 prose-li:my-0 prose-li:leading-relaxed prose-pre:my-2 prose-blockquote:my-2 prose-blockquote:border-primary/30 prose-a:text-primary prose-strong:text-foreground prose-hr:my-2.5 prose-img:rounded-lg prose-img:max-h-96 prose-img:w-full prose-img:object-contain text-foreground/90 break-words [overflow-wrap:anywhere]">
+          <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-1 prose-p:leading-relaxed prose-headings:mt-3 prose-headings:mb-1 prose-headings:leading-snug prose-h2:text-sm prose-h2:font-bold prose-h3:text-[13px] prose-h3:font-semibold prose-ul:my-1 prose-ol:my-1 prose-li:my-0 prose-li:leading-relaxed prose-pre:my-2 prose-pre:overflow-x-auto prose-blockquote:my-2 prose-blockquote:border-primary/30 prose-a:text-primary prose-strong:text-foreground prose-hr:my-2.5 prose-img:rounded-lg prose-img:max-h-96 prose-img:w-full prose-img:object-contain text-foreground/90 break-words [overflow-wrap:anywhere]">
             <MemoizedMarkdown content={content} id={id} />
           </div>
         </div>

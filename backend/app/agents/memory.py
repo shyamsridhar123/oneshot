@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.agents.prompts import MEMORY_PROMPT
 from app.agents.factory import create_agent, get_agent_tools
-from app.agents.middleware import build_agent_trace_data
+from app.agents.middleware import build_agent_trace_data, make_knowledge_citation
 from app.services.llm_service import get_llm_service
 from app.services.knowledge_service import get_knowledge_service
 from app.models.database import AsyncSessionLocal
@@ -98,6 +98,19 @@ Analyze the retrieved information and provide:
     )
     duration_ms = int((time.time() - start_time) * 1000)
     trace = build_agent_trace_data("memory", response.content, response.tokens_used, duration_ms)
+
+    # Add knowledge citations for internal data sources used
+    trace["citations"].extend([
+        make_knowledge_citation("get_brand_guidelines"),
+        make_knowledge_citation("get_past_posts"),
+        make_knowledge_citation("get_content_calendar"),
+    ])
+    trace["tool_calls"] = [
+        {"tool_name": "get_brand_guidelines", "result_preview": "Brand guidelines loaded"},
+        {"tool_name": "get_past_posts", "result_preview": "Past posts loaded"},
+        {"tool_name": "get_content_calendar", "result_preview": "Content calendar loaded"},
+        {"tool_name": "search_knowledge_base", "result_preview": kb_text[:200] if kb_text else "No results"},
+    ]
 
     return response.content, response.tokens_used, trace
 

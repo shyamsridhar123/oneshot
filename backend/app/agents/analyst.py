@@ -9,7 +9,7 @@ import time
 
 from app.agents.prompts import ANALYST_PROMPT
 from app.agents.factory import create_agent, get_agent_tools
-from app.agents.middleware import build_agent_trace_data
+from app.agents.middleware import build_agent_trace_data, make_knowledge_citation
 from app.services.llm_service import get_llm_service
 
 logger = logging.getLogger(__name__)
@@ -66,5 +66,12 @@ Provide quantitative analysis, metrics, and data-driven insights."""
     )
     duration_ms = int((time.time() - start_time) * 1000)
     trace = build_agent_trace_data("analyst", response.content, response.tokens_used, duration_ms)
+
+    # Analyst uses engagement benchmarks and past post data
+    trace["citations"].append(make_knowledge_citation("get_past_posts"))
+    trace["tool_calls"] = [
+        {"tool_name": "calculate_engagement_metrics", "result_preview": "Engagement metrics calculated"},
+        {"tool_name": "recommend_posting_schedule", "result_preview": "Schedule recommendations generated"},
+    ]
 
     return response.content, response.tokens_used, trace

@@ -1,7 +1,7 @@
 "use client";
 
 import { ExternalLink, BookOpen, Database, Sparkles } from "lucide-react";
-import type { Citation, AgentName } from "@/lib/types";
+import type { Citation } from "@/lib/types";
 
 const AGENT_COLORS: Record<string, string> = {
   researcher: "from-emerald-500 to-teal-500",
@@ -44,42 +44,43 @@ export function CitationPanel({ citations }: { citations: Citation[] }) {
   // Group by contributing agent
   const byAgent: Record<string, Citation[]> = {};
   for (const c of citations) {
-    const agent = c.contributing_agent || "unknown";
+    const agent = c.contributing_agent || c.source_tool || "sources";
     if (!byAgent[agent]) byAgent[agent] = [];
     byAgent[agent].push(c);
   }
 
   return (
-    <div className="animate-fade-in-up mt-3">
-      {/* Header */}
-      <div className="flex items-center gap-2 mb-2">
-        <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-violet-500/10 border border-violet-500/20">
-          <Sparkles className="h-3 w-3 text-violet-400" />
-          <span className="text-[10px] font-medium text-violet-300">
-            {citations.length} Source{citations.length !== 1 ? "s" : ""} Referenced
-          </span>
+    <div className="animate-fade-in-up mt-4 ml-11">
+      {/* Glass card — matches assistant message bubble styling */}
+      <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-card/80 backdrop-blur-xl shadow-xl shadow-black/5 dark:shadow-black/20 transition-all duration-300 hover:border-white/[0.12]">
+        {/* Violet accent line — same as message bubbles */}
+        <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-violet-500/40 to-transparent" />
+
+        {/* Header */}
+        <div className="px-5 pt-4 pb-2 flex items-center gap-2">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-violet-500/10 border border-violet-500/20">
+            <Sparkles className="h-3 w-3 text-violet-400" />
+            <span className="text-[10px] font-semibold text-violet-300 tracking-wide">
+              {citations.length} Source{citations.length !== 1 ? "s" : ""} Referenced
+            </span>
+          </div>
         </div>
-      </div>
 
-      {/* Citation Cards */}
-      <div className="rounded-xl border border-white/[0.08] bg-card/60 backdrop-blur-xl overflow-hidden">
-        {/* Top accent line */}
-        <div className="h-px bg-gradient-to-r from-transparent via-violet-500/40 to-transparent" />
-
-        <div className="p-3 space-y-2">
+        {/* Citation groups by agent */}
+        <div className="px-5 pb-4 space-y-3">
           {Object.entries(byAgent).map(([agent, agentCitations]) => (
             <div key={agent}>
-              {/* Agent label */}
-              <div className="flex items-center gap-1.5 mb-1.5">
+              {/* Agent label with colored dot */}
+              <div className="flex items-center gap-1.5 mb-2">
                 <div
                   className={`h-1.5 w-1.5 rounded-full bg-gradient-to-r ${AGENT_COLORS[agent] || "from-gray-500 to-gray-400"}`}
                 />
-                <span className="text-[10px] font-medium text-muted-foreground/70 uppercase tracking-wider">
+                <span className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">
                   {AGENT_LABELS[agent] || agent}
                 </span>
               </div>
 
-              {/* Citations for this agent */}
+              {/* Citation chips */}
               <div className="flex flex-wrap gap-1.5">
                 {agentCitations.map((citation, idx) => (
                   <CitationChip key={`${agent}-${idx}`} citation={citation} />
@@ -88,6 +89,9 @@ export function CitationPanel({ citations }: { citations: Citation[] }) {
             </div>
           ))}
         </div>
+
+        {/* Bottom accent — subtle separator */}
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />
       </div>
     </div>
   );
@@ -96,18 +100,24 @@ export function CitationPanel({ citations }: { citations: Citation[] }) {
 function CitationChip({ citation }: { citation: Citation }) {
   const isLink = citation.type === "url" && citation.url;
 
-  const content = (
+  const chipContent = (
     <div
       className={`
-        inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px]
-        border border-white/[0.06] bg-white/[0.03]
+        inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px]
+        border border-white/[0.08] bg-white/[0.04]
         transition-all duration-200
-        ${isLink ? "hover:bg-white/[0.06] hover:border-white/[0.12] cursor-pointer" : ""}
+        ${isLink
+          ? "hover:bg-violet-500/10 hover:border-violet-500/20 cursor-pointer group"
+          : ""}
       `}
     >
-      <CitationIcon type={citation.type} />
-      <span className="text-muted-foreground/80 max-w-[200px] truncate">
-        {isLink ? formatUrl(citation.url!) : citation.source_tool || "Source"}
+      <span className={`shrink-0 ${isLink ? "text-violet-400 group-hover:text-violet-300" : "text-muted-foreground/50"}`}>
+        <CitationIcon type={citation.type} />
+      </span>
+      <span className="text-muted-foreground/80 max-w-[220px] truncate">
+        {isLink
+          ? formatUrl(citation.url!)
+          : citation.preview || citation.source_tool || "Source"}
       </span>
     </div>
   );
@@ -120,12 +130,12 @@ function CitationChip({ citation }: { citation: Citation }) {
         rel="noopener noreferrer"
         className="no-underline"
       >
-        {content}
+        {chipContent}
       </a>
     );
   }
 
-  return content;
+  return chipContent;
 }
 
 export function InlineCitationBadge({ count }: { count: number }) {

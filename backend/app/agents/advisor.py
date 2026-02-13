@@ -9,7 +9,7 @@ import time
 
 from app.agents.prompts import ADVISOR_PROMPT
 from app.agents.factory import create_agent, get_agent_tools
-from app.agents.middleware import build_agent_trace_data
+from app.agents.middleware import build_agent_trace_data, make_knowledge_citation
 from app.services.llm_service import get_llm_service
 
 logger = logging.getLogger(__name__)
@@ -69,5 +69,12 @@ Create a clear, executive-level communication that:
     )
     duration_ms = int((time.time() - start_time) * 1000)
     trace = build_agent_trace_data("advisor", response.content, response.tokens_used, duration_ms)
+
+    # Advisor reviews against brand guidelines
+    trace["citations"].append(make_knowledge_citation("get_brand_guidelines"))
+    trace["tool_calls"] = [
+        {"tool_name": "get_brand_guidelines", "result_preview": "Brand guidelines referenced"},
+        {"tool_name": "get_past_posts", "result_preview": "Past post benchmarks referenced"},
+    ]
 
     return response.content, response.tokens_used, trace

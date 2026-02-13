@@ -34,7 +34,7 @@ const MetricCardBlock = memo(({ raw }: { raw: string }) => {
       {data.title && (
         <h4 className="text-sm font-semibold text-foreground mb-3">{data.title}</h4>
       )}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {data.metrics.map((metric, i) => {
           const isPositive = metric.change !== undefined && metric.change > 0;
           const isNegative = metric.change !== undefined && metric.change < 0;
@@ -43,13 +43,13 @@ const MetricCardBlock = memo(({ raw }: { raw: string }) => {
           return (
             <div
               key={i}
-              className="rounded-xl border bg-card p-4 shadow-sm"
+              className="rounded-xl border bg-card p-4 shadow-sm overflow-hidden min-w-0"
             >
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider truncate">
                 {metric.label}
               </p>
-              <div className="mt-2 flex items-baseline gap-1">
-                <span className="text-2xl font-bold text-foreground tabular-nums">
+              <div className="mt-2 flex items-baseline gap-1 min-w-0">
+                <span className="text-xl font-bold text-foreground tabular-nums truncate">
                   {metric.value}
                 </span>
                 {metric.unit && (
