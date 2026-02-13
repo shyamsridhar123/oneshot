@@ -4,7 +4,7 @@ import uuid
 from datetime import datetime
 from typing import AsyncGenerator
 
-from sqlalchemy import Column, String, Text, DateTime, ForeignKey, JSON, Float, Integer
+from sqlalchemy import Column, String, Text, DateTime, ForeignKey, JSON, Float, Integer, text
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import relationship, DeclarativeBase
 
@@ -154,9 +154,24 @@ AsyncSessionLocal = async_sessionmaker(
 
 
 async def init_db():
-    """Initialize database tables."""
+    """Initialize database tables and migrate schema for new columns."""
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+        # Migrate: add citation/tracing columns to agent_traces if missing
+        migrate_columns = [
+            ("citations", "TEXT DEFAULT '[]'"),
+            ("tool_calls", "TEXT DEFAULT '[]'"),
+            ("duration_ms", "INTEGER"),
+            ("parent_trace_id", "VARCHAR REFERENCES agent_traces(id)"),
+        ]
+        for col_name, col_type in migrate_columns:
+            try:
+                await conn.execute(
+                    text(f"ALTER TABLE agent_traces ADD COLUMN {col_name} {col_type}")
+                )
+            except Exception:
+                pass  # Column already exists
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:

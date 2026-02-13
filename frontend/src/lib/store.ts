@@ -15,8 +15,9 @@ import type {
   Citation,
 } from "./types";
 
-// Stable empty array to prevent infinite re-renders
+// Stable empty arrays to prevent infinite re-renders
 export const EMPTY_MESSAGES: Message[] = [];
+export const EMPTY_CITATIONS: Citation[] = [];
 
 // ============ Agent State ============
 
@@ -267,8 +268,8 @@ export const selectActiveAgents = (state: OneShotStore) =>
 
 export const selectActiveCitations = (state: OneShotStore): Citation[] =>
   state.activeConversationId
-    ? state.citations[state.activeConversationId] || []
-    : [];
+    ? state.citations[state.activeConversationId] || EMPTY_CITATIONS
+    : EMPTY_CITATIONS;
 
 // Re-export useShallow for components
 export { useShallow };
