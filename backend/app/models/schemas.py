@@ -57,6 +57,21 @@ class AgentStatus(BaseModel):
     last_activity: datetime
 
 
+class CitationResponse(BaseModel):
+    """Schema for a single citation/source reference."""
+    url: Optional[str] = None
+    source_tool: Optional[str] = None
+    type: str = "url"  # url, knowledge, file
+    preview: Optional[str] = None
+
+
+class ToolCallResponse(BaseModel):
+    """Schema for a recorded tool invocation."""
+    tool_name: str
+    arguments: Optional[str] = None
+    result_preview: Optional[str] = None
+
+
 class AgentTraceResponse(BaseModel):
     """Schema for agent trace response."""
     id: str
@@ -67,6 +82,10 @@ class AgentTraceResponse(BaseModel):
     completed_at: Optional[datetime]
     tokens_used: int
     error: Optional[str] = None
+    citations: list[dict[str, Any]] = Field(default_factory=list)
+    tool_calls: list[dict[str, Any]] = Field(default_factory=list)
+    duration_ms: Optional[int] = None
+    parent_trace_id: Optional[str] = None
 
     class Config:
         from_attributes = True

@@ -16,6 +16,7 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import { analyticsApi } from "@/lib/api";
+import { TraceWaterfall } from "@/components/chat/trace-waterfall";
 import type { AgentTrace, AgentName } from "@/lib/types";
 
 // ── Agent color system (CSS values for charts + Tailwind classes for badges) ──
@@ -343,6 +344,11 @@ export default function AnalyticsPage() {
                   </CardContent>
                 </Card>
               </div>
+
+              {/* ── Trace Waterfall ── */}
+              {traces.some((t) => t.parent_trace_id) && (
+                <TraceWaterfall traces={traces.slice(0, 20)} />
+              )}
 
               {/* ── Traces ── */}
               <Card>

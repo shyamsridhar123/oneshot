@@ -17,11 +17,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { chatApi } from "@/lib/api";
-import { useStore, EMPTY_MESSAGES } from "@/lib/store";
+import { useStore, EMPTY_MESSAGES, selectActiveCitations } from "@/lib/store";
 import { useAgentWebSocket } from "@/lib/websocket";
-import type { Message, Conversation } from "@/lib/types";
+import type { Message, Conversation, Citation } from "@/lib/types";
 import { ConversationList } from "./conversation-list";
 import { MemoizedMarkdown } from "./memoized-markdown";
+import { CitationPanel } from "./citation-panel";
 import { v4 as uuidv4 } from "uuid";
 
 /* ─────────────────────────────────────────────
@@ -233,6 +234,7 @@ export function ChatInterface() {
   const setLoading = useStore((s) => s.setLoading);
   const setStreaming = useStore((s) => s.setStreaming);
   const isStreaming = useStore((s) => s.isStreaming);
+  const citations = useStore(selectActiveCitations);
 
   const messages = useStore((s) =>
     s.activeConversationId
@@ -479,6 +481,11 @@ export function ChatInterface() {
 
               {isLoading && !isStreaming && <ThinkingIndicator />}
               {isLoading && isStreaming && messages.length > 0 && messages[messages.length - 1].content === "" && <ThinkingIndicator />}
+
+              {/* Citation panel — shows sources after response completes */}
+              {!isLoading && citations.length > 0 && messages.length > 0 && (
+                <CitationPanel citations={citations} />
+              )}
             </div>
           </div>
         </div>

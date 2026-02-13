@@ -2,6 +2,7 @@
 
 import asyncio
 import logging
+import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -38,11 +39,25 @@ def _install_mcp_cleanup_filter():
     loop.set_exception_handler(_handler)
 
 
+def _enable_otel_tracing():
+    """Enable OpenTelemetry tracing for MAF agents if configured."""
+    if os.environ.get("ENABLE_INSTRUMENTATION", "").lower() in ("true", "1"):
+        try:
+            from agent_framework.observability import configure_otel_providers
+            configure_otel_providers()
+            logger.info("OpenTelemetry tracing enabled for MAF agents")
+        except ImportError:
+            logger.debug("agent_framework.observability not available, skipping OTel setup")
+        except Exception as e:
+            logger.warning("Failed to enable OpenTelemetry: %s", e)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan handler."""
     # Startup
     _install_mcp_cleanup_filter()
+    _enable_otel_tracing()
     await init_db()
     print("✓ Database initialized")
     yield

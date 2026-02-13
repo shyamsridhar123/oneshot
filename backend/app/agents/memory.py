@@ -5,12 +5,14 @@ and knowledge base items, then synthesizes them for downstream agents.
 """
 
 import logging
+import time
 from typing import Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.agents.prompts import MEMORY_PROMPT
 from app.agents.factory import create_agent, get_agent_tools
+from app.agents.middleware import build_agent_trace_data
 from app.services.llm_service import get_llm_service
 from app.services.knowledge_service import get_knowledge_service
 from app.models.database import AsyncSessionLocal
@@ -18,20 +20,11 @@ from app.models.database import AsyncSessionLocal
 logger = logging.getLogger(__name__)
 
 
-async def run_memory(task: str, context: dict, db: Optional[AsyncSession] = None) -> tuple[str, int]:
+async def run_memory(task: str, context: dict, db: Optional[AsyncSession] = None) -> tuple[str, int, dict]:
     """Run the Memory agent via MAF with retrieval-augmented grounding.
 
-    Creates a MAF ChatAgent with brand data tools (guidelines, past posts,
-    content calendar, knowledge base) and supplements with semantic search
-    over the knowledge DB.
-
-    Args:
-        task: The retrieval task
-        context: Context including query details
-        db: Optional database session (uses AsyncSessionLocal if not provided)
-
     Returns:
-        Tuple of (retrieved knowledge and context, tokens used)
+        Tuple of (retrieved knowledge and context, tokens used, trace data dict)
     """
     knowledge_service = get_knowledge_service()
 
@@ -81,6 +74,8 @@ Analyze the retrieved information and provide:
 2. Applicable frameworks and methodologies
 3. Key insights that can inform the current request"""
 
+    start_time = time.time()
+
     # Try MAF agent path
     try:
         tools = get_agent_tools("memory", include_mcp=False)
@@ -88,7 +83,9 @@ Analyze the retrieved information and provide:
         response = await agent.run(prompt)
         text = response.text or ""
         tokens = response.usage_details.total_token_count if response.usage_details else 0
-        return text, tokens or 0
+        duration_ms = int((time.time() - start_time) * 1000)
+        trace = build_agent_trace_data("memory", text, tokens or 0, duration_ms, response)
+        return text, tokens or 0, trace
     except Exception as e:
         logger.warning("MAF agent path failed for memory, falling back to direct LLM: %s", e)
 
@@ -99,15 +96,17 @@ Analyze the retrieved information and provide:
         system_prompt=MEMORY_PROMPT,
         temperature=0.4,
     )
+    duration_ms = int((time.time() - start_time) * 1000)
+    trace = build_agent_trace_data("memory", response.content, response.tokens_used, duration_ms)
 
-    return response.content, response.tokens_used
+    return response.content, response.tokens_used, trace
 
 
 def _format_knowledge_results(results: list[dict]) -> str:
     """Format knowledge search results."""
     if not results:
         return ""
-    
+
     lines = []
     for r in results:
         score = r.get("score", 0)
@@ -118,7 +117,7 @@ def _format_knowledge_results(results: list[dict]) -> str:
                 lines.append(f"Industry: {r['industry']}")
             lines.append(f"\n{r['content'][:500]}..." if len(r['content']) > 500 else f"\n{r['content']}")
             lines.append("")
-    
+
     return "\n".join(lines)
 
 
@@ -126,7 +125,7 @@ def _format_engagement_results(results: list[dict]) -> str:
     """Format engagement search results."""
     if not results:
         return ""
-    
+
     lines = []
     for r in results:
         score = r.get("score", 0)
@@ -138,5 +137,5 @@ def _format_engagement_results(results: list[dict]) -> str:
             if r.get("frameworks_used"):
                 lines.append(f"Frameworks Used: {', '.join(r['frameworks_used'])}")
             lines.append("")
-    
+
     return "\n".join(lines)

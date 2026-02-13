@@ -13,6 +13,8 @@ import type {
   AgentToolCallEvent,
   StreamTokenEvent,
   DocumentGeneratedEvent,
+  AgentCitationsEvent,
+  ResponseCitationsEvent,
   AgentName,
 } from "./types";
 import { useStore } from "./store";
@@ -28,6 +30,8 @@ interface WSHandlers {
   onAgentHandoff?: EventHandler<AgentHandoffEvent>;
   onAgentToolCall?: EventHandler<AgentToolCallEvent>;
   onAgentError?: EventHandler<{ agent_name: AgentName; error: string }>;
+  onAgentCitations?: EventHandler<AgentCitationsEvent>;
+  onResponseCitations?: EventHandler<ResponseCitationsEvent>;
   onStreamToken?: EventHandler<StreamTokenEvent>;
   onDocumentGenerated?: EventHandler<DocumentGeneratedEvent>;
   onConnectionEstablished?: EventHandler<void>;
@@ -166,6 +170,24 @@ class AgentWebSocket {
       case "document.generated": {
         const data = event.data as DocumentGeneratedEvent;
         this.handlers.onDocumentGenerated?.(data);
+        break;
+      }
+
+      case "agent.citations": {
+        const data = event.data as AgentCitationsEvent;
+        if (this.conversationId) {
+          store.addCitations(this.conversationId, data.citations);
+        }
+        this.handlers.onAgentCitations?.(data);
+        break;
+      }
+
+      case "response.citations": {
+        const data = event.data as ResponseCitationsEvent;
+        if (this.conversationId) {
+          store.addCitations(this.conversationId, data.citations);
+        }
+        this.handlers.onResponseCitations?.(data);
         break;
       }
 

@@ -64,7 +64,14 @@ class AgentTrace(Base):
     error = Column(Text, nullable=True)
     tokens_used = Column(Integer, default=0)
 
+    # Citation and tracing fields
+    citations = Column(JSON, default=list)       # Structured citation/source data
+    tool_calls = Column(JSON, default=list)      # Tool invocation log with inputs/outputs
+    duration_ms = Column(Integer, nullable=True)  # Execution time in milliseconds
+    parent_trace_id = Column(String, ForeignKey("agent_traces.id"), nullable=True)
+
     message = relationship("Message", back_populates="agent_traces")
+    parent_trace = relationship("AgentTrace", remote_side=[id], backref="child_traces")
 
 
 # ============ Documents ============

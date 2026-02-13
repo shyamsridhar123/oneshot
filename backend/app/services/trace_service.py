@@ -40,12 +40,26 @@ class TraceService:
         trace: AgentTrace,
         output_data: dict,
         tokens_used: int = 0,
+        citations: list | None = None,
+        tool_calls: list | None = None,
+        duration_ms: int | None = None,
+        parent_trace_id: str | None = None,
     ) -> AgentTrace:
-        """Mark a trace as completed."""
+        """Mark a trace as completed with optional citation and tool call data."""
         trace.output_data = output_data
         trace.completed_at = datetime.utcnow()
         trace.status = "completed"
         trace.tokens_used = tokens_used
+
+        if citations is not None:
+            trace.citations = citations
+        if tool_calls is not None:
+            trace.tool_calls = tool_calls
+        if duration_ms is not None:
+            trace.duration_ms = duration_ms
+        if parent_trace_id is not None:
+            trace.parent_trace_id = parent_trace_id
+
         await db.flush()
         return trace
 

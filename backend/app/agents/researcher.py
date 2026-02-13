@@ -1,12 +1,13 @@
 """Researcher Agent - Trend discovery and competitive analysis using MAF with MCP tools.
 
-Uses ReAct reasoning pattern (Thought → Action → Observation) to discover
+Uses ReAct reasoning pattern (Thought -> Action -> Observation) to discover
 trending topics, analyze competitor content, and research hashtags.
 Optionally uses MCP fetch server for real-time web content retrieval.
 """
 
 import asyncio
 import logging
+import time
 
 from app.agents.prompts import RESEARCHER_PROMPT
 from app.agents.factory import (
@@ -17,6 +18,7 @@ from app.agents.factory import (
     search_trends,
     search_competitor_content,
 )
+from app.agents.middleware import build_agent_trace_data, extract_citations_from_text
 from app.services.llm_service import get_llm_service
 
 logger = logging.getLogger(__name__)
@@ -45,18 +47,11 @@ def _ensure_mcp_cleanup_filter():
     loop._mcp_filter_installed = True
 
 
-async def run_researcher(task: str, context: dict) -> tuple[str, int]:
+async def run_researcher(task: str, context: dict) -> tuple[str, int, dict]:
     """Run the Researcher agent to gather trend and competitive intelligence.
 
-    Creates a MAF ChatAgent with social media research tools and optional
-    MCP fetch server for real-time web content grounding.
-
-    Args:
-        task: The research task description
-        context: Context including message, entities, platforms
-
     Returns:
-        Tuple of (research findings, tokens used)
+        Tuple of (research findings, tokens used, trace data dict)
     """
     entities = context.get("entities", [])
     message = context.get("message", task)
@@ -77,6 +72,8 @@ Use the ReAct pattern to research this topic:
 
 If web fetch tools are available, use them to retrieve real-time information."""
 
+    start_time = time.time()
+
     # Try MAF agent path (with tools + MCP)
     try:
         _ensure_mcp_cleanup_filter()
@@ -85,7 +82,9 @@ If web fetch tools are available, use them to retrieve real-time information."""
         response = await agent.run(prompt)
         text = response.text or ""
         tokens = response.usage_details.total_token_count if response.usage_details else 0
-        return text, tokens or 0
+        duration_ms = int((time.time() - start_time) * 1000)
+        trace = build_agent_trace_data("researcher", text, tokens or 0, duration_ms, response)
+        return text, tokens or 0, trace
     except Exception as e:
         logger.warning("MAF agent path failed for researcher, falling back to direct LLM: %s", e)
 
@@ -123,4 +122,22 @@ Synthesize these findings into a clear, well-organized research briefing."""
         system_prompt=RESEARCHER_PROMPT,
         temperature=0.5,
     )
-    return response.content, response.tokens_used
+    duration_ms = int((time.time() - start_time) * 1000)
+
+    # Build trace with fallback tool calls
+    fallback_tool_calls = [
+        {"tool_name": "search_web", "result_preview": web_results[:300]},
+        {"tool_name": "search_news", "result_preview": news_results[:300]},
+        {"tool_name": "search_trends", "result_preview": trend_results[:300]},
+    ]
+    citations = extract_citations_from_text(all_research)
+    trace = {
+        "result_preview": response.content[:500],
+        "citations": citations,
+        "tool_calls": fallback_tool_calls,
+        "duration_ms": duration_ms,
+        "tokens_used": response.tokens_used,
+        "agent_name": "researcher",
+    }
+
+    return response.content, response.tokens_used, trace

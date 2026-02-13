@@ -12,6 +12,7 @@ import type {
   AgentName,
   AgentStatusType,
   Document,
+  Citation,
 } from "./types";
 
 // Stable empty array to prevent infinite re-renders
@@ -101,6 +102,11 @@ interface OneShotStore {
   isStreaming: boolean;
   streamingMessageId: string | null;
   setStreaming: (streaming: boolean, messageId?: string | null) => void;
+
+  // Citations
+  citations: Record<string, Citation[]>;  // keyed by conversation ID
+  addCitations: (conversationId: string, citations: Citation[]) => void;
+  clearCitations: (conversationId: string) => void;
 }
 
 export const useStore = create<OneShotStore>()(
@@ -218,6 +224,30 @@ export const useStore = create<OneShotStore>()(
       streamingMessageId: null,
       setStreaming: (streaming, messageId = null) =>
         set({ isStreaming: streaming, streamingMessageId: messageId }),
+
+      // ============ Citations ============
+      citations: {},
+
+      addCitations: (conversationId, newCitations) =>
+        set((state) => {
+          const existing = state.citations[conversationId] || [];
+          // Deduplicate by URL
+          const seen = new Set(existing.map((c) => c.url).filter(Boolean));
+          const unique = newCitations.filter(
+            (c) => !c.url || !seen.has(c.url)
+          );
+          return {
+            citations: {
+              ...state.citations,
+              [conversationId]: [...existing, ...unique],
+            },
+          };
+        }),
+
+      clearCitations: (conversationId) =>
+        set((state) => ({
+          citations: { ...state.citations, [conversationId]: [] },
+        })),
     }))
   )
 );
@@ -234,6 +264,11 @@ export const selectActiveMessages = (state: OneShotStore): Message[] =>
 
 export const selectActiveAgents = (state: OneShotStore) =>
   Object.values(state.agentStates).filter((a) => a.status !== "idle");
+
+export const selectActiveCitations = (state: OneShotStore): Citation[] =>
+  state.activeConversationId
+    ? state.citations[state.activeConversationId] || []
+    : [];
 
 // Re-export useShallow for components
 export { useShallow };
