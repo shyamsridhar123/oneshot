@@ -1,234 +1,349 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
   <defs>
     <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#050505"/>
-      <stop offset="30%" stop-color="#0d0d1a"/>
-      <stop offset="70%" stop-color="#1a0a0a"/>
-      <stop offset="100%" stop-color="#050505"/>
+      <stop offset="0%" stop-color="#020204"/>
+      <stop offset="30%" stop-color="#08081a"/>
+      <stop offset="70%" stop-color="#120808"/>
+      <stop offset="100%" stop-color="#020204"/>
     </linearGradient>
     <linearGradient id="fireGrad" x1="0%" y1="100%" x2="0%" y2="0%">
-      <stop offset="0%" stop-color="#e74c3c"/>
+      <stop offset="0%" stop-color="#c0392b"/>
+      <stop offset="40%" stop-color="#e74c3c"/>
       <stop offset="100%" stop-color="#f39c12"/>
     </linearGradient>
-    <linearGradient id="spotlightGrad" x1="50%" y1="0%" x2="50%" y2="100%">
-      <stop offset="0%" stop-color="#f39c12" stop-opacity="0.08"/>
+    <!-- Spotlights -->
+    <linearGradient id="spotL" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#f39c12" stop-opacity="0.25"/>
+      <stop offset="50%" stop-color="#f39c12" stop-opacity="0.04"/>
       <stop offset="100%" stop-color="#f39c12" stop-opacity="0"/>
     </linearGradient>
+    <linearGradient id="spotR" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#e74c3c" stop-opacity="0.2"/>
+      <stop offset="50%" stop-color="#e74c3c" stop-opacity="0.03"/>
+      <stop offset="100%" stop-color="#e74c3c" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="spotC" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.12"/>
+      <stop offset="40%" stop-color="#f39c12" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#f39c12" stop-opacity="0"/>
+    </linearGradient>
+    <!-- Stage floor -->
     <linearGradient id="stageGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#1a1a1a"/>
+      <stop offset="0%" stop-color="#1a1a1a" stop-opacity="0.9"/>
       <stop offset="100%" stop-color="#0a0a0a"/>
     </linearGradient>
-    <radialGradient id="spotlight1" cx="30%" cy="0%" r="60%">
-      <stop offset="0%" stop-color="#f39c12" stop-opacity="0.06"/>
+    <linearGradient id="stageEdge" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f39c12" stop-opacity="0"/>
+      <stop offset="30%" stop-color="#f39c12" stop-opacity="0.3"/>
+      <stop offset="50%" stop-color="#f39c12" stop-opacity="0.5"/>
+      <stop offset="70%" stop-color="#f39c12" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#f39c12" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="bottomBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e74c3c" stop-opacity="0"/>
+      <stop offset="20%" stop-color="#e74c3c"/>
+      <stop offset="50%" stop-color="#f39c12"/>
+      <stop offset="80%" stop-color="#e74c3c"/>
+      <stop offset="100%" stop-color="#e74c3c" stop-opacity="0"/>
+    </linearGradient>
+    <!-- Radial glows -->
+    <radialGradient id="spotGlowL" cx="50%" cy="0%" r="80%">
+      <stop offset="0%" stop-color="#f39c12" stop-opacity="0.08"/>
       <stop offset="100%" stop-color="#f39c12" stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="spotlight2" cx="70%" cy="0%" r="60%">
-      <stop offset="0%" stop-color="#e74c3c" stop-opacity="0.06"/>
+    <radialGradient id="spotGlowR" cx="50%" cy="0%" r="80%">
+      <stop offset="0%" stop-color="#e74c3c" stop-opacity="0.08"/>
       <stop offset="100%" stop-color="#e74c3c" stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="crowdGlow" cx="50%" cy="100%" r="60%">
-      <stop offset="0%" stop-color="#e74c3c" stop-opacity="0.04"/>
-      <stop offset="100%" stop-color="#e74c3c" stop-opacity="0"/>
+    <radialGradient id="fogGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
     </radialGradient>
-    <linearGradient id="bottomBar" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#e74c3c"/>
-      <stop offset="50%" stop-color="#f39c12"/>
-      <stop offset="100%" stop-color="#e74c3c"/>
-    </linearGradient>
+    <!-- Filters -->
     <filter id="glow">
       <feGaussianBlur stdDeviation="3" result="blur"/>
       <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
-    <filter id="bigGlow">
-      <feGaussianBlur stdDeviation="15" result="blur"/>
+    <filter id="titleGlow">
+      <feGaussianBlur stdDeviation="18" result="blur"/>
       <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="floorReflect">
+      <feGaussianBlur stdDeviation="3"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.15"/></feComponentTransfer>
+    </filter>
     <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.015)" stroke-width="0.5"/>
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.012)" stroke-width="0.5"/>
     </pattern>
   </defs>
 
-  <!-- Background - dark venue -->
+  <!-- === BACKGROUND === -->
   <rect width="1200" height="630" fill="url(#bgGrad)"/>
   <rect width="1200" height="630" fill="url(#grid)"/>
 
-  <!-- Spotlights from top -->
-  <polygon points="300,0 200,630 400,630" fill="url(#spotlightGrad)" opacity="0.6"/>
-  <polygon points="900,0 800,630 1000,630" fill="url(#spotlightGrad)" opacity="0.4"/>
-  <rect width="1200" height="630" fill="url(#spotlight1)"/>
-  <rect width="1200" height="630" fill="url(#spotlight2)"/>
+  <!-- Ambient glow layers -->
+  <rect width="1200" height="630" fill="url(#spotGlowL)"/>
+  <rect width="1200" height="630" fill="url(#spotGlowR)"/>
 
-  <!-- Stage floor -->
-  <rect x="0" y="440" width="1200" height="190" fill="url(#stageGrad)" opacity="0.8"/>
-  <line x1="0" y1="440" x2="1200" y2="440" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
-  <!-- Stage floor planks (subtle) -->
-  <line x1="0" y1="480" x2="1200" y2="480" stroke="rgba(255,255,255,0.02)" stroke-width="0.5"/>
-  <line x1="0" y1="520" x2="1200" y2="520" stroke="rgba(255,255,255,0.02)" stroke-width="0.5"/>
-  <line x1="0" y1="560" x2="1200" y2="560" stroke="rgba(255,255,255,0.02)" stroke-width="0.5"/>
+  <!-- === SPOTLIGHTS === -->
+  <!-- Left spotlight beam -->
+  <polygon points="260,0 120,630 400,630" fill="url(#spotL)"/>
+  <!-- Center spotlight beam (brightest) -->
+  <polygon points="600,0 480,630 720,630" fill="url(#spotC)"/>
+  <!-- Right spotlight beam -->
+  <polygon points="940,0 800,630 1080,630" fill="url(#spotR)"/>
 
-  <!-- Crowd silhouette (abstract hands/heads) -->
-  <g opacity="0.04" fill="#ffffff">
-    <!-- Row of abstract crowd shapes at bottom -->
-    <circle cx="50" cy="610" r="12"/>
-    <circle cx="85" cy="605" r="10"/>
-    <circle cx="120" cy="612" r="11"/>
-    <circle cx="155" cy="608" r="9"/>
-    <circle cx="190" cy="614" r="12"/>
-    <circle cx="225" cy="606" r="10"/>
-    <circle cx="260" cy="611" r="11"/>
-    <circle cx="295" cy="607" r="13"/>
-    <circle cx="330" cy="613" r="10"/>
-    <circle cx="365" cy="609" r="11"/>
-    <circle cx="400" cy="615" r="9"/>
-    <circle cx="435" cy="608" r="12"/>
-    <circle cx="470" cy="612" r="10"/>
-    <circle cx="505" cy="606" r="11"/>
-    <circle cx="540" cy="614" r="13"/>
-    <circle cx="575" cy="609" r="10"/>
-    <circle cx="610" cy="613" r="11"/>
-    <circle cx="645" cy="607" r="12"/>
-    <circle cx="680" cy="611" r="9"/>
-    <circle cx="715" cy="615" r="11"/>
-    <circle cx="750" cy="608" r="10"/>
-    <circle cx="785" cy="612" r="12"/>
-    <circle cx="820" cy="606" r="11"/>
-    <circle cx="855" cy="614" r="10"/>
-    <circle cx="890" cy="609" r="13"/>
-    <circle cx="925" cy="613" r="9"/>
-    <circle cx="960" cy="607" r="11"/>
-    <circle cx="995" cy="611" r="12"/>
-    <circle cx="1030" cy="615" r="10"/>
-    <circle cx="1065" cy="608" r="11"/>
-    <circle cx="1100" cy="612" r="9"/>
-    <circle cx="1135" cy="606" r="12"/>
-    <circle cx="1170" cy="610" r="10"/>
-    <!-- Raised hands (scattered) -->
-    <rect x="100" y="575" width="5" height="30" rx="2"/>
-    <rect x="250" y="570" width="5" height="35" rx="2"/>
-    <rect x="400" y="572" width="5" height="33" rx="2"/>
-    <rect x="550" y="568" width="5" height="37" rx="2"/>
-    <rect x="700" y="573" width="5" height="32" rx="2"/>
-    <rect x="850" y="569" width="5" height="36" rx="2"/>
-    <rect x="1000" y="574" width="5" height="31" rx="2"/>
-    <rect x="1100" y="571" width="5" height="34" rx="2"/>
+  <!-- Spotlight source flares at top -->
+  <circle cx="260" cy="6" r="12" fill="#f39c12" opacity="0.15" filter="url(#softGlow)"/>
+  <circle cx="600" cy="6" r="16" fill="#ffffff" opacity="0.1" filter="url(#softGlow)"/>
+  <circle cx="940" cy="6" r="12" fill="#e74c3c" opacity="0.12" filter="url(#softGlow)"/>
+
+  <!-- === STAGE FLOOR === -->
+  <rect x="0" y="420" width="1200" height="210" fill="url(#stageGrad)"/>
+  <!-- Stage edge glow -->
+  <rect x="0" y="418" width="1200" height="3" fill="url(#stageEdge)"/>
+  <!-- Stage floor planks -->
+  <g stroke="rgba(255,255,255,0.03)" stroke-width="0.5">
+    <line x1="0" y1="460" x2="1200" y2="460"/>
+    <line x1="0" y1="500" x2="1200" y2="500"/>
+    <line x1="0" y1="540" x2="1200" y2="540"/>
   </g>
 
-  <!-- Microphone stand (center stage) -->
-  <g transform="translate(600, 300)" opacity="0.07">
-    <!-- Mic head -->
-    <ellipse cx="0" cy="-110" rx="22" ry="32" fill="#fff"/>
-    <rect x="-3" y="-78" width="6" height="4" fill="#fff"/>
-    <!-- Mic body/stand -->
-    <rect x="-4" y="-74" width="8" height="180" rx="3" fill="#fff"/>
-    <!-- Stand base -->
-    <ellipse cx="0" cy="110" rx="35" ry="8" fill="#fff"/>
-    <!-- Stand tripod legs -->
-    <line x1="0" y1="106" x2="-30" y2="120" stroke="#fff" stroke-width="3"/>
-    <line x1="0" y1="106" x2="30" y2="120" stroke="#fff" stroke-width="3"/>
-    <line x1="0" y1="106" x2="0" y2="122" stroke="#fff" stroke-width="3"/>
+  <!-- Stage fog/haze -->
+  <ellipse cx="600" cy="430" rx="500" ry="40" fill="url(#fogGrad)"/>
+  <ellipse cx="300" cy="440" rx="200" ry="25" fill="url(#fogGrad)" opacity="0.6"/>
+  <ellipse cx="900" cy="435" rx="200" ry="25" fill="url(#fogGrad)" opacity="0.6"/>
+
+  <!-- === MICROPHONE STAND (center stage, visible) === -->
+  <g transform="translate(600, 290)" opacity="0.12">
+    <!-- Mic head mesh -->
+    <ellipse cx="0" cy="-108" rx="20" ry="30" fill="none" stroke="#fff" stroke-width="1.5"/>
+    <ellipse cx="0" cy="-108" rx="20" ry="30" fill="#fff" opacity="0.3"/>
+    <!-- Mic head highlight -->
+    <ellipse cx="-4" cy="-114" rx="6" ry="10" fill="#fff" opacity="0.2"/>
+    <!-- Connector -->
+    <rect x="-3" y="-78" width="6" height="5" rx="1" fill="#fff"/>
+    <!-- Stand pole -->
+    <rect x="-3" y="-73" width="6" height="170" rx="2" fill="#fff"/>
+    <!-- Tripod base -->
+    <line x1="0" y1="97" x2="-32" y2="115" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="0" y1="97" x2="32" y2="115" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="0" y1="97" x2="0" y2="118" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
   </g>
 
-  <!-- THE MAIN EVENT -->
+  <!-- === CROWD SILHOUETTE (actually visible) === -->
+  <g fill="#ffffff">
+    <!-- Dense crowd heads - two rows -->
+    <g opacity="0.08">
+      <!-- Back row -->
+      <circle cx="35" cy="598" r="10"/>
+      <circle cx="60" cy="594" r="9"/>
+      <circle cx="90" cy="600" r="11"/>
+      <circle cx="120" cy="596" r="10"/>
+      <circle cx="150" cy="602" r="9"/>
+      <circle cx="178" cy="595" r="11"/>
+      <circle cx="208" cy="601" r="10"/>
+      <circle cx="235" cy="593" r="9"/>
+      <circle cx="265" cy="599" r="11"/>
+      <circle cx="295" cy="596" r="10"/>
+      <circle cx="325" cy="602" r="9"/>
+      <circle cx="355" cy="594" r="10"/>
+      <circle cx="385" cy="600" r="11"/>
+      <circle cx="415" cy="597" r="9"/>
+      <circle cx="445" cy="603" r="10"/>
+      <circle cx="475" cy="595" r="11"/>
+      <circle cx="505" cy="601" r="9"/>
+      <circle cx="535" cy="594" r="10"/>
+      <circle cx="565" cy="600" r="11"/>
+      <circle cx="595" cy="597" r="9"/>
+      <circle cx="625" cy="603" r="10"/>
+      <circle cx="655" cy="595" r="11"/>
+      <circle cx="685" cy="601" r="9"/>
+      <circle cx="715" cy="594" r="10"/>
+      <circle cx="745" cy="600" r="11"/>
+      <circle cx="775" cy="597" r="9"/>
+      <circle cx="805" cy="603" r="10"/>
+      <circle cx="835" cy="595" r="11"/>
+      <circle cx="865" cy="601" r="9"/>
+      <circle cx="895" cy="594" r="10"/>
+      <circle cx="925" cy="600" r="11"/>
+      <circle cx="955" cy="597" r="9"/>
+      <circle cx="985" cy="603" r="10"/>
+      <circle cx="1015" cy="595" r="11"/>
+      <circle cx="1045" cy="601" r="9"/>
+      <circle cx="1075" cy="594" r="10"/>
+      <circle cx="1105" cy="600" r="11"/>
+      <circle cx="1135" cy="597" r="9"/>
+      <circle cx="1165" cy="603" r="10"/>
+    </g>
+    <!-- Front row (slightly larger, more visible) -->
+    <g opacity="0.06">
+      <circle cx="50" cy="618" r="13"/>
+      <circle cx="88" cy="615" r="12"/>
+      <circle cx="130" cy="620" r="14"/>
+      <circle cx="170" cy="616" r="12"/>
+      <circle cx="215" cy="622" r="13"/>
+      <circle cx="260" cy="614" r="12"/>
+      <circle cx="305" cy="619" r="14"/>
+      <circle cx="350" cy="617" r="12"/>
+      <circle cx="395" cy="621" r="13"/>
+      <circle cx="440" cy="615" r="14"/>
+      <circle cx="485" cy="620" r="12"/>
+      <circle cx="530" cy="616" r="13"/>
+      <circle cx="575" cy="622" r="14"/>
+      <circle cx="620" cy="614" r="12"/>
+      <circle cx="665" cy="619" r="13"/>
+      <circle cx="710" cy="617" r="14"/>
+      <circle cx="755" cy="621" r="12"/>
+      <circle cx="800" cy="615" r="13"/>
+      <circle cx="845" cy="620" r="14"/>
+      <circle cx="890" cy="616" r="12"/>
+      <circle cx="935" cy="622" r="13"/>
+      <circle cx="980" cy="614" r="14"/>
+      <circle cx="1025" cy="619" r="12"/>
+      <circle cx="1070" cy="617" r="13"/>
+      <circle cx="1115" cy="621" r="14"/>
+      <circle cx="1160" cy="615" r="12"/>
+    </g>
+    <!-- Raised hands / arms (visible, varied) -->
+    <g opacity="0.07">
+      <rect x="90" y="560" width="5" height="36" rx="2" transform="rotate(-5,92,578)"/>
+      <rect x="195" y="555" width="5" height="38" rx="2" transform="rotate(8,197,574)"/>
+      <rect x="310" y="558" width="5" height="36" rx="2" transform="rotate(-3,312,576)"/>
+      <rect x="430" y="552" width="5" height="42" rx="2" transform="rotate(6,432,573)"/>
+      <rect x="530" y="556" width="5" height="38" rx="2" transform="rotate(-8,532,575)"/>
+      <rect x="670" y="554" width="5" height="40" rx="2" transform="rotate(4,672,574)"/>
+      <rect x="770" y="558" width="5" height="36" rx="2" transform="rotate(-6,772,576)"/>
+      <rect x="880" y="552" width="5" height="42" rx="2" transform="rotate(7,882,573)"/>
+      <rect x="990" y="556" width="5" height="38" rx="2" transform="rotate(-4,992,575)"/>
+      <rect x="1100" y="554" width="5" height="40" rx="2" transform="rotate(5,1102,574)"/>
+      <!-- Open hand shapes (V/peace signs) -->
+      <g transform="translate(160,550) rotate(-10)">
+        <rect x="-3" y="0" width="4" height="28" rx="1.5"/>
+        <rect x="3" y="0" width="4" height="28" rx="1.5" transform="rotate(15,5,14)"/>
+      </g>
+      <g transform="translate(600,548) rotate(5)">
+        <rect x="-3" y="0" width="4" height="30" rx="1.5"/>
+        <rect x="3" y="0" width="4" height="30" rx="1.5" transform="rotate(15,5,15)"/>
+      </g>
+      <g transform="translate(1040,550) rotate(-8)">
+        <rect x="-3" y="0" width="4" height="26" rx="1.5"/>
+        <rect x="3" y="0" width="4" height="26" rx="1.5" transform="rotate(15,5,13)"/>
+      </g>
+    </g>
+  </g>
 
-  <!-- "// THE STAGE IS SET" -->
-  <text x="600" y="80" text-anchor="middle" font-family="'Courier New', monospace" font-size="12" fill="#e74c3c" fill-opacity="0.7" letter-spacing="6" font-weight="700">// THE STAGE IS SET</text>
+  <!-- === LYRICS BUILD (increasing intensity) === -->
+  <text x="600" y="78" text-anchor="middle" font-family="'Courier New', monospace" font-size="11" fill="#e74c3c" fill-opacity="0.6" letter-spacing="5" font-weight="700">// THE STAGE IS SET</text>
 
-  <!-- Lyric lines (stacked, building intensity) -->
-  <text x="600" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="rgba(255,255,255,0.25)" font-style="italic" letter-spacing="1">
+  <text x="600" y="125" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="rgba(255,255,255,0.25)" font-style="italic" letter-spacing="1">
     Look — if you had one shot, or one opportunity
   </text>
-  <text x="600" y="158" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="rgba(255,255,255,0.35)" font-style="italic" letter-spacing="1">
+  <text x="600" y="155" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="rgba(255,255,255,0.38)" font-style="italic" letter-spacing="1">
     To seize everything you ever wanted, in one moment
   </text>
-  <text x="600" y="186" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="rgba(255,255,255,0.5)" font-style="italic" letter-spacing="1" font-weight="600">
+  <text x="600" y="187" text-anchor="middle" font-family="Arial, sans-serif" font-size="21" fill="rgba(255,255,255,0.55)" font-style="italic" letter-spacing="1" font-weight="600">
     Would you capture it, or just let it slip?
   </text>
 
-  <!-- BIG TITLE -->
-  <text x="600" y="280" text-anchor="middle" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="110" font-weight="900" letter-spacing="-3" filter="url(#bigGlow)">
+  <!-- === BIG TITLE === -->
+  <text x="600" y="278" text-anchor="middle" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="115" font-weight="900" letter-spacing="-3" filter="url(#titleGlow)">
     <tspan fill="url(#fireGrad)">One</tspan><tspan fill="#ffffff">Shot</tspan>
   </text>
 
   <!-- "We didn't let it slip" -->
-  <text x="600" y="320" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="rgba(255,255,255,0.6)" letter-spacing="1">
+  <text x="600" y="316" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="rgba(255,255,255,0.7)" letter-spacing="1" font-weight="600">
     We didn't let it slip.
   </text>
 
-  <!-- Agent lineup (like a band on stage) -->
-  <g transform="translate(600, 382)">
-    <!-- 7 agent "figures" as abstract vertical bars with glow dots -->
-    <!-- Orchestrator (center, tallest) -->
-    <g transform="translate(0, 0)">
-      <rect x="-4" y="-40" width="8" height="50" rx="3" fill="#e74c3c" opacity="0.35"/>
-      <circle cx="0" cy="-48" r="5" fill="#e74c3c" opacity="0.6" filter="url(#glow)"/>
-      <text x="0" y="24" text-anchor="middle" font-family="'Courier New', monospace" font-size="8" fill="rgba(255,255,255,0.3)">ORCH</text>
-    </g>
+  <!-- === AGENT LINEUP (glowing figures on stage) === -->
+  <g transform="translate(600, 378)">
+    <!-- Stage position glow pools under each agent -->
+    <ellipse cx="-180" cy="18" rx="22" ry="4" fill="#e74c3c" opacity="0.12"/>
+    <ellipse cx="-120" cy="18" rx="22" ry="4" fill="#3498db" opacity="0.12"/>
+    <ellipse cx="-60" cy="18" rx="22" ry="4" fill="#2ecc71" opacity="0.12"/>
+    <ellipse cx="0" cy="18" rx="28" ry="5" fill="#e74c3c" opacity="0.18"/>
+    <ellipse cx="60" cy="18" rx="22" ry="4" fill="#f39c12" opacity="0.12"/>
+    <ellipse cx="120" cy="18" rx="22" ry="4" fill="#9b59b6" opacity="0.12"/>
+    <ellipse cx="180" cy="18" rx="22" ry="4" fill="#1abc9c" opacity="0.12"/>
+
+    <!-- Agent figures (head + body, color-coded, glowing) -->
     <!-- Researcher -->
     <g transform="translate(-180, 0)">
-      <rect x="-3" y="-30" width="6" height="40" rx="2" fill="#e74c3c" opacity="0.25"/>
-      <circle cx="0" cy="-36" r="4" fill="#e74c3c" opacity="0.5"/>
-      <text x="0" y="24" text-anchor="middle" font-family="'Courier New', monospace" font-size="7" fill="rgba(255,255,255,0.2)">RES</text>
+      <circle cx="0" cy="-32" r="6" fill="#e74c3c" opacity="0.6" filter="url(#glow)"/>
+      <rect x="-5" y="-24" width="10" height="38" rx="4" fill="#e74c3c" opacity="0.25"/>
+      <text x="0" y="36" text-anchor="middle" font-family="'Courier New', monospace" font-size="9" fill="#e74c3c" fill-opacity="0.6" letter-spacing="1">RES</text>
     </g>
     <!-- Strategist -->
     <g transform="translate(-120, 0)">
-      <rect x="-3" y="-32" width="6" height="42" rx="2" fill="#3498db" opacity="0.25"/>
-      <circle cx="0" cy="-38" r="4" fill="#3498db" opacity="0.5"/>
-      <text x="0" y="24" text-anchor="middle" font-family="'Courier New', monospace" font-size="7" fill="rgba(255,255,255,0.2)">STR</text>
+      <circle cx="0" cy="-34" r="6" fill="#3498db" opacity="0.6" filter="url(#glow)"/>
+      <rect x="-5" y="-26" width="10" height="40" rx="4" fill="#3498db" opacity="0.25"/>
+      <text x="0" y="36" text-anchor="middle" font-family="'Courier New', monospace" font-size="9" fill="#3498db" fill-opacity="0.6" letter-spacing="1">STR</text>
     </g>
     <!-- Memory -->
     <g transform="translate(-60, 0)">
-      <rect x="-3" y="-28" width="6" height="38" rx="2" fill="#2ecc71" opacity="0.25"/>
-      <circle cx="0" cy="-34" r="4" fill="#2ecc71" opacity="0.5"/>
-      <text x="0" y="24" text-anchor="middle" font-family="'Courier New', monospace" font-size="7" fill="rgba(255,255,255,0.2)">MEM</text>
+      <circle cx="0" cy="-30" r="6" fill="#2ecc71" opacity="0.6" filter="url(#glow)"/>
+      <rect x="-5" y="-22" width="10" height="36" rx="4" fill="#2ecc71" opacity="0.25"/>
+      <text x="0" y="36" text-anchor="middle" font-family="'Courier New', monospace" font-size="9" fill="#2ecc71" fill-opacity="0.6" letter-spacing="1">MEM</text>
+    </g>
+    <!-- Orchestrator (center, tallest, brightest) -->
+    <g transform="translate(0, 0)">
+      <circle cx="0" cy="-46" r="8" fill="#e74c3c" opacity="0.8" filter="url(#glow)"/>
+      <rect x="-6" y="-36" width="12" height="50" rx="5" fill="#e74c3c" opacity="0.35"/>
+      <text x="0" y="36" text-anchor="middle" font-family="'Courier New', monospace" font-size="10" fill="#f39c12" fill-opacity="0.8" font-weight="700" letter-spacing="1">ORCH</text>
     </g>
     <!-- Analyst -->
     <g transform="translate(60, 0)">
-      <rect x="-3" y="-28" width="6" height="38" rx="2" fill="#f39c12" opacity="0.25"/>
-      <circle cx="0" cy="-34" r="4" fill="#f39c12" opacity="0.5"/>
-      <text x="0" y="24" text-anchor="middle" font-family="'Courier New', monospace" font-size="7" fill="rgba(255,255,255,0.2)">ANA</text>
+      <circle cx="0" cy="-30" r="6" fill="#f39c12" opacity="0.6" filter="url(#glow)"/>
+      <rect x="-5" y="-22" width="10" height="36" rx="4" fill="#f39c12" opacity="0.25"/>
+      <text x="0" y="36" text-anchor="middle" font-family="'Courier New', monospace" font-size="9" fill="#f39c12" fill-opacity="0.6" letter-spacing="1">ANA</text>
     </g>
     <!-- Scribe -->
     <g transform="translate(120, 0)">
-      <rect x="-3" y="-32" width="6" height="42" rx="2" fill="#9b59b6" opacity="0.25"/>
-      <circle cx="0" cy="-38" r="4" fill="#9b59b6" opacity="0.5"/>
-      <text x="0" y="24" text-anchor="middle" font-family="'Courier New', monospace" font-size="7" fill="rgba(255,255,255,0.2)">SCR</text>
+      <circle cx="0" cy="-34" r="6" fill="#9b59b6" opacity="0.6" filter="url(#glow)"/>
+      <rect x="-5" y="-26" width="10" height="40" rx="4" fill="#9b59b6" opacity="0.25"/>
+      <text x="0" y="36" text-anchor="middle" font-family="'Courier New', monospace" font-size="9" fill="#9b59b6" fill-opacity="0.6" letter-spacing="1">SCR</text>
     </g>
     <!-- Advisor -->
     <g transform="translate(180, 0)">
-      <rect x="-3" y="-30" width="6" height="40" rx="2" fill="#1abc9c" opacity="0.25"/>
-      <circle cx="0" cy="-36" r="4" fill="#1abc9c" opacity="0.5"/>
-      <text x="0" y="24" text-anchor="middle" font-family="'Courier New', monospace" font-size="7" fill="rgba(255,255,255,0.2)">ADV</text>
+      <circle cx="0" cy="-32" r="6" fill="#1abc9c" opacity="0.6" filter="url(#glow)"/>
+      <rect x="-5" y="-24" width="10" height="38" rx="4" fill="#1abc9c" opacity="0.25"/>
+      <text x="0" y="36" text-anchor="middle" font-family="'Courier New', monospace" font-size="9" fill="#1abc9c" fill-opacity="0.6" letter-spacing="1">ADV</text>
     </g>
   </g>
 
-  <!-- Bottom info bar -->
-  <g transform="translate(600, 472)">
-    <text x="0" y="0" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="rgba(255,255,255,0.7)">
+  <!-- === BOTTOM INFO === -->
+  <g transform="translate(600, 462)">
+    <text x="0" y="0" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="rgba(255,255,255,0.75)">
       <tspan fill="#ffffff">7 agents.</tspan>
-      <tspan fill="rgba(255,255,255,0.5)"> 7 reasoning patterns. </tspan>
+      <tspan fill="rgba(255,255,255,0.45)"> 7 reasoning patterns. </tspan>
       <tspan fill="#ffffff">2 parallel waves.</tspan>
-      <tspan fill="rgba(255,255,255,0.5)"> One prompt in, content out.</tspan>
+      <tspan fill="rgba(255,255,255,0.45)"> One prompt in, content out.</tspan>
     </text>
   </g>
 
-  <!-- Tech stack whisper -->
-  <text x="600" y="510" text-anchor="middle" font-family="'Courier New', monospace" font-size="11" fill="rgba(255,255,255,0.2)" letter-spacing="3">
-    AZURE OPENAI  •  MAF  •  MCP  •  NEXT.JS  •  FASTAPI
+  <!-- Tech stack -->
+  <text x="600" y="498" text-anchor="middle" font-family="'Courier New', monospace" font-size="11" fill="rgba(255,255,255,0.25)" letter-spacing="3">
+    AZURE OPENAI  ·  MAF  ·  MCP  ·  NEXT.JS  ·  FASTAPI
   </text>
 
-  <!-- "Success is my only option" -->
-  <text x="600" y="545" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="rgba(231,76,60,0.4)" font-style="italic">
+  <!-- Closing quote -->
+  <text x="600" y="530" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="rgba(231,76,60,0.45)" font-style="italic">
     "Success is my only option, failure's not." — adapted for AI agents
   </text>
 
-  <!-- Corner brackets -->
-  <g stroke="#e74c3c" stroke-opacity="0.35" stroke-width="1.5" fill="none">
+  <!-- === CORNER BRACKETS === -->
+  <g stroke="#e74c3c" stroke-opacity="0.4" stroke-width="1.5" fill="none">
     <path d="M 15,15 L 15,45 M 15,15 L 45,15"/>
     <path d="M 1185,15 L 1185,45 M 1185,15 L 1155,15"/>
     <path d="M 15,615 L 15,585 M 15,615 L 45,615"/>
     <path d="M 1185,615 L 1185,585 M 1185,615 L 1155,615"/>
   </g>
 
-  <!-- Bottom fire bar -->
-  <rect x="0" y="626" width="1200" height="4" fill="url(#bottomBar)"/>
+  <!-- === BOTTOM FIRE BAR === -->
+  <rect x="0" y="625" width="1200" height="5" fill="url(#bottomBar)"/>
 </svg>

@@ -81,11 +81,11 @@ export const TrendCard = memo(function TrendCard({
   const VariantIcon = variant === "briefing" ? Globe : TrendingUp;
 
   return (
-    <div className="group relative overflow-hidden rounded-xl border bg-card shadow-sm transition-all hover:shadow-md">
+    <div className="group relative overflow-hidden rounded-lg border bg-card shadow-sm transition-all hover:shadow-md">
       {/* Gradient accent bar */}
       <div
         className={cn(
-          "h-1",
+          "h-0.5",
           variant === "briefing"
             ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
             : "bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500"
@@ -93,26 +93,26 @@ export const TrendCard = memo(function TrendCard({
       />
 
       {/* Header */}
-      <div className="flex items-start justify-between gap-3 px-5 pt-4 pb-2">
-        <div className="flex items-start gap-3 min-w-0">
+      <div className="flex items-start justify-between gap-2 px-3.5 pt-3 pb-1.5">
+        <div className="flex items-start gap-2.5 min-w-0">
           <div
             className={cn(
-              "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg",
+              "flex h-8 w-8 shrink-0 items-center justify-center rounded-md",
               variant === "briefing"
                 ? "bg-blue-500/10 text-blue-600 dark:text-blue-400"
                 : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
             )}
           >
-            <VariantIcon className="h-5 w-5" />
+            <VariantIcon className="h-4 w-4" />
           </div>
           <div className="min-w-0">
-            <h3 className="font-semibold text-base leading-tight truncate">
+            <h3 className="font-semibold text-sm leading-tight truncate">
               {variant === "briefing" && companyName
                 ? companyName
                 : query}
             </h3>
             {summaryLine && (
-              <p className="mt-0.5 text-sm text-muted-foreground line-clamp-2">
+              <p className="mt-0.5 text-xs text-muted-foreground line-clamp-1">
                 {summaryLine}
               </p>
             )}
@@ -140,7 +140,7 @@ export const TrendCard = memo(function TrendCard({
 
       {/* Hashtags */}
       {hashtags.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 px-5 pb-2">
+        <div className="flex flex-wrap gap-1.5 px-3.5 pb-1.5">
           {hashtags.map((tag) => (
             <span
               key={tag}
@@ -153,14 +153,14 @@ export const TrendCard = memo(function TrendCard({
       )}
 
       {/* Content */}
-      <div className="px-5 pb-4">
+      <div className="px-3.5 pb-3">
         <div
           className={cn(
             "overflow-hidden transition-all duration-300",
             expanded ? "max-h-none" : "max-h-64"
           )}
         >
-          <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-1.5 prose-headings:my-2 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-pre:my-2 prose-blockquote:my-2 prose-blockquote:border-primary/30 prose-a:text-primary prose-strong:text-foreground">
+          <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-0.5 prose-p:leading-normal prose-headings:mt-2.5 prose-headings:mb-0.5 prose-headings:leading-snug prose-h2:text-sm prose-h3:text-[13px] prose-ul:my-0.5 prose-ol:my-0.5 prose-li:my-0 prose-li:leading-normal prose-pre:my-1.5 prose-blockquote:my-1.5 prose-blockquote:border-primary/30 prose-a:text-primary prose-strong:text-foreground prose-hr:my-2">
             <MemoizedMarkdown content={content} id={id} />
           </div>
         </div>
@@ -176,7 +176,7 @@ export const TrendCard = memo(function TrendCard({
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between border-t px-5 py-2.5 bg-muted/30">
+      <div className="flex items-center justify-between border-t px-3.5 py-2 bg-muted/30">
         <div className="flex items-center gap-3 text-xs text-muted-foreground">
           <span className="flex items-center gap-1">
             <Newspaper className="h-3 w-3" />

@@ -98,14 +98,14 @@ User Prompt
 
 ---
 
-## MCP Tool Integration
+## MCP & Tool Integration
 
-Agents extend beyond pure language generation via [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) servers — spawned as subprocesses and auto-registered on MAF agents at runtime.
+Agents extend beyond pure language generation via [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) servers and direct tool integrations — spawned as subprocesses and auto-registered on MAF agents at runtime.
 
-| MCP Server | Agent | Purpose |
-|------------|-------|---------|
-| **Filesystem MCP** (`@modelcontextprotocol/server-filesystem`) | Scribe | Saves generated content drafts to `./data/drafts/` |
-| **Fetch MCP** (`@anthropic-ai/mcp-server-fetch`) | Researcher | Retrieves real-time web content for trend grounding |
+| Integration | Type | Agent | Purpose |
+|-------------|------|-------|---------|
+| **Filesystem MCP** (`@modelcontextprotocol/server-filesystem`) | MCP Server | Scribe | Saves generated content drafts to `./data/drafts/` |
+| **DuckDuckGo Search** (`ddgs`) | Python Tool | Researcher | Live web search and news search for trend grounding |
 
 ```python
 from agent_framework import MCPStdioTool
@@ -117,6 +117,8 @@ fs_mcp = MCPStdioTool(
 )
 agent = client.create_agent(name="scribe", instructions=SCRIBE_PROMPT, tools=[fs_mcp])
 ```
+
+> **Note:** The Fetch MCP server (`@anthropic-ai/mcp-server-fetch`) was originally included but has been disabled — the npm package was removed upstream. The Researcher agent uses DuckDuckGo live search (`ddgs` Python package) as a direct tool integration instead, which is faster and requires no API key.
 
 MCP is optional — agents gracefully fall back to direct LLM calls when servers are unavailable.
 
@@ -130,8 +132,8 @@ MCP is optional — agents gracefully fall back to direct LLM calls when servers
 | **Backend** | Python 3.11+, FastAPI 0.115, SQLAlchemy 2.x, aiosqlite |
 | **AI** | Azure OpenAI GPT-5.x, Microsoft Agent Framework (MAF) |
 | **Auth** | Azure Identity (`DefaultAzureCredential`) — zero secrets in config |
-| **MCP** | Filesystem MCP (draft persistence), Fetch MCP (web grounding) |
-| **Search** | DuckDuckGo Search (`ddgs`) for live web/trend grounding |
+| **MCP** | Filesystem MCP (draft persistence) |
+| **Search** | DuckDuckGo Search (`ddgs`) — live web and news search, no API key required |
 | **Database** | SQLite with async support |
 | **Real-time** | WebSocket agent status streaming (6 event types) |
 | **Testing** | pytest + pytest-asyncio (215 tests) |
@@ -247,7 +249,7 @@ document.generated → "Social Post: AI Launch Campaign"
 | Specialized AI agents | **7** |
 | Named reasoning patterns | **7** |
 | Agent tool functions | **14** |
-| MCP server integrations | **2** |
+| MCP server integrations | **1** (Filesystem) |
 | Supported platforms | **3** (LinkedIn, Twitter/X, Instagram) |
 | Export formats | **4** (Markdown, HTML, PDF, DOCX) |
 | WebSocket event types | **6** |
@@ -321,7 +323,7 @@ python demo_e2e.py        # 85 E2E demo checks
 
 **Two-wave architecture mirrors real workflows.** Wave 1 gathers context. Wave 2 creates with that context. Research and strategy happen before writing. Review happens after. We automated the workflow, not just the writing.
 
-**MCP makes agents more than language models.** The Scribe saves files. The Researcher fetches live web content. MCP turns models into agents that interact with the real world.
+**Agents interact with the real world.** The Scribe saves files via MCP. The Researcher searches live web content via DuckDuckGo. Tool integrations turn language models into agents that act, not just generate.
 
 **Zero secrets.** `DefaultAzureCredential` everywhere. `az login` for dev, Managed Identity for prod, service principals for CI — same code, no API keys.
 

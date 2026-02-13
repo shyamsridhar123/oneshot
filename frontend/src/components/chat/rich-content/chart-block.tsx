@@ -19,20 +19,25 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
 } from "recharts";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
 
 const COLORS = [
-  "hsl(221, 83%, 53%)", // blue-600
-  "hsl(262, 83%, 58%)", // violet-500
-  "hsl(173, 80%, 40%)", // teal-600
-  "hsl(25, 95%, 53%)",  // orange-500
-  "hsl(338, 71%, 51%)", // rose-500
-  "hsl(47, 96%, 53%)",  // amber-400
-  "hsl(142, 71%, 45%)", // green-500
-  "hsl(199, 89%, 48%)", // sky-500
+  "oklch(0.488 0.243 264.376)", // violet
+  "oklch(0.696 0.17 162.48)",   // teal
+  "oklch(0.646 0.222 41.116)",  // orange
+  "oklch(0.645 0.246 16.439)",  // rose
+  "oklch(0.828 0.189 84.429)",  // amber
+  "oklch(0.627 0.265 303.9)",   // purple
+  "oklch(0.6 0.118 184.704)",   // cyan
+  "oklch(0.769 0.188 70.08)",   // yellow-green
 ];
 
 interface ChartData {
@@ -63,40 +68,45 @@ function ChartTitle({ title, subtitle }: { title?: string; subtitle?: string }) 
   );
 }
 
+function buildConfig(keys: string[]): ChartConfig {
+  const config: ChartConfig = {};
+  keys.forEach((key, i) => {
+    config[key] = {
+      label: key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, " "),
+      color: COLORS[i % COLORS.length],
+    };
+  });
+  return config;
+}
+
 const BarChartBlock = memo(({ raw }: { raw: string }) => {
   const chart = useMemo(() => parseChartData(raw), [raw]);
   if (!chart) return <FallbackBlock raw={raw} />;
 
   const xKey = chart.xKey || Object.keys(chart.data[0])[0];
   const yKeys = chart.yKeys || Object.keys(chart.data[0]).filter((k) => k !== xKey);
+  const config = useMemo(() => buildConfig(yKeys), [yKeys]);
 
   return (
-    <div className="my-4 rounded-xl border bg-card p-4 shadow-sm">
+    <div className="my-4 rounded-xl border bg-card p-5 shadow-sm">
       <ChartTitle title={chart.title} subtitle={chart.subtitle} />
-      <ResponsiveContainer width="100%" height={280}>
-        <BarChart data={chart.data} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-          <XAxis dataKey={xKey} tick={{ fontSize: 11 }} />
-          <YAxis tick={{ fontSize: 11 }} />
-          <Tooltip
-            contentStyle={{
-              borderRadius: "8px",
-              border: "1px solid hsl(var(--border))",
-              backgroundColor: "hsl(var(--card))",
-              fontSize: "12px",
-            }}
-          />
-          <Legend wrapperStyle={{ fontSize: "12px" }} />
-          {yKeys.map((key, i) => (
+      <ChartContainer config={config} className="h-[300px] w-full">
+        <BarChart accessibilityLayer data={chart.data} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
+          <CartesianGrid vertical={false} />
+          <XAxis dataKey={xKey} tickLine={false} axisLine={false} tickMargin={8} tick={{ fontSize: 11 }} />
+          <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11 }} />
+          <ChartTooltip content={<ChartTooltipContent />} />
+          <ChartLegend content={<ChartLegendContent />} />
+          {yKeys.map((key) => (
             <Bar
               key={key}
               dataKey={key}
-              fill={COLORS[i % COLORS.length]}
+              fill={`var(--color-${key})`}
               radius={[4, 4, 0, 0]}
             />
           ))}
         </BarChart>
-      </ResponsiveContainer>
+      </ChartContainer>
     </div>
   );
 });
@@ -108,37 +118,31 @@ const LineChartBlock = memo(({ raw }: { raw: string }) => {
 
   const xKey = chart.xKey || Object.keys(chart.data[0])[0];
   const yKeys = chart.yKeys || Object.keys(chart.data[0]).filter((k) => k !== xKey);
+  const config = useMemo(() => buildConfig(yKeys), [yKeys]);
 
   return (
-    <div className="my-4 rounded-xl border bg-card p-4 shadow-sm">
+    <div className="my-4 rounded-xl border bg-card p-5 shadow-sm">
       <ChartTitle title={chart.title} subtitle={chart.subtitle} />
-      <ResponsiveContainer width="100%" height={280}>
-        <LineChart data={chart.data} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-          <XAxis dataKey={xKey} tick={{ fontSize: 11 }} />
-          <YAxis tick={{ fontSize: 11 }} />
-          <Tooltip
-            contentStyle={{
-              borderRadius: "8px",
-              border: "1px solid hsl(var(--border))",
-              backgroundColor: "hsl(var(--card))",
-              fontSize: "12px",
-            }}
-          />
-          <Legend wrapperStyle={{ fontSize: "12px" }} />
-          {yKeys.map((key, i) => (
+      <ChartContainer config={config} className="h-[300px] w-full">
+        <LineChart accessibilityLayer data={chart.data} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
+          <CartesianGrid vertical={false} />
+          <XAxis dataKey={xKey} tickLine={false} axisLine={false} tickMargin={8} tick={{ fontSize: 11 }} />
+          <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11 }} />
+          <ChartTooltip content={<ChartTooltipContent />} />
+          <ChartLegend content={<ChartLegendContent />} />
+          {yKeys.map((key) => (
             <Line
               key={key}
               type="monotone"
               dataKey={key}
-              stroke={COLORS[i % COLORS.length]}
+              stroke={`var(--color-${key})`}
               strokeWidth={2}
-              dot={{ r: 3 }}
+              dot={{ r: 3, fill: `var(--color-${key})` }}
               activeDot={{ r: 5 }}
             />
           ))}
         </LineChart>
-      </ResponsiveContainer>
+      </ChartContainer>
     </div>
   );
 });
@@ -150,37 +154,31 @@ const AreaChartBlock = memo(({ raw }: { raw: string }) => {
 
   const xKey = chart.xKey || Object.keys(chart.data[0])[0];
   const yKeys = chart.yKeys || Object.keys(chart.data[0]).filter((k) => k !== xKey);
+  const config = useMemo(() => buildConfig(yKeys), [yKeys]);
 
   return (
-    <div className="my-4 rounded-xl border bg-card p-4 shadow-sm">
+    <div className="my-4 rounded-xl border bg-card p-5 shadow-sm">
       <ChartTitle title={chart.title} subtitle={chart.subtitle} />
-      <ResponsiveContainer width="100%" height={280}>
-        <AreaChart data={chart.data} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-          <XAxis dataKey={xKey} tick={{ fontSize: 11 }} />
-          <YAxis tick={{ fontSize: 11 }} />
-          <Tooltip
-            contentStyle={{
-              borderRadius: "8px",
-              border: "1px solid hsl(var(--border))",
-              backgroundColor: "hsl(var(--card))",
-              fontSize: "12px",
-            }}
-          />
-          <Legend wrapperStyle={{ fontSize: "12px" }} />
-          {yKeys.map((key, i) => (
+      <ChartContainer config={config} className="h-[300px] w-full">
+        <AreaChart accessibilityLayer data={chart.data} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
+          <CartesianGrid vertical={false} />
+          <XAxis dataKey={xKey} tickLine={false} axisLine={false} tickMargin={8} tick={{ fontSize: 11 }} />
+          <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11 }} />
+          <ChartTooltip content={<ChartTooltipContent indicator="line" />} />
+          <ChartLegend content={<ChartLegendContent />} />
+          {yKeys.map((key) => (
             <Area
               key={key}
               type="monotone"
               dataKey={key}
-              stroke={COLORS[i % COLORS.length]}
-              fill={COLORS[i % COLORS.length]}
+              stroke={`var(--color-${key})`}
+              fill={`var(--color-${key})`}
               fillOpacity={0.15}
               strokeWidth={2}
             />
           ))}
         </AreaChart>
-      </ResponsiveContainer>
+      </ChartContainer>
     </div>
   );
 });
@@ -193,38 +191,52 @@ const PieChartBlock = memo(({ raw }: { raw: string }) => {
   const nameKey = chart.nameKey || Object.keys(chart.data[0])[0];
   const valueKey = chart.valueKey || Object.keys(chart.data[0])[1];
 
+  const config = useMemo<ChartConfig>(() => {
+    const c: ChartConfig = { [valueKey]: { label: valueKey } };
+    chart.data.forEach((d, i) => {
+      const name = String(d[nameKey] ?? `item-${i}`);
+      c[name] = {
+        label: name,
+        color: COLORS[i % COLORS.length],
+      };
+    });
+    return c;
+  }, [chart.data, nameKey, valueKey]);
+
+  const dataWithFill = useMemo(
+    () =>
+      chart.data.map((d, i) => ({
+        ...d,
+        fill: COLORS[i % COLORS.length],
+      })),
+    [chart.data]
+  );
+
   return (
-    <div className="my-4 rounded-xl border bg-card p-4 shadow-sm">
+    <div className="my-4 rounded-xl border bg-card p-5 shadow-sm">
       <ChartTitle title={chart.title} subtitle={chart.subtitle} />
-      <ResponsiveContainer width="100%" height={280}>
+      <ChartContainer config={config} className="mx-auto aspect-square h-[340px]">
         <PieChart>
+          <ChartTooltip content={<ChartTooltipContent nameKey={nameKey} />} />
           <Pie
-            data={chart.data}
+            data={dataWithFill}
             dataKey={valueKey}
             nameKey={nameKey}
             cx="50%"
-            cy="50%"
-            outerRadius={100}
-            innerRadius={50}
-            paddingAngle={2}
-            label={({ name, percent }: { name?: string; percent?: number }) => `${name ?? ''} ${((percent ?? 0) * 100).toFixed(0)}%`}
-            labelLine={{ strokeWidth: 1 }}
+            cy="45%"
+            outerRadius={90}
+            innerRadius={45}
+            paddingAngle={3}
+            strokeWidth={2}
+            stroke="var(--background)"
           >
-            {chart.data.map((_, i) => (
-              <Cell key={i} fill={COLORS[i % COLORS.length]} />
+            {dataWithFill.map((entry, i) => (
+              <Cell key={i} fill={entry.fill} />
             ))}
           </Pie>
-          <Tooltip
-            contentStyle={{
-              borderRadius: "8px",
-              border: "1px solid hsl(var(--border))",
-              backgroundColor: "hsl(var(--card))",
-              fontSize: "12px",
-            }}
-          />
-          <Legend wrapperStyle={{ fontSize: "12px" }} />
+          <ChartLegend content={<ChartLegendContent nameKey={nameKey} />} />
         </PieChart>
-      </ResponsiveContainer>
+      </ChartContainer>
     </div>
   );
 });
@@ -235,38 +247,31 @@ const RadarChartBlock = memo(({ raw }: { raw: string }) => {
   if (!chart) return <FallbackBlock raw={raw} />;
 
   const subjectKey = chart.xKey || chart.nameKey || Object.keys(chart.data[0])[0];
-  const valueKeys =
-    chart.yKeys || Object.keys(chart.data[0]).filter((k) => k !== subjectKey);
+  const valueKeys = chart.yKeys || Object.keys(chart.data[0]).filter((k) => k !== subjectKey);
+  const config = useMemo(() => buildConfig(valueKeys), [valueKeys]);
 
   return (
-    <div className="my-4 rounded-xl border bg-card p-4 shadow-sm">
+    <div className="my-4 rounded-xl border bg-card p-5 shadow-sm">
       <ChartTitle title={chart.title} subtitle={chart.subtitle} />
-      <ResponsiveContainer width="100%" height={280}>
+      <ChartContainer config={config} className="h-[300px] w-full">
         <RadarChart data={chart.data}>
-          <PolarGrid className="opacity-30" />
+          <PolarGrid />
           <PolarAngleAxis dataKey={subjectKey} tick={{ fontSize: 11 }} />
           <PolarRadiusAxis tick={{ fontSize: 10 }} />
-          {valueKeys.map((key, i) => (
+          <ChartTooltip content={<ChartTooltipContent />} />
+          <ChartLegend content={<ChartLegendContent />} />
+          {valueKeys.map((key) => (
             <Radar
               key={key}
               name={key}
               dataKey={key}
-              stroke={COLORS[i % COLORS.length]}
-              fill={COLORS[i % COLORS.length]}
+              stroke={`var(--color-${key})`}
+              fill={`var(--color-${key})`}
               fillOpacity={0.2}
             />
           ))}
-          <Legend wrapperStyle={{ fontSize: "12px" }} />
-          <Tooltip
-            contentStyle={{
-              borderRadius: "8px",
-              border: "1px solid hsl(var(--border))",
-              backgroundColor: "hsl(var(--card))",
-              fontSize: "12px",
-            }}
-          />
         </RadarChart>
-      </ResponsiveContainer>
+      </ChartContainer>
     </div>
   );
 });
