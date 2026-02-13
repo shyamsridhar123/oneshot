@@ -76,6 +76,18 @@ User Prompt
 
 **Key insight**: Wave 2 agents don't create blind — they receive all Wave 1 context. The Scribe writes *informed by* live trends, strategy, brand voice, and engagement data. The Advisor reviews against *actual* brand guidelines and past post patterns.
 
+### Containerized Deployment with azd
+
+Both services are now containerized and wired into `azd`.
+
+1. Provision infrastructure:
+    - `azd provision`
+2. Deploy both application containers:
+    - `azd deploy`
+    - or run `azd up` for provision + deploy in one command.
+
+The deployment flow currently excludes brand-data seeding. Continue using your team setup/bootstrap scripts for data initialization.
+
 ---
 
 ## The 7 Agents
