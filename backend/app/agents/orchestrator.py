@@ -249,7 +249,7 @@ Determine:
                 tokens_used=all_tokens.get(agent_name, 0),
             )
 
-        # ── Step 3: Synthesize final response ─────────────────────
+        # ── Step 3: Synthesize final response (streamed) ────────────
         await ws_manager.send_agent_thinking(
             conversation_id, "orchestrator", "Synthesizing response...", 0.9
         )
@@ -306,14 +306,22 @@ Provide a well-structured response that:
 - Notes any compliance feedback from the Advisor with a callout block
 - Includes recommended posting schedule if applicable"""
 
-            response = await llm.complete(
+            async def _on_token(token: str):
+                await ws_manager.send_stream_token(conversation_id, "orchestrator", token)
+
+            response = await llm.stream_with_callback(
                 prompt=synthesis_prompt,
                 system_prompt=AGENT_PROMPTS["orchestrator"],
+                on_token=_on_token,
             )
         else:
-            response = await llm.complete(
+            async def _on_token_simple(token: str):
+                await ws_manager.send_stream_token(conversation_id, "orchestrator", token)
+
+            response = await llm.stream_with_callback(
                 prompt=message_content,
                 system_prompt=AGENT_PROMPTS["orchestrator"],
+                on_token=_on_token_simple,
             )
 
         # ── Save document for content intents ─────────────────────
@@ -377,9 +385,11 @@ async def _execute_agent(
 
     # Notify which tools/MCP servers this agent will use
     _tool_info = {
-        "researcher": [("search_web", "tool"), ("search_news", "tool"), ("search_trends", "tool"), ("fetch_mcp", "mcp")],
-        "memory": [("get_brand_guidelines", "tool"), ("get_past_posts", "tool"), ("search_knowledge_base", "tool")],
-        "analyst": [("calculate_engagement_metrics", "tool"), ("recommend_posting_schedule", "tool")],
+        "researcher": [("search_web", "tool"), ("search_news", "tool"), ("search_trends", "tool"), ("analyze_hashtags", "tool"), ("fetch_mcp", "mcp")],
+        "strategist": [("calculate_engagement_metrics", "tool"), ("recommend_posting_schedule", "tool"), ("search_trends", "tool")],
+        "memory": [("get_brand_guidelines", "tool"), ("get_past_posts", "tool"), ("get_content_calendar", "tool"), ("search_knowledge_base", "tool")],
+        "analyst": [("calculate_engagement_metrics", "tool"), ("recommend_posting_schedule", "tool"), ("search_trends", "tool")],
+        "advisor": [("get_brand_guidelines", "tool"), ("get_past_posts", "tool")],
         "scribe": [("filesystem_mcp", "mcp")],
     }
     for tool_name, tool_type in _tool_info.get(agent_name, []):

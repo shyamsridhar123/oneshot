@@ -147,6 +147,32 @@ class LLMService:
             if chunk.choices and chunk.choices[0].delta.content:
                 yield chunk.choices[0].delta.content
 
+    async def stream_with_callback(
+        self,
+        prompt: str,
+        system_prompt: str = None,
+        on_token: Any = None,
+        model: str = None,
+        **kwargs,
+    ) -> str:
+        """Stream a completion, calling on_token for each chunk, and return the full text.
+
+        Args:
+            prompt: The user prompt.
+            system_prompt: Optional system prompt.
+            on_token: Async callable(token: str) invoked for each streamed chunk.
+            model: Optional model override.
+
+        Returns:
+            The complete response text.
+        """
+        parts: list[str] = []
+        async for token in self.stream(prompt, system_prompt=system_prompt, model=model, **kwargs):
+            parts.append(token)
+            if on_token is not None:
+                await on_token(token)
+        return "".join(parts)
+
     async def embed(self, text: str) -> list[float]:
         """Generate embeddings for text."""
         response = await self.client.embeddings.create(

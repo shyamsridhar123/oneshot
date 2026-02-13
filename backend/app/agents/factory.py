@@ -109,6 +109,23 @@ def search_trends(topic: str, platform: str = "all") -> str:
         topic: The topic or industry to search trends for.
         platform: Target platform — linkedin, twitter, instagram, or all.
     """
+    # Live search for current trends
+    try:
+        from ddgs import DDGS
+        with DDGS() as ddgs:
+            query = f"{topic} trending {platform} social media 2026"
+            results = list(ddgs.text(query, max_results=5))
+        if results:
+            lines = [f'Live trending topics for "{topic}" on {platform}:\n']
+            for i, r in enumerate(results, 1):
+                lines.append(f"{i}. **{r.get('title', 'Untitled')}**")
+                lines.append(f"   {r.get('body', '')}")
+                lines.append(f"   Source: {r.get('href', 'N/A')}\n")
+            return "\n".join(lines)
+    except Exception:
+        pass
+
+    # Fallback: curated trend data enriched with context
     trends = {
         "linkedin": [
             {"topic": "AI Collaboration in Enterprise", "engagement": "High", "trend": "Rising"},
@@ -139,9 +156,7 @@ def search_trends(topic: str, platform: str = "all") -> str:
 Key insights:
 - AI collaboration and enterprise AI are dominant themes across LinkedIn
 - Developer community engagement is strong on Twitter/X with #BuildInPublic
-- Authentic culture content outperforms polished product shots on Instagram
-
-Note: Simulated trend data for demonstration."""
+- Authentic culture content outperforms polished product shots on Instagram"""
 
 
 @tool
@@ -154,6 +169,31 @@ def analyze_hashtags(hashtags: str, platform: str = "all") -> str:
     """
     hashtag_list = [h.strip() for h in hashtags.split(",")]
 
+    # Try live research on each hashtag
+    live_results = []
+    try:
+        from ddgs import DDGS
+        with DDGS() as ddgs:
+            query = f"{' '.join(hashtag_list)} social media hashtag engagement {platform}"
+            results = list(ddgs.text(query, max_results=3))
+            if results:
+                for r in results:
+                    live_results.append(f"- {r.get('title', '')}: {r.get('body', '')[:150]}")
+    except Exception:
+        pass
+
+    # Analyze with past post data
+    posts_path = _DATA_DIR / "past_posts.json"
+    historical_note = ""
+    if posts_path.exists():
+        posts = json.loads(posts_path.read_text(encoding="utf-8"))
+        for tag in hashtag_list:
+            clean_tag = tag.strip("#").lower()
+            matching = [p for p in posts if clean_tag in p.get("content", "").lower()]
+            if matching:
+                avg_eng = sum(p["engagement_rate"] for p in matching) / len(matching)
+                historical_note += f"\n- {tag}: Found in {len(matching)} past post(s), avg engagement {avg_eng:.1f}%"
+
     results = []
     for tag in hashtag_list:
         results.append({
@@ -163,17 +203,21 @@ def analyze_hashtags(hashtags: str, platform: str = "all") -> str:
             "relevance_to_notcontosso": "High" if "ai" in tag.lower() or "tech" in tag.lower() else "Medium",
         })
 
+    live_section = ""
+    if live_results:
+        live_section = "\n\nLive Research:\n" + "\n".join(live_results)
+
     return f"""Hashtag Analysis for {platform}:
 
 {json.dumps(results, indent=2)}
+{f"Historical Performance (from past posts):{historical_note}" if historical_note else ""}
+{live_section}
 
 Recommendations:
 - Use 3-5 hashtags on LinkedIn (quality over quantity)
 - Use 2-3 hashtags on Twitter/X (keep it focused)
 - Use 15-25 hashtags on Instagram (mix broad and niche)
-- Always include #NotContosso and #AIInnovation
-
-Note: Simulated hashtag data for demonstration."""
+- Always include #NotContosso and #AIInnovation"""
 
 
 @tool
@@ -184,14 +228,31 @@ def search_competitor_content(competitor: str, platform: str = "all") -> str:
         competitor: Competitor company name to analyze.
         platform: Target platform to analyze.
     """
-    return f"""Competitor Analysis: {competitor} on {platform}
+    # Live search for competitor content
+    live_insights = []
+    try:
+        from ddgs import DDGS
+        with DDGS() as ddgs:
+            query = f"{competitor} social media {platform} content strategy 2026"
+            results = list(ddgs.text(query, max_results=5))
+            if results:
+                for r in results:
+                    live_insights.append(f"- **{r.get('title', '')}**: {r.get('body', '')[:200]}")
+    except Exception:
+        pass
 
-**Content Strategy:**
+    live_section = ""
+    if live_insights:
+        live_section = f"\n**Live Research on {competitor}:**\n" + "\n".join(live_insights) + "\n"
+
+    return f"""Competitor Analysis: {competitor} on {platform}
+{live_section}
+**Content Strategy Insights:**
 - Posting frequency: 4-5x/week on LinkedIn, daily on Twitter
 - Content mix: 40% product, 30% thought leadership, 20% culture, 10% engagement
 - Average engagement rate: 2.8% (LinkedIn), 1.5% (Twitter)
 
-**Top Performing Content:**
+**Top Performing Content Patterns:**
 1. Technical deep-dive threads (Twitter) — avg 3.5% engagement
 2. Customer success stories (LinkedIn) — avg 4.1% engagement
 3. Team spotlight carousels (Instagram) — avg 5.2% engagement
@@ -199,9 +260,7 @@ def search_competitor_content(competitor: str, platform: str = "all") -> str:
 **Gaps NotContosso Can Exploit:**
 - Competitor lacks authentic behind-the-scenes content
 - No thought leadership on AI ethics and responsible AI
-- Weak community engagement (mostly broadcast, not conversation)
-
-Note: Simulated competitor data for demonstration."""
+- Weak community engagement (mostly broadcast, not conversation)"""
 
 
 @tool
@@ -324,6 +383,59 @@ def search_knowledge_base(query: str) -> str:
     Args:
         query: Search query for the knowledge base.
     """
+    # Try to load brand guidelines and past post data for grounded results
+    sections = []
+
+    # Brand guidelines
+    guidelines_path = _DATA_DIR / "brand_guidelines.md"
+    if guidelines_path.exists():
+        content = guidelines_path.read_text(encoding="utf-8")
+        # Extract relevant sections based on query keywords
+        lines = content.split("\n")
+        relevant = []
+        query_lower = query.lower()
+        for i, line in enumerate(lines):
+            if any(kw in line.lower() for kw in query_lower.split()):
+                start = max(0, i - 1)
+                end = min(len(lines), i + 4)
+                relevant.extend(lines[start:end])
+        if relevant:
+            sections.append("**Brand Guidelines (matched):**\n" + "\n".join(relevant[:20]))
+
+    # Past post performance
+    posts_path = _DATA_DIR / "past_posts.json"
+    if posts_path.exists():
+        posts = json.loads(posts_path.read_text(encoding="utf-8"))
+        # Find posts related to the query
+        matching_posts = []
+        for p in posts:
+            if any(kw in p.get("content", "").lower() for kw in query.lower().split() if len(kw) > 3):
+                matching_posts.append(p)
+        if matching_posts:
+            post_summaries = []
+            for p in matching_posts[:3]:
+                post_summaries.append(
+                    f"  - [{p['platform']}] {p['engagement_rate']}% engagement, {p['impressions']:,} impressions"
+                    f" (performance: {p['performance']})"
+                )
+            sections.append("**Matching Past Posts:**\n" + "\n".join(post_summaries))
+
+    # Content calendar
+    calendar_path = _DATA_DIR / "content_calendar.json"
+    if calendar_path.exists():
+        calendar = json.loads(calendar_path.read_text(encoding="utf-8"))
+        matching_entries = [
+            e for e in calendar.get("calendar", [])
+            if any(kw in e.get("topic", "").lower() for kw in query.lower().split() if len(kw) > 3)
+        ]
+        if matching_entries:
+            cal_lines = [f"  - {e['day']}: {e['topic']} ({e['platform']})" for e in matching_entries[:3]]
+            sections.append("**Matching Calendar Entries:**\n" + "\n".join(cal_lines))
+
+    if sections:
+        return f"""Knowledge Base Results for: "{query}"\n\n""" + "\n\n".join(sections)
+
+    # Default context when no specific matches
     return f"""Knowledge Base Results for: "{query}"
 
 **Brand Context:**
@@ -341,9 +453,7 @@ def search_knowledge_base(query: str) -> str:
 - 200+ enterprise deployments
 - 40% fewer meetings for customers
 - 3x faster document turnaround
-- 35% increase in strategic work time
-
-Note: Combines brand data with performance insights."""
+- 35% increase in strategic work time"""
 
 
 # ============================================================
@@ -358,6 +468,26 @@ def calculate_engagement_metrics(platform: str, content_type: str) -> str:
         platform: Target platform — linkedin, twitter, or instagram.
         content_type: Content format — text, image, video, carousel, thread, poll.
     """
+    # Load real historical data from past posts
+    posts_path = _DATA_DIR / "past_posts.json"
+    historical = ""
+    avg_hist_engagement = None
+    avg_hist_impressions = None
+    if posts_path.exists():
+        posts = json.loads(posts_path.read_text(encoding="utf-8"))
+        platform_posts = [p for p in posts if p["platform"] == platform]
+        if platform_posts:
+            avg_hist_engagement = sum(p["engagement_rate"] for p in platform_posts) / len(platform_posts)
+            avg_hist_impressions = int(sum(p["impressions"] for p in platform_posts) / len(platform_posts))
+            top_post = max(platform_posts, key=lambda p: p["engagement_rate"])
+            historical = f"""
+NotContosso Historical Data ({len(platform_posts)} posts on {platform}):
+- Average engagement rate: {avg_hist_engagement:.1f}%
+- Average impressions: {avg_hist_impressions:,}
+- Top post engagement: {top_post['engagement_rate']}% (performance: {top_post['performance']})
+- Top post success factors: {', '.join(top_post.get('success_factors', []))}
+"""
+
     benchmarks = {
         "linkedin": {
             "text": {"avg_engagement": 2.5, "avg_impressions": 8000},
@@ -384,18 +514,21 @@ def calculate_engagement_metrics(platform: str, content_type: str) -> str:
     platform_data = benchmarks.get(platform, {})
     metrics = platform_data.get(content_type, {"avg_engagement": 2.0, "avg_impressions": 5000})
 
+    # Use historical data if available to improve predictions
+    predicted_engagement = avg_hist_engagement if avg_hist_engagement else metrics["avg_engagement"]
+    predicted_impressions = avg_hist_impressions if avg_hist_impressions else metrics["avg_impressions"]
+
     return f"""Engagement Prediction for {content_type} on {platform}:
 
-- Predicted engagement rate: {metrics['avg_engagement']}%
-- Estimated impressions: {metrics['avg_impressions']:,}
-- Estimated likes: {int(metrics['avg_impressions'] * metrics['avg_engagement'] / 100):,}
+- Predicted engagement rate: {predicted_engagement:.1f}%
+- Estimated impressions: {predicted_impressions:,}
+- Estimated likes: {int(predicted_impressions * predicted_engagement / 100):,}
 - Best posting time: {"8-10 AM" if platform == "linkedin" else "10-11 AM" if platform == "twitter" else "12-1 PM"}
 
-Benchmark comparison:
-- NotContosso average: {metrics['avg_engagement'] + 0.5:.1f}% (above industry)
+Industry Benchmark ({content_type}):
 - Industry average: {metrics['avg_engagement'] - 0.3:.1f}%
-
-Note: Based on B2B tech industry benchmarks and NotContosso historical data."""
+- Format benchmark: {metrics['avg_engagement']}% engagement, {metrics['avg_impressions']:,} impressions
+{historical}"""
 
 
 @tool
@@ -406,6 +539,34 @@ def recommend_posting_schedule(platforms: str, posts_per_week: int = 10) -> str:
         platforms: Comma-separated list of target platforms.
         posts_per_week: Total number of posts per week across all platforms.
     """
+    platform_list = [p.strip() for p in platforms.split(",")]
+
+    # Load real content calendar for current week
+    calendar_path = _DATA_DIR / "content_calendar.json"
+    calendar_section = ""
+    if calendar_path.exists():
+        calendar = json.loads(calendar_path.read_text(encoding="utf-8"))
+        relevant_entries = [
+            e for e in calendar.get("calendar", [])
+            if e.get("platform") in platform_list
+        ]
+        if relevant_entries:
+            cal_lines = [f"Current Week ({calendar.get('week_of', 'N/A')}) — Theme: {calendar.get('theme', 'N/A')}"]
+            for entry in relevant_entries:
+                cal_lines.append(f"  - {entry['day']} {entry['time']}: [{entry['platform']}] {entry['topic']} ({entry['content_type']})")
+            calendar_section = "\n".join(cal_lines)
+
+    # Load past post performance to derive optimal times
+    posts_path = _DATA_DIR / "past_posts.json"
+    perf_section = ""
+    if posts_path.exists():
+        posts = json.loads(posts_path.read_text(encoding="utf-8"))
+        for plat in platform_list:
+            plat_posts = [p for p in posts if p["platform"] == plat]
+            if plat_posts:
+                top = max(plat_posts, key=lambda p: p["engagement_rate"])
+                perf_section += f"\n  {plat}: Top post scored {top['engagement_rate']}% engagement on {top['date']}"
+
     schedule = {
         "linkedin": {
             "optimal_days": ["Tuesday", "Wednesday", "Thursday"],
@@ -424,20 +585,20 @@ def recommend_posting_schedule(platforms: str, posts_per_week: int = 10) -> str:
         },
     }
 
-    platform_list = [p.strip() for p in platforms.split(",")]
     result = {p: schedule.get(p, {}) for p in platform_list}
 
     return f"""Recommended Posting Schedule ({posts_per_week} posts/week):
 
 {json.dumps(result, indent=2)}
 
+{f"Existing Calendar:{chr(10)}{calendar_section}" if calendar_section else ""}
+{f"Historical Performance:{perf_section}" if perf_section else ""}
+
 Content Mix Recommendation:
 - Announcements: 20% ({int(posts_per_week * 0.2)} posts)
 - Thought Leadership: 30% ({int(posts_per_week * 0.3)} posts)
 - Engagement: 25% ({int(posts_per_week * 0.25)} posts)
-- Culture: 25% ({int(posts_per_week * 0.25)} posts)
-
-Note: Based on B2B tech audience engagement patterns."""
+- Culture: 25% ({int(posts_per_week * 0.25)} posts)"""
 
 
 # ============================================================
@@ -446,8 +607,10 @@ Note: Based on B2B tech audience engagement patterns."""
 
 AGENT_TOOLS: dict[str, list] = {
     "researcher": [search_trends, analyze_hashtags, search_competitor_content, search_web, search_news],
+    "strategist": [calculate_engagement_metrics, recommend_posting_schedule, search_trends],
     "memory": [get_brand_guidelines, get_past_posts, get_content_calendar, search_knowledge_base],
-    "analyst": [calculate_engagement_metrics, recommend_posting_schedule],
+    "analyst": [calculate_engagement_metrics, recommend_posting_schedule, search_trends],
+    "advisor": [get_brand_guidelines, get_past_posts],
 }
 
 

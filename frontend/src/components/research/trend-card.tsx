@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, useMemo, useState } from "react";
-import { Copy, Check, Share2, TrendingUp, Globe, Newspaper } from "lucide-react";
+import { Copy, Check, Share2, TrendingUp, Globe, Newspaper, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -21,7 +21,6 @@ function extractHashtags(content: string): string[] {
   const tags = content.match(/#\w+/g) || [];
   if (tags.length > 0) return [...new Set(tags)].slice(0, 8);
 
-  // Generate tags from bold text or headings
   const boldMatches = content.match(/\*\*([^*]+)\*\*/g) || [];
   return boldMatches
     .slice(0, 5)
@@ -73,66 +72,76 @@ export const TrendCard = memo(function TrendCard({
 
   const statusColor =
     status === "completed"
-      ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+      ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
       : status === "error"
-        ? "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20"
-        : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20";
+        ? "border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400"
+        : "border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400";
 
-  const VariantIcon = variant === "briefing" ? Globe : TrendingUp;
+  const isResearch = variant === "research";
+  const VariantIcon = isResearch ? TrendingUp : Globe;
 
   return (
-    <div className="group relative overflow-hidden rounded-lg border bg-card shadow-sm transition-all hover:shadow-md">
-      {/* Gradient accent bar */}
+    <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-card/80 backdrop-blur-xl shadow-xl shadow-black/5 dark:shadow-black/20 transition-all duration-300 hover:border-white/[0.12] hover:shadow-2xl">
+      {/* Top gradient accent line */}
       <div
         className={cn(
-          "h-0.5",
-          variant === "briefing"
-            ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
-            : "bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500"
+          "absolute top-0 left-6 right-6 h-px",
+          isResearch
+            ? "bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent"
+            : "bg-gradient-to-r from-transparent via-blue-500/50 to-transparent"
         )}
       />
 
       {/* Header */}
-      <div className="flex items-start justify-between gap-2 px-3.5 pt-3 pb-1.5">
-        <div className="flex items-start gap-2.5 min-w-0">
-          <div
-            className={cn(
-              "flex h-8 w-8 shrink-0 items-center justify-center rounded-md",
-              variant === "briefing"
-                ? "bg-blue-500/10 text-blue-600 dark:text-blue-400"
-                : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-            )}
-          >
-            <VariantIcon className="h-4 w-4" />
+      <div className="flex items-start justify-between gap-3 px-5 pt-5 pb-2">
+        <div className="flex items-start gap-3 min-w-0">
+          {/* Gradient avatar */}
+          <div className="relative h-9 w-9 shrink-0">
+            <div
+              className={cn(
+                "absolute inset-0 rounded-xl opacity-40 blur-[3px]",
+                isResearch
+                  ? "bg-gradient-to-br from-emerald-500 to-cyan-400"
+                  : "bg-gradient-to-br from-blue-500 to-purple-500"
+              )}
+            />
+            <div
+              className={cn(
+                "relative flex h-9 w-9 items-center justify-center rounded-xl text-white ring-2 ring-white/10 shadow-lg",
+                isResearch
+                  ? "bg-gradient-to-br from-emerald-500 to-cyan-400 shadow-emerald-500/20"
+                  : "bg-gradient-to-br from-blue-500 to-purple-500 shadow-blue-500/20"
+              )}
+            >
+              <VariantIcon className="h-4 w-4" />
+            </div>
           </div>
-          <div className="min-w-0">
-            <h3 className="font-semibold text-sm leading-tight truncate">
-              {variant === "briefing" && companyName
-                ? companyName
-                : query}
+          <div className="min-w-0 pt-0.5">
+            <h3 className="font-semibold text-sm leading-tight truncate text-foreground/90">
+              {variant === "briefing" && companyName ? companyName : query}
             </h3>
             {summaryLine && (
-              <p className="mt-0.5 text-xs text-muted-foreground line-clamp-1">
+              <p className="mt-1 text-xs text-muted-foreground/60 line-clamp-1">
                 {summaryLine}
               </p>
             )}
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 shrink-0">
-          <Badge variant="outline" className={cn("text-xs", statusColor)}>
+        <div className="flex items-center gap-1.5 shrink-0 pt-0.5">
+          <Badge variant="outline" className={cn("text-[10px] font-medium", statusColor)}>
             {status}
           </Badge>
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+            className="h-7 w-7 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/[0.06]"
             onClick={handleCopy}
           >
             {copied ? (
               <Check className="h-3.5 w-3.5 text-emerald-500" />
             ) : (
-              <Copy className="h-3.5 w-3.5" />
+              <Copy className="h-3.5 w-3.5 text-muted-foreground" />
             )}
           </Button>
         </div>
@@ -140,11 +149,16 @@ export const TrendCard = memo(function TrendCard({
 
       {/* Hashtags */}
       {hashtags.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 px-3.5 pb-1.5">
+        <div className="flex flex-wrap gap-1.5 px-5 pb-2">
           {hashtags.map((tag) => (
             <span
               key={tag}
-              className="text-xs font-medium text-primary/70 hover:text-primary cursor-default transition-colors"
+              className={cn(
+                "text-[10px] font-medium px-1.5 py-0.5 rounded-md transition-colors cursor-default",
+                isResearch
+                  ? "text-emerald-500/60 bg-emerald-500/5 hover:text-emerald-500 hover:bg-emerald-500/10"
+                  : "text-blue-500/60 bg-blue-500/5 hover:text-blue-500 hover:bg-blue-500/10"
+              )}
             >
               {tag}
             </span>
@@ -153,57 +167,70 @@ export const TrendCard = memo(function TrendCard({
       )}
 
       {/* Content */}
-      <div className="px-3.5 pb-3">
+      <div className="px-5 pb-4">
         <div
           className={cn(
             "overflow-hidden transition-all duration-300",
             expanded ? "max-h-none" : "max-h-64"
           )}
         >
-          <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-0.5 prose-p:leading-normal prose-headings:mt-2.5 prose-headings:mb-0.5 prose-headings:leading-snug prose-h2:text-sm prose-h3:text-[13px] prose-ul:my-0.5 prose-ol:my-0.5 prose-li:my-0 prose-li:leading-normal prose-pre:my-1.5 prose-blockquote:my-1.5 prose-blockquote:border-primary/30 prose-a:text-primary prose-strong:text-foreground prose-hr:my-2">
+          <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-1 prose-p:leading-relaxed prose-headings:mt-3 prose-headings:mb-1 prose-headings:leading-snug prose-h2:text-sm prose-h2:font-bold prose-h3:text-[13px] prose-h3:font-semibold prose-ul:my-1 prose-ol:my-1 prose-li:my-0 prose-li:leading-relaxed prose-pre:my-2 prose-blockquote:my-2 prose-blockquote:border-primary/30 prose-a:text-primary prose-strong:text-foreground prose-hr:my-2.5 prose-img:rounded-lg prose-img:max-h-96 prose-img:w-full prose-img:object-contain text-foreground/90 break-words [overflow-wrap:anywhere]">
             <MemoizedMarkdown content={content} id={id} />
           </div>
         </div>
 
+        {/* Soft fade-out gradient when collapsed */}
+        {!expanded && content.length > 600 && (
+          <div className="relative -mt-12 h-12 bg-gradient-to-t from-card/95 to-transparent pointer-events-none" />
+        )}
+
         {content.length > 600 && (
           <button
             onClick={() => setExpanded(!expanded)}
-            className="mt-2 text-xs font-medium text-primary hover:text-primary/80 transition-colors"
+            className={cn(
+              "mt-1 flex items-center gap-1 text-xs font-medium transition-colors",
+              isResearch
+                ? "text-emerald-500 hover:text-emerald-400"
+                : "text-blue-500 hover:text-blue-400"
+            )}
           >
-            {expanded ? "Show less" : "Show more"}
+            {expanded ? (
+              <>Show less <ChevronUp className="h-3 w-3" /></>
+            ) : (
+              <>Show more <ChevronDown className="h-3 w-3" /></>
+            )}
           </button>
         )}
       </div>
 
-      {/* Footer */}
-      <div className="flex items-center justify-between border-t px-3.5 py-2 bg-muted/30">
-        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+      {/* Footer — glass divider */}
+      <div className="flex items-center justify-between border-t border-white/[0.06] px-5 py-2.5 bg-white/[0.02]">
+        <div className="flex items-center gap-3 text-[10px] text-muted-foreground/50 font-medium">
           <span className="flex items-center gap-1">
             <Newspaper className="h-3 w-3" />
             {variant === "briefing" ? "Client Brief" : "Research"}
           </span>
           {tokensUsed !== undefined && tokensUsed > 0 && (
-            <span>{tokensUsed.toLocaleString()} tokens</span>
+            <span className="flex items-center gap-1">
+              <Sparkles className="h-2.5 w-2.5" />
+              {tokensUsed.toLocaleString()} tokens
+            </span>
           )}
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5">
           <Button
             variant="ghost"
             size="sm"
-            className="h-7 text-xs gap-1"
+            className="h-7 text-[10px] gap-1 rounded-lg hover:bg-white/[0.06] text-muted-foreground/60 hover:text-foreground"
             onClick={handleCopy}
           >
-            {copied ? (
-              <Check className="h-3 w-3" />
-            ) : (
-              <Copy className="h-3 w-3" />
-            )}
+            {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
             {copied ? "Copied" : "Copy"}
           </Button>
           <Button
             variant="ghost"
             size="sm"
-            className="h-7 text-xs gap-1"
+            className="h-7 text-[10px] gap-1 rounded-lg hover:bg-white/[0.06] text-muted-foreground/60 hover:text-foreground"
             onClick={() => {
               if (navigator.share) {
                 navigator.share({ text: content, title: query });

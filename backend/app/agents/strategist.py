@@ -1,25 +1,35 @@
-"""Strategist Agent - Engagement scoping and proposal strategy."""
+"""Strategist Agent - Content strategy and platform planning using MAF.
+
+Uses Chain-of-Thought (CoT) reasoning to develop audience-targeted
+content strategies, posting schedules, and platform-specific plans.
+"""
+
+import logging
 
 from app.agents.prompts import STRATEGIST_PROMPT
+from app.agents.factory import create_agent, get_agent_tools
 from app.services.llm_service import get_llm_service
+
+logger = logging.getLogger(__name__)
 
 
 async def run_strategist(task: str, context: dict) -> tuple[str, int]:
-    """
-    Run the Strategist agent for engagement scoping and proposal strategy.
-    
+    """Run the Strategist agent via MAF with Chain-of-Thought reasoning.
+
+    Creates a MAF ChatAgent with analyst tools (engagement metrics,
+    posting schedules) so the strategist can ground recommendations
+    in real data.
+
     Args:
         task: The task description
         context: Context including message, entities, previous results
-    
+
     Returns:
         Tuple of (Strategist's response, tokens used)
     """
-    llm = get_llm_service()
-    
     # Build prompt with context
     context_parts = []
-    
+
     if "client_name" in context:
         context_parts.append(f"Client: {context['client_name']}")
     if "client_industry" in context:
@@ -34,21 +44,45 @@ async def run_strategist(task: str, context: dict) -> tuple[str, int]:
         context_parts.append(f"Budget Range: {context['budget_range']}")
     if "timeline" in context and context["timeline"]:
         context_parts.append(f"Timeline: {context['timeline']}")
-    
+
+    previous = context.get("previous_results", {})
+    if "researcher" in previous:
+        context_parts.append(f"\nResearch Findings:\n{previous['researcher'][:1000]}")
+    if "memory" in previous:
+        context_parts.append(f"\nBrand Context:\n{previous['memory'][:1000]}")
+
     context_str = "\n".join(context_parts) if context_parts else ""
-    
+    platforms = context.get("platforms", ["linkedin", "twitter", "instagram"])
+    platforms_str = ", ".join(platforms)
+
     prompt = f"""Task: {task}
 
+Target Platforms: {platforms_str}
 {context_str}
 
 Original Request: {context.get('message', '')}
 
+Use Chain-of-Thought reasoning to develop a content strategy.
+Use available tools to check engagement metrics and optimal posting schedules.
 Provide strategic guidance or generate the requested proposal/scoping document."""
 
+    # Try MAF agent path
+    try:
+        tools = get_agent_tools("strategist", include_mcp=False)
+        agent = create_agent("strategist", STRATEGIST_PROMPT, tools=tools)
+        response = await agent.run(prompt)
+        text = response.text or ""
+        tokens = response.usage_details.total_token_count if response.usage_details else 0
+        return text, tokens or 0
+    except Exception as e:
+        logger.warning("MAF agent path failed for strategist, falling back to direct LLM: %s", e)
+
+    # Fallback: direct LLM call
+    llm = get_llm_service()
     response = await llm.complete_with_usage(
         prompt=prompt,
         system_prompt=STRATEGIST_PROMPT,
         temperature=0.7,
     )
-    
+
     return response.content, response.tokens_used

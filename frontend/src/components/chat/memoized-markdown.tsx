@@ -1,5 +1,5 @@
 import { marked } from "marked";
-import { memo, useMemo, type ComponentType, type ReactNode, type HTMLAttributes, type ClassAttributes } from "react";
+import React, { memo, useMemo, type ComponentType, type ReactNode, type HTMLAttributes, type ClassAttributes } from "react";
 import ReactMarkdown, { type ExtraProps } from "react-markdown";
 import {
   CHART_RENDERERS,
@@ -121,6 +121,24 @@ function StyledBlockquote({ children }: { children?: ReactNode }) {
   );
 }
 
+/**
+ * Custom image renderer — constrained to card width with rounded corners
+ */
+function StyledImage(props: ClassAttributes<HTMLImageElement> & React.ImgHTMLAttributes<HTMLImageElement> & ExtraProps) {
+  const { src, alt } = props;
+  if (!src || typeof src !== "string") return null;
+  return (
+    <span className="my-3 block overflow-hidden rounded-lg border border-white/[0.06]">
+      <img
+        src={src}
+        alt={alt || ""}
+        className="block h-auto max-h-96 w-full object-contain"
+        loading="lazy"
+      />
+    </span>
+  );
+}
+
 // ReactMarkdown custom component overrides
 const markdownComponents = {
   code: CustomCode,
@@ -131,6 +149,7 @@ const markdownComponents = {
   tr: StyledTr,
   a: StyledLink,
   blockquote: StyledBlockquote,
+  img: StyledImage,
 };
 
 function parseMarkdownIntoBlocks(markdown: string): string[] {
