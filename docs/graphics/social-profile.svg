@@ -1,0 +1,192 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080">
+  <defs>
+    <linearGradient id="fireGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#c0392b"/>
+      <stop offset="40%" stop-color="#e74c3c"/>
+      <stop offset="100%" stop-color="#f39c12"/>
+    </linearGradient>
+    <radialGradient id="bgGrad" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#0f0f23"/>
+      <stop offset="60%" stop-color="#0a0a15"/>
+      <stop offset="100%" stop-color="#050508"/>
+    </radialGradient>
+    <radialGradient id="centerGlow" cx="50%" cy="45%" r="50%">
+      <stop offset="0%" stop-color="#f39c12" stop-opacity="0.3"/>
+      <stop offset="30%" stop-color="#e74c3c" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#e74c3c" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="orbRed" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#e74c3c" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#e74c3c" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="orbBlue" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#3498db" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#3498db" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="crossH" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e74c3c" stop-opacity="0"/>
+      <stop offset="40%" stop-color="#e74c3c" stop-opacity="0.35"/>
+      <stop offset="50%" stop-color="#f39c12" stop-opacity="0.5"/>
+      <stop offset="60%" stop-color="#e74c3c" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#e74c3c" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="crossV" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#e74c3c" stop-opacity="0"/>
+      <stop offset="35%" stop-color="#e74c3c" stop-opacity="0.25"/>
+      <stop offset="50%" stop-color="#f39c12" stop-opacity="0.4"/>
+      <stop offset="65%" stop-color="#e74c3c" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#e74c3c" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="bottomBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e74c3c" stop-opacity="0"/>
+      <stop offset="20%" stop-color="#e74c3c"/>
+      <stop offset="50%" stop-color="#f39c12"/>
+      <stop offset="80%" stop-color="#e74c3c"/>
+      <stop offset="100%" stop-color="#e74c3c" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="0.5"/>
+    </pattern>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="titleGlow">
+      <feGaussianBlur stdDeviation="18" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="1.2 0 0 0 0  0 0.6 0 0 0  0 0 0.2 0 0  0 0 0 1 0" result="colorBlur"/>
+      <feMerge>
+        <feMergeNode in="colorBlur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1080" height="1080" fill="url(#bgGrad)"/>
+  <rect width="1080" height="1080" fill="url(#grid)"/>
+
+  <!-- Atmospheric orbs -->
+  <ellipse cx="100" cy="100" rx="300" ry="280" fill="url(#orbRed)"/>
+  <ellipse cx="980" cy="980" rx="280" ry="260" fill="url(#orbBlue)"/>
+
+  <!-- Center glow -->
+  <ellipse cx="540" cy="440" rx="350" ry="350" fill="url(#centerGlow)"/>
+
+  <!-- Crosshair scope rings -->
+  <circle cx="540" cy="440" r="340" fill="none" stroke="#e74c3c" stroke-opacity="0.07" stroke-width="0.8" stroke-dasharray="4 8"/>
+  <circle cx="540" cy="440" r="280" fill="none" stroke="#e74c3c" stroke-opacity="0.12" stroke-width="1.2"/>
+  <circle cx="540" cy="440" r="200" fill="none" stroke="#e74c3c" stroke-opacity="0.15" stroke-width="1.5"/>
+  <circle cx="540" cy="440" r="130" fill="none" stroke="#f39c12" stroke-opacity="0.1" stroke-width="1"/>
+
+  <!-- Crosshair lines -->
+  <line x1="100" y1="440" x2="480" y2="440" stroke="url(#crossH)" stroke-width="1.2"/>
+  <line x1="600" y1="440" x2="980" y2="440" stroke="url(#crossH)" stroke-width="1.2"/>
+  <line x1="540" y1="50" x2="540" y2="380" stroke="url(#crossV)" stroke-width="1.2"/>
+  <line x1="540" y1="500" x2="540" y2="830" stroke="url(#crossV)" stroke-width="1.2"/>
+
+  <!-- Tick marks -->
+  <g stroke="#e74c3c" stroke-width="1.2">
+    <line x1="485" y1="435" x2="485" y2="445" stroke-opacity="0.4"/>
+    <line x1="595" y1="435" x2="595" y2="445" stroke-opacity="0.4"/>
+    <line x1="535" y1="385" x2="545" y2="385" stroke-opacity="0.35"/>
+    <line x1="535" y1="495" x2="545" y2="495" stroke-opacity="0.35"/>
+  </g>
+
+  <!-- Center target dot -->
+  <circle cx="540" cy="440" r="4" fill="#f39c12" opacity="0.85" filter="url(#glow)"/>
+
+  <!-- 7 agent dots -->
+  <!-- Orchestrator (center, largest) -->
+  <circle cx="540" cy="440" r="12" fill="#e74c3c" opacity="0.9" filter="url(#glow)"/>
+
+  <!-- Wave 1 agents -->
+  <circle cx="370" cy="290" r="8" fill="#e74c3c" opacity="0.75" filter="url(#glow)"/>
+  <circle cx="540" cy="230" r="8" fill="#3498db" opacity="0.75" filter="url(#glow)"/>
+  <circle cx="710" cy="290" r="8" fill="#2ecc71" opacity="0.75" filter="url(#glow)"/>
+  <circle cx="770" cy="440" r="8" fill="#f39c12" opacity="0.75" filter="url(#glow)"/>
+
+  <!-- Wave 2 agents -->
+  <circle cx="395" cy="590" r="8" fill="#9b59b6" opacity="0.75" filter="url(#glow)"/>
+  <circle cx="685" cy="590" r="8" fill="#1abc9c" opacity="0.75" filter="url(#glow)"/>
+
+  <!-- Connection lines -->
+  <line x1="540" y1="440" x2="370" y2="290" stroke="#e74c3c" stroke-opacity="0.15" stroke-width="1"/>
+  <line x1="540" y1="440" x2="540" y2="230" stroke="#3498db" stroke-opacity="0.15" stroke-width="1"/>
+  <line x1="540" y1="440" x2="710" y2="290" stroke="#2ecc71" stroke-opacity="0.15" stroke-width="1"/>
+  <line x1="540" y1="440" x2="770" y2="440" stroke="#f39c12" stroke-opacity="0.15" stroke-width="1"/>
+  <line x1="540" y1="440" x2="395" y2="590" stroke="#9b59b6" stroke-opacity="0.15" stroke-width="1"/>
+  <line x1="540" y1="440" x2="685" y2="590" stroke="#1abc9c" stroke-opacity="0.15" stroke-width="1"/>
+
+  <!-- Wave divider -->
+  <path d="M 280,480 Q 540,530 800,480" fill="none" stroke="rgba(243,156,18,0.12)" stroke-width="1.2" stroke-dasharray="4 6"/>
+
+  <!-- Corner brackets -->
+  <g stroke="#e74c3c" stroke-opacity="0.5" stroke-width="2.5" fill="none">
+    <path d="M 25,25 L 25,65 M 25,25 L 65,25"/>
+    <path d="M 1055,25 L 1055,65 M 1055,25 L 1015,25"/>
+    <path d="M 25,1055 L 25,1015 M 25,1055 L 65,1055"/>
+    <path d="M 1055,1055 L 1055,1015 M 1055,1055 L 1015,1055"/>
+  </g>
+
+  <!-- "// YOU ONLY GET" tagline -->
+  <text x="540" y="310" text-anchor="middle" font-family="'Courier New', monospace" font-size="16" font-weight="700" fill="#e74c3c" letter-spacing="8" opacity="0.8">// YOU ONLY GET</text>
+
+  <!-- "OneShot" title -->
+  <text x="540" y="460" text-anchor="middle" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="120" font-weight="900" letter-spacing="-4" filter="url(#titleGlow)">
+    <tspan fill="url(#fireGrad)">One</tspan><tspan fill="#ffffff">Shot</tspan>
+  </text>
+
+  <!-- Subtitle -->
+  <text x="540" y="510" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="rgba(255,255,255,0.8)">
+    <tspan font-weight="800">7 AI agents.</tspan>
+    <tspan fill="rgba(255,255,255,0.5)"> Two parallel waves. </tspan>
+    <tspan font-weight="800">One prompt.</tspan>
+  </text>
+  <text x="540" y="542" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" fill="rgba(255,255,255,0.4)">Platform-ready social content in seconds.</text>
+
+  <!-- Stats bar -->
+  <g transform="translate(540, 700)">
+    <rect x="-300" y="-30" width="600" height="60" rx="10" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
+    <g transform="translate(-190,0)">
+      <text x="0" y="0" text-anchor="middle" font-family="'Courier New', monospace" font-size="30" font-weight="700" fill="#e74c3c" filter="url(#glow)">7</text>
+      <text x="0" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="rgba(255,255,255,0.45)" letter-spacing="2">AGENTS</text>
+    </g>
+    <line x1="-100" y1="-18" x2="-100" y2="24" stroke="rgba(255,255,255,0.08)"/>
+    <g transform="translate(-20,0)">
+      <text x="0" y="0" text-anchor="middle" font-family="'Courier New', monospace" font-size="30" font-weight="700" fill="#f39c12" filter="url(#glow)">5</text>
+      <text x="0" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="rgba(255,255,255,0.45)" letter-spacing="2">PATTERNS</text>
+    </g>
+    <line x1="70" y1="-18" x2="70" y2="24" stroke="rgba(255,255,255,0.08)"/>
+    <g transform="translate(160,0)">
+      <text x="0" y="0" text-anchor="middle" font-family="'Courier New', monospace" font-size="30" font-weight="700" fill="#3498db" filter="url(#glow)">3</text>
+      <text x="0" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="rgba(255,255,255,0.45)" letter-spacing="2">PLATFORMS</text>
+    </g>
+  </g>
+
+  <!-- Tech badges -->
+  <g transform="translate(540, 820)">
+    <g transform="translate(-150,0)">
+      <rect x="-42" y="-12" width="84" height="24" rx="5" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+      <text x="0" y="4" text-anchor="middle" font-family="'Courier New', monospace" font-size="10" fill="rgba(255,255,255,0.5)">Azure AI</text>
+    </g>
+    <g transform="translate(-40,0)">
+      <rect x="-30" y="-12" width="60" height="24" rx="5" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+      <text x="0" y="4" text-anchor="middle" font-family="'Courier New', monospace" font-size="10" fill="rgba(255,255,255,0.5)">MAF</text>
+    </g>
+    <g transform="translate(50,0)">
+      <rect x="-30" y="-12" width="60" height="24" rx="5" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+      <text x="0" y="4" text-anchor="middle" font-family="'Courier New', monospace" font-size="10" fill="rgba(255,255,255,0.5)">MCP</text>
+    </g>
+    <g transform="translate(150,0)">
+      <rect x="-38" y="-12" width="76" height="24" rx="5" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+      <text x="0" y="4" text-anchor="middle" font-family="'Courier New', monospace" font-size="10" fill="rgba(255,255,255,0.5)">Python</text>
+    </g>
+  </g>
+
+  <!-- Agents League badge -->
+  <text x="540" y="940" text-anchor="middle" font-family="'Courier New', monospace" font-size="12" fill="#e74c3c" fill-opacity="0.4" letter-spacing="3">AGENTS LEAGUE · TRACK 2 · REASONING AGENTS</text>
+
+  <!-- Bottom fire bar -->
+  <rect x="0" y="1074" width="1080" height="6" fill="url(#bottomBar)"/>
+</svg>

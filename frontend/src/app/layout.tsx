@@ -17,7 +17,39 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "OneShot - Multi-Agent AI Platform",
-  description: "Coordinated AI agents for social media content creation",
+  description:
+    "7 AI agents. Two parallel waves. One prompt. Platform-ready social content in seconds.",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+  },
+  manifest: "/site.webmanifest",
+  openGraph: {
+    title: "OneShot - Multi-Agent AI Platform",
+    description:
+      "7 AI agents. Two parallel waves. One prompt. Platform-ready social content in seconds.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "OneShot - 7 AI agents, two parallel waves, one prompt",
+      },
+    ],
+    type: "website",
+    siteName: "OneShot",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "OneShot - Multi-Agent AI Platform",
+    description:
+      "7 AI agents. Two parallel waves. One prompt. Platform-ready social content in seconds.",
+    images: ["/twitter-card.png"],
+  },
 };
 
 export default function RootLayout({
