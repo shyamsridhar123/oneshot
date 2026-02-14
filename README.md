@@ -27,6 +27,17 @@
   <img src="https://img.shields.io/badge/license-MIT-f39c12" alt="MIT License"/>
 </p>
 
+<p align="center">
+  <a href="https://oneshot-ctr-frontend.ambitiouscoast-16cae529.eastus2.azurecontainerapps.io/">
+    <img src="https://img.shields.io/badge/🚀_Live_Demo-Azure_Container_Apps-0078D4?style=for-the-badge&logo=microsoft-azure&logoColor=white" alt="Live Demo"/>
+  </a>
+</p>
+
+<p align="center">
+  <strong>🌐 <a href="https://oneshot-ctr-frontend.ambitiouscoast-16cae529.eastus2.azurecontainerapps.io/">Try OneShot Live →</a></strong><br/>
+  Deployed on <strong>Azure Container Apps</strong> (East US 2) — containerized frontend and backend running in a fully managed serverless environment with automatic scaling, built-in HTTPS, and zero-downtime deployments.
+</p>
+
 ---
 
 ## The Problem
