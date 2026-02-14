@@ -1,0 +1,61 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: oneshot-backend
+    environment:
+      AZURE_OPENAI_ENDPOINT: ${AZURE_OPENAI_ENDPOINT:-https://example.openai.azure.com}
+      AZURE_OPENAI_API_VERSION: ${AZURE_OPENAI_API_VERSION:-2025-03-01-preview}
+      AZURE_OPENAI_DEPLOYMENT_NAME: ${AZURE_OPENAI_DEPLOYMENT_NAME:-gpt-4o}
+      AZURE_OPENAI_GPT5_DEPLOYMENT_NAME: ${AZURE_OPENAI_GPT5_DEPLOYMENT_NAME:-gpt-4o-mini}
+      AZURE_OPENAI_CODEX_DEPLOYMENT_NAME: ${AZURE_OPENAI_CODEX_DEPLOYMENT_NAME:-gpt-4o-mini}
+      AZURE_OPENAI_TEXTEMBEDDING_DEPLOYMENT_NAME: ${AZURE_OPENAI_TEXTEMBEDDING_DEPLOYMENT_NAME:-text-embedding-3-small}
+      DATABASE_URL: ${DATABASE_URL:-sqlite+aiosqlite:///./data/oneshot.db}
+      APP_ENV: ${APP_ENV:-development}
+      APP_DEBUG: ${APP_DEBUG:-true}
+      APP_HOST: 0.0.0.0
+      APP_PORT: 8000
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-["http://localhost:3000","http://127.0.0.1:3000"]}
+    ports:
+      - "8000:8000"
+    volumes:
+      - oneshot-backend-data:/app/data
+    networks:
+      - oneshot-shared
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: oneshot-frontend
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+      NEXT_PUBLIC_WS_URL: ${NEXT_PUBLIC_WS_URL:-ws://localhost:8000}
+      NODE_ENV: production
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    networks:
+      - oneshot-shared
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+volumes:
+  oneshot-backend-data:
+
+networks:
+  oneshot-shared:
+    driver: bridge

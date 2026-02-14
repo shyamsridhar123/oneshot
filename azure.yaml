@@ -1,0 +1,44 @@
+name: oneshot-ctr
+metadata:
+  template: ai-foundry-avm
+infra:
+  provider: bicep
+  path: infra
+  outputs:
+    aiFoundryAccountName: AI_FOUNDRY_ACCOUNT_NAME
+    aiProjectName: AI_FOUNDRY_PROJECT_NAME
+    aiSearchName: AI_SEARCH_SERVICE_NAME
+    cosmosAccountName: COSMOS_ACCOUNT_NAME
+    keyVaultName: KEYVAULT_NAME
+    storageAccountOutputName: BRAND_STORAGE_ACCOUNT_NAME
+    brandDataContainerResourceId: BRAND_DATA_CONTAINER_ID
+    draftsContainerResourceId: DRAFTS_CONTAINER_ID
+    draftsShareResourceId: DRAFTS_SHARE_ID
+    containerRegistryName: AZURE_CONTAINER_REGISTRY_NAME
+    containerRegistryLoginServer: AZURE_CONTAINER_REGISTRY_ENDPOINT
+    containerAppsEnvironmentId: AZURE_CONTAINER_APPS_ENVIRONMENT_ID
+    backendContainerAppName: BACKEND_CONTAINER_APP_NAME
+    frontendContainerAppName: FRONTEND_CONTAINER_APP_NAME
+    backendEndpoint: BACKEND_ENDPOINT
+    frontendEndpoint: FRONTEND_ENDPOINT
+    sqlServerNameOutput: AZURE_SQL_SERVER_NAME
+    sqlServerResourceId: AZURE_SQL_SERVER_RESOURCE_ID
+    sqlServerFullyQualifiedDomainName: AZURE_SQL_SERVER_FQDN
+    sqlDatabaseNameOutput: AZURE_SQL_DATABASE_NAME
+services:
+  backend:
+    project: ./backend
+    host: containerapp
+    language: python
+    docker:
+      path: ./Dockerfile
+      registry: ${AZURE_CONTAINER_REGISTRY_ENDPOINT}
+    resourceName: ${BACKEND_CONTAINER_APP_NAME}
+  frontend:
+    project: ./frontend
+    host: containerapp
+    language: js
+    docker:
+      path: ./Dockerfile
+      registry: ${AZURE_CONTAINER_REGISTRY_ENDPOINT}
+    resourceName: ${FRONTEND_CONTAINER_APP_NAME}

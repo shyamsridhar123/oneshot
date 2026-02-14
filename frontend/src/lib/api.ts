@@ -17,8 +17,7 @@ import type {
   AgentTrace,
   Metrics,
 } from "./types";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+import { getRuntimeApiBase } from "./runtime-config";
 
 class ApiError extends Error {
   constructor(
@@ -34,7 +33,8 @@ async function fetchJson<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const url = `${API_BASE}${endpoint}`;
+  const apiBase = getRuntimeApiBase();
+  const url = `${apiBase}${endpoint}`;
   const response = await fetch(url, {
     ...options,
     headers: {
@@ -136,7 +136,7 @@ export const documentsApi = {
   get: (id: string) => fetchJson<Document>(`/api/documents/${id}`),
 
   export: (id: string, format: "pdf" | "docx" | "markdown" | "html") =>
-    fetch(`${API_BASE}/api/documents/${id}/export`, {
+    fetch(`${getRuntimeApiBase()}/api/documents/${id}/export`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ format }),
