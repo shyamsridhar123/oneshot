@@ -96,6 +96,23 @@ Both services are now containerized and wired into `azd`.
 
 The deployment flow currently excludes brand-data seeding. Continue using your team setup/bootstrap scripts for data initialization.
 
+Deployment behavior in Azure:
+
+- Frontend resolves backend endpoints from runtime-injected config (server render path), not build-time-only `NEXT_PUBLIC_*`.
+- Runtime endpoint vars are populated by infra as `RUNTIME_API_URL` and `RUNTIME_WS_URL` from the backend Container App **actual FQDN output**.
+- Backend CORS is strict for deployed Container Apps (`ALLOWED_ORIGINS=[]` with `ALLOWED_ORIGIN_REGEX` scoped to the frontend app hostname pattern).
+- `azure.yaml` sets Docker `registry` explicitly from `AZURE_CONTAINER_REGISTRY_ENDPOINT`.
+- Container Apps are tagged in IaC with `azd-service-name` so `azd deploy --service backend|frontend` resolves targets consistently.
+
+Common `azd` deployment recovery:
+
+- Registry endpoint error (`could not determine container registry endpoint`)
+  - Ensure azd env has `AZURE_CONTAINER_REGISTRY_ENDPOINT` and `AZURE_CONTAINER_REGISTRY_NAME`.
+- Service tag lookup error (`resource tagged with 'azd-service-name' not found`)
+  - Run `azd provision` to refresh tags/resources from IaC.
+- Frontend points to stale/non-resolving backend host
+  - Run `azd provision`, then `azd deploy --service frontend` to refresh runtime endpoint vars.
+
 ---
 
 ## Reasoning Patterns — The Core of Track 2
@@ -285,9 +302,12 @@ Edit `.env`:
 AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com
 AZURE_OPENAI_API_VERSION=2025-03-01-preview
 AZURE_OPENAI_DEPLOYMENT_NAME=gpt-5.2-chat
+NEXT_PUBLIC_API_URL=http://localhost:8000
+NEXT_PUBLIC_WS_URL=ws://localhost:8000
 ```
 
 > **No API key needed.** The app uses `DefaultAzureCredential` — just `az login` first.
+> In Azure Container Apps, frontend runtime endpoint vars are injected by infra (`RUNTIME_API_URL`, `RUNTIME_WS_URL`).
 
 ### 2. Backend
 
