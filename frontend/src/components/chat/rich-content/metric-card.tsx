@@ -27,7 +27,7 @@ function parseMetricData(raw: string): MetricCardData | null {
 
 const MetricCardBlock = memo(({ raw }: { raw: string }) => {
   const data = useMemo(() => parseMetricData(raw), [raw]);
-  if (!data) return null;
+  if (!data || !Array.isArray(data.metrics) || data.metrics.length === 0) return null;
 
   return (
     <div className="my-4">
