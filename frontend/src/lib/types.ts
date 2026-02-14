@@ -61,6 +61,22 @@ export interface AgentStatus {
   last_activity: string;
 }
 
+// ============ Citation Types ============
+
+export interface Citation {
+  url?: string;
+  source_tool?: string;
+  type: "url" | "knowledge" | "file";
+  preview?: string;
+  contributing_agent?: AgentName;
+}
+
+export interface ToolCallRecord {
+  tool_name: string;
+  arguments?: string;
+  result_preview?: string;
+}
+
 export interface AgentTrace {
   id: string;
   agent_name: AgentName;
@@ -70,6 +86,10 @@ export interface AgentTrace {
   completed_at: string | null;
   tokens_used: number;
   error: string | null;
+  citations: Citation[];
+  tool_calls: ToolCallRecord[];
+  duration_ms: number | null;
+  parent_trace_id: string | null;
 }
 
 // ============ Document Types ============
@@ -146,8 +166,10 @@ export type WSEventType =
   | "agent.handoff"
   | "agent.error"
   | "agent.tool_call"
+  | "agent.citations"
   | "stream.token"
   | "document.generated"
+  | "response.citations"
   | "connection.established"
   | "connection.error";
 
@@ -209,4 +231,15 @@ export interface Metrics {
   since: string;
   agent_stats: AgentStats[];
   total_executions: number;
+}
+
+// ============ Citation Event Types ============
+
+export interface AgentCitationsEvent {
+  agent_name: AgentName;
+  citations: Citation[];
+}
+
+export interface ResponseCitationsEvent {
+  citations: Citation[];
 }

@@ -5,27 +5,21 @@ content strategies, posting schedules, and platform-specific plans.
 """
 
 import logging
+import time
 
 from app.agents.prompts import STRATEGIST_PROMPT
 from app.agents.factory import create_agent, get_agent_tools
+from app.agents.middleware import build_agent_trace_data
 from app.services.llm_service import get_llm_service
 
 logger = logging.getLogger(__name__)
 
 
-async def run_strategist(task: str, context: dict) -> tuple[str, int]:
+async def run_strategist(task: str, context: dict) -> tuple[str, int, dict]:
     """Run the Strategist agent via MAF with Chain-of-Thought reasoning.
 
-    Creates a MAF ChatAgent with analyst tools (engagement metrics,
-    posting schedules) so the strategist can ground recommendations
-    in real data.
-
-    Args:
-        task: The task description
-        context: Context including message, entities, previous results
-
     Returns:
-        Tuple of (Strategist's response, tokens used)
+        Tuple of (Strategist's response, tokens used, trace data dict)
     """
     # Build prompt with context
     context_parts = []
@@ -66,6 +60,8 @@ Use Chain-of-Thought reasoning to develop a content strategy.
 Use available tools to check engagement metrics and optimal posting schedules.
 Provide strategic guidance or generate the requested proposal/scoping document."""
 
+    start_time = time.time()
+
     # Try MAF agent path
     try:
         tools = get_agent_tools("strategist", include_mcp=False)
@@ -73,7 +69,9 @@ Provide strategic guidance or generate the requested proposal/scoping document."
         response = await agent.run(prompt)
         text = response.text or ""
         tokens = response.usage_details.total_token_count if response.usage_details else 0
-        return text, tokens or 0
+        duration_ms = int((time.time() - start_time) * 1000)
+        trace = build_agent_trace_data("strategist", text, tokens or 0, duration_ms, response)
+        return text, tokens or 0, trace
     except Exception as e:
         logger.warning("MAF agent path failed for strategist, falling back to direct LLM: %s", e)
 
@@ -84,5 +82,7 @@ Provide strategic guidance or generate the requested proposal/scoping document."
         system_prompt=STRATEGIST_PROMPT,
         temperature=0.7,
     )
+    duration_ms = int((time.time() - start_time) * 1000)
+    trace = build_agent_trace_data("strategist", response.content, response.tokens_used, duration_ms)
 
-    return response.content, response.tokens_used
+    return response.content, response.tokens_used, trace

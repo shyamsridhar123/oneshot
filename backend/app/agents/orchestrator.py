@@ -103,6 +103,7 @@ async def process_message(
     message_metadata: dict,
     ws_manager: ConnectionManager,
     db: AsyncSession,
+    message_id: Optional[str] = None,
 ) -> str:
     """Process a user message through the orchestrator.
 
@@ -121,13 +122,14 @@ async def process_message(
         agent_name="orchestrator",
         task_type="message_processing",
         input_data={"message": message_content, "metadata": message_metadata},
+        message_id=message_id,
     )
 
     # Notify WebSocket clients
     await ws_manager.send_agent_started(conversation_id, "orchestrator", "Analyzing request")
 
     try:
-        # ── Step 1: Classify intent ────────────────────────────────
+        # -- Step 1: Classify intent
         await ws_manager.send_agent_thinking(
             conversation_id, "orchestrator", "Understanding your request...", 0.1
         )
@@ -165,7 +167,7 @@ Determine:
             0.2,
         )
 
-        # ── Step 2: Determine waves ───────────────────────────────
+        # -- Step 2: Determine waves
         waves = _WAVE_CONFIG.get(
             intent["primary_intent"],
             {"wave1": intent["required_agents"][:3], "wave2": []},
@@ -181,8 +183,9 @@ Determine:
 
         all_results: dict[str, str] = {}
         all_tokens: dict[str, int] = {}
+        all_traces: dict[str, dict] = {}
 
-        # ── Wave 1: Context gathering (parallel) ──────────────────
+        # -- Wave 1: Context gathering (parallel)
         if waves["wave1"]:
             for agent_name in waves["wave1"]:
                 await ws_manager.send_agent_handoff(
@@ -203,11 +206,12 @@ Determine:
                 ]
             )
 
-            for name, (result, tokens) in zip(waves["wave1"], w1_results):
+            for name, (result, tokens, trace_data) in zip(waves["wave1"], w1_results):
                 all_results[name] = result
                 all_tokens[name] = tokens
+                all_traces[name] = trace_data
 
-        # ── Wave 2: Creation + review (parallel, with Wave 1 context) ─
+        # -- Wave 2: Creation + review (parallel, with Wave 1 context)
         if waves["wave2"]:
             wave2_context = {**base_context, "previous_results": all_results}
 
@@ -230,26 +234,42 @@ Determine:
                 ]
             )
 
-            for name, (result, tokens) in zip(waves["wave2"], w2_results):
+            for name, (result, tokens, trace_data) in zip(waves["wave2"], w2_results):
                 all_results[name] = result
                 all_tokens[name] = tokens
+                all_traces[name] = trace_data
 
-        # ── Record agent traces ───────────────────────────────────
+        # -- Record agent traces with citation data
         for agent_name in all_results:
+            agent_trace_data = all_traces.get(agent_name, {})
             agent_trace = await trace_service.start_trace(
                 db=db,
                 agent_name=agent_name,
                 task_type=intent["task_description"][:50],
                 input_data={"task": intent["task_description"]},
+                message_id=message_id,
             )
             await trace_service.complete_trace(
                 db=db,
                 trace=agent_trace,
-                output_data={"result_preview": all_results[agent_name][:200]},
+                output_data={
+                    "result_preview": all_results[agent_name][:500],
+                },
                 tokens_used=all_tokens.get(agent_name, 0),
+                citations=agent_trace_data.get("citations", []),
+                tool_calls=agent_trace_data.get("tool_calls", []),
+                duration_ms=agent_trace_data.get("duration_ms"),
+                parent_trace_id=trace.id,
             )
 
-        # ── Step 3: Synthesize final response (streamed) ────────────
+            # Send citation data via WebSocket
+            citations = agent_trace_data.get("citations", [])
+            if citations:
+                await ws_manager.send_agent_citations(
+                    conversation_id, agent_name, citations
+                )
+
+        # -- Step 3: Synthesize final response (streamed)
         await ws_manager.send_agent_thinking(
             conversation_id, "orchestrator", "Synthesizing response...", 0.9
         )
@@ -269,12 +289,12 @@ Agent Outputs:
 The frontend renders special fenced code blocks as interactive visual components. You MUST preserve and include these rich blocks from agent outputs.
 
 ### Rules:
-1. **PRESERVE all rich code blocks** from agent outputs — copy them EXACTLY as-is into your response. These include:
-   - `chart-bar`, `chart-line`, `chart-pie`, `chart-area`, `chart-radar` — rendered as interactive charts
-   - `platform-linkedin`, `platform-twitter`, `platform-x`, `platform-instagram` — rendered as platform post mockups
-   - `metrics`, `metric-cards`, `kpi` — rendered as KPI dashboard cards
-   - `callout`, `insight`, `tip`, `warning` — rendered as styled callout boxes
-   - `comparison`, `comparison-table` — rendered as styled comparison tables
+1. **PRESERVE all rich code blocks** from agent outputs -- copy them EXACTLY as-is into your response. These include:
+   - `chart-bar`, `chart-line`, `chart-pie`, `chart-area`, `chart-radar` -- rendered as interactive charts
+   - `platform-linkedin`, `platform-twitter`, `platform-x`, `platform-instagram` -- rendered as platform post mockups
+   - `metrics`, `metric-cards`, `kpi` -- rendered as KPI dashboard cards
+   - `callout`, `insight`, `tip`, `warning` -- rendered as styled callout boxes
+   - `comparison`, `comparison-table` -- rendered as styled comparison tables
 
 2. **ADD your own rich blocks** where it helps the user. For example:
    - Add a `callout` block for key recommendations or warnings
@@ -324,7 +344,14 @@ Provide a well-structured response that:
                 on_token=_on_token_simple,
             )
 
-        # ── Save document for content intents ─────────────────────
+        # -- Aggregate all citations for the response metadata
+        all_citations = []
+        for agent_name, trace_data in all_traces.items():
+            for c in trace_data.get("citations", []):
+                c["contributing_agent"] = agent_name
+                all_citations.append(c)
+
+        # -- Save document for content intents
         if intent["primary_intent"] in ("content_creation", "content_strategy") and all_results:
             doc_service = get_document_service()
             topic = intent["key_entities"][0] if intent["key_entities"] else "Social Media Content"
@@ -340,6 +367,7 @@ Provide a well-structured response that:
                     "intent": intent["primary_intent"],
                     "conversation_id": conversation_id,
                     "generated_via": "chat",
+                    "citations": all_citations,
                 },
             )
 
@@ -347,14 +375,25 @@ Provide a well-structured response that:
                 conversation_id, doc.id, "social_post", doc.title
             )
 
-        # ── Complete orchestrator trace ────────────────────────────
+        # -- Complete orchestrator trace
         duration_ms = int((time.time() - start_time) * 1000)
         await trace_service.complete_trace(
             db=db,
             trace=trace,
-            output_data={"response": response[:500], "agents_used": list(all_results.keys())},
+            output_data={
+                "response": response[:500],
+                "agents_used": list(all_results.keys()),
+            },
             tokens_used=llm.last_tokens_used,
+            citations=all_citations,
+            duration_ms=duration_ms,
         )
+
+        # Send aggregated citations via WebSocket
+        if all_citations:
+            await ws_manager.send_response_citations(
+                conversation_id, all_citations
+            )
 
         await ws_manager.send_agent_completed(
             conversation_id,
@@ -377,8 +416,8 @@ async def _execute_agent(
     conversation_id: str,
     ws_manager: ConnectionManager,
     db: AsyncSession,
-) -> tuple[str, int]:
-    """Execute a specific agent and return its result with token usage."""
+) -> tuple[str, int, dict]:
+    """Execute a specific agent and return its result with token usage and trace data."""
     start_time = time.time()
 
     await ws_manager.send_agent_started(conversation_id, agent_name, task[:100])
@@ -397,20 +436,21 @@ async def _execute_agent(
 
     try:
         if agent_name == "strategist":
-            result, tokens_used = await run_strategist(task, context)
+            result, tokens_used, trace_data = await run_strategist(task, context)
         elif agent_name == "researcher":
-            result, tokens_used = await run_researcher(task, context)
+            result, tokens_used, trace_data = await run_researcher(task, context)
         elif agent_name == "analyst":
-            result, tokens_used = await run_analyst(task, context)
+            result, tokens_used, trace_data = await run_analyst(task, context)
         elif agent_name == "scribe":
-            result, tokens_used = await run_scribe(task, context)
+            result, tokens_used, trace_data = await run_scribe(task, context)
         elif agent_name == "advisor":
-            result, tokens_used = await run_advisor(task, context)
+            result, tokens_used, trace_data = await run_advisor(task, context)
         elif agent_name == "memory":
-            result, tokens_used = await run_memory(task, context)
+            result, tokens_used, trace_data = await run_memory(task, context)
         else:
             result = f"Unknown agent: {agent_name}"
             tokens_used = 0
+            trace_data = {}
 
         duration_ms = int((time.time() - start_time) * 1000)
 
@@ -418,11 +458,11 @@ async def _execute_agent(
             conversation_id, agent_name, result[:100], duration_ms
         )
 
-        return result, tokens_used
+        return result, tokens_used, trace_data
 
     except Exception as e:
         await ws_manager.send_agent_completed(conversation_id, agent_name, f"Error: {str(e)}", 0)
-        return f"Error from {agent_name}: {str(e)}", 0
+        return f"Error from {agent_name}: {str(e)}", 0, {}
 
 
 def _format_agent_results(results: dict) -> str:
@@ -440,15 +480,7 @@ async def generate_social_content(
     additional_context: Optional[str] = None,
     db: AsyncSession = None,
 ):
-    """Generate social media content directly (API endpoint).
-
-    Args:
-        topic: The topic or announcement to create content about.
-        platforms: Target platforms (linkedin, twitter, instagram).
-        content_type: Type of content — post, thread, campaign, calendar.
-        additional_context: Extra context or instructions.
-        db: Database session.
-    """
+    """Generate social media content directly (API endpoint)."""
     doc_service = get_document_service()
     llm = get_llm_service()
 
@@ -459,12 +491,12 @@ async def generate_social_content(
     context = {"message": scope, "platforms": platforms}
 
     # Wave 1: Gather context
-    research_result, _ = await run_researcher(scope, context)
-    memory_result, _ = await run_memory(scope, context)
-    strategy_result, _ = await run_strategist(scope, {**context, "previous_results": {"researcher": research_result, "memory": memory_result}})
+    research_result, _, _ = await run_researcher(scope, context)
+    memory_result, _, _ = await run_memory(scope, context)
+    strategy_result, _, _ = await run_strategist(scope, {**context, "previous_results": {"researcher": research_result, "memory": memory_result}})
 
     # Wave 2: Generate + review
-    scribe_result, _ = await run_scribe(scope, {
+    scribe_result, _, _ = await run_scribe(scope, {
         **context,
         "previous_results": {
             "researcher": research_result,
@@ -472,7 +504,7 @@ async def generate_social_content(
             "strategist": strategy_result,
         },
     })
-    advisor_result, _ = await run_advisor(scope, {
+    advisor_result, _, _ = await run_advisor(scope, {
         **context,
         "previous_results": {"scribe": scribe_result},
     })

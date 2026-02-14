@@ -40,6 +40,10 @@ async def list_traces(
             completed_at=trace.completed_at,
             tokens_used=trace.tokens_used,
             error=trace.error,
+            citations=trace.citations or [],
+            tool_calls=trace.tool_calls or [],
+            duration_ms=trace.duration_ms,
+            parent_trace_id=trace.parent_trace_id,
         )
         for trace in traces
     ]

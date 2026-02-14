@@ -8,11 +8,6 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
 websocket_router = APIRouter()
 
-# TODO: REVISIT IF NEEDED - Using parameterized path /ws/agents/{conversation_id}
-# vs TRD's /ws/agents. The parameterized path is correct per implementation,
-# but if clients have trouble with parameterized WS paths, consider switching
-# to query params: /ws/agents?conversation_id=xxx
-
 
 class ConnectionManager:
     """Manage WebSocket connections by conversation."""
@@ -108,6 +103,19 @@ class ConnectionManager:
             "document_id": document_id,
             "type": doc_type,
             "title": title,
+        })
+
+    async def send_agent_citations(self, conversation_id: str, agent: str, citations: list[dict]):
+        """Send agent.citations event with structured source references."""
+        await self.broadcast(conversation_id, "agent.citations", {
+            "agent_name": agent,
+            "citations": citations,
+        })
+
+    async def send_response_citations(self, conversation_id: str, citations: list[dict]):
+        """Send response.citations event with all aggregated citations for the response."""
+        await self.broadcast(conversation_id, "response.citations", {
+            "citations": citations,
         })
 
 

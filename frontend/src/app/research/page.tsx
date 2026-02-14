@@ -33,7 +33,9 @@ export default function ResearchPage() {
   const briefingCardId = useRef(uuidv4());
 
   const [sessionId] = useState(() => `research-${uuidv4()}`);
-  useAgentWebSocket(sessionId);
+  // Connect lazily — only after the first query/briefing fires
+  const [wsActive, setWsActive] = useState(false);
+  useAgentWebSocket(wsActive ? sessionId : null);
 
   const researchMutation = useMutation({
     mutationFn: researchApi.query,
@@ -47,11 +49,13 @@ export default function ResearchPage() {
 
   const handleResearch = () => {
     if (!query.trim() || researchMutation.isPending) return;
+    setWsActive(true);
     researchMutation.mutate({ query, research_type: "comprehensive", session_id: sessionId });
   };
 
   const handleBriefing = () => {
     if (!companyName.trim() || briefingMutation.isPending) return;
+    setWsActive(true);
     briefingMutation.mutate({ company_name: companyName, session_id: sessionId });
   };
 

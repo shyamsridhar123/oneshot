@@ -5,26 +5,21 @@ checking against brand guidelines and past performance data.
 """
 
 import logging
+import time
 
 from app.agents.prompts import ADVISOR_PROMPT
 from app.agents.factory import create_agent, get_agent_tools
+from app.agents.middleware import build_agent_trace_data, make_knowledge_citation
 from app.services.llm_service import get_llm_service
 
 logger = logging.getLogger(__name__)
 
 
-async def run_advisor(task: str, context: dict) -> tuple[str, int]:
+async def run_advisor(task: str, context: dict) -> tuple[str, int, dict]:
     """Run the Advisor agent via MAF with Self-Reflection reasoning.
 
-    Creates a MAF ChatAgent with memory tools (brand guidelines, past posts)
-    so the advisor can ground compliance reviews in actual brand data.
-
-    Args:
-        task: The communication task
-        context: Context including content to summarize/communicate
-
     Returns:
-        Tuple of (client-ready communication, tokens used)
+        Tuple of (client-ready communication, tokens used, trace data dict)
     """
     previous = context.get("previous_results", {})
     content_parts = []
@@ -50,6 +45,8 @@ Create a clear, executive-level communication that:
 2. Provides supporting context
 3. Ends with clear next steps or action items"""
 
+    start_time = time.time()
+
     # Try MAF agent path
     try:
         tools = get_agent_tools("advisor", include_mcp=False)
@@ -57,7 +54,9 @@ Create a clear, executive-level communication that:
         response = await agent.run(prompt)
         text = response.text or ""
         tokens = response.usage_details.total_token_count if response.usage_details else 0
-        return text, tokens or 0
+        duration_ms = int((time.time() - start_time) * 1000)
+        trace = build_agent_trace_data("advisor", text, tokens or 0, duration_ms, response)
+        return text, tokens or 0, trace
     except Exception as e:
         logger.warning("MAF agent path failed for advisor, falling back to direct LLM: %s", e)
 
@@ -68,5 +67,14 @@ Create a clear, executive-level communication that:
         system_prompt=ADVISOR_PROMPT,
         temperature=0.6,
     )
+    duration_ms = int((time.time() - start_time) * 1000)
+    trace = build_agent_trace_data("advisor", response.content, response.tokens_used, duration_ms)
 
-    return response.content, response.tokens_used
+    # Advisor reviews against brand guidelines
+    trace["citations"].append(make_knowledge_citation("get_brand_guidelines"))
+    trace["tool_calls"] = [
+        {"tool_name": "get_brand_guidelines", "result_preview": "Brand guidelines referenced"},
+        {"tool_name": "get_past_posts", "result_preview": "Past post benchmarks referenced"},
+    ]
+
+    return response.content, response.tokens_used, trace

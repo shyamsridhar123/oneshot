@@ -71,13 +71,13 @@ const CalloutBlock = memo(({ raw }: { raw: string }) => {
   const Icon = style.icon;
 
   return (
-    <div className={cn("my-3 flex gap-3 rounded-lg border p-3", style.bg, style.border)}>
+    <div className={cn("my-3 flex gap-3 rounded-lg border p-3 overflow-hidden", style.bg, style.border)}>
       <Icon className={cn("h-5 w-5 shrink-0 mt-0.5", style.iconColor)} />
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0 overflow-hidden">
         {data.title && (
-          <p className={cn("text-sm font-semibold mb-0.5", style.title)}>{data.title}</p>
+          <p className={cn("text-sm font-semibold mb-0.5 break-words", style.title)}>{data.title}</p>
         )}
-        <p className="text-sm text-foreground/80 leading-relaxed">{data.content}</p>
+        <p className="text-sm text-foreground/80 leading-relaxed break-words">{data.content}</p>
       </div>
     </div>
   );

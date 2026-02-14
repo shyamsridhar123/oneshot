@@ -6,9 +6,11 @@ optionally saves drafts to the filesystem via MCP server integration.
 
 import asyncio
 import logging
+import time
 
 from app.agents.prompts import SCRIBE_PROMPT
 from app.agents.factory import create_agent, get_agent_tools
+from app.agents.middleware import build_agent_trace_data
 from app.services.llm_service import get_llm_service
 
 logger = logging.getLogger(__name__)
@@ -37,18 +39,11 @@ def _ensure_mcp_cleanup_filter():
     loop._mcp_filter_installed = True
 
 
-async def run_scribe(task: str, context: dict) -> tuple[str, int]:
+async def run_scribe(task: str, context: dict) -> tuple[str, int, dict]:
     """Run the Scribe agent for platform-specific content generation.
 
-    Creates a MAF ChatAgent with optional filesystem MCP tool so the agent
-    can save generated content as draft files in ./data/drafts/.
-
-    Args:
-        task: The content generation task
-        context: Context including content from Wave 1 agents
-
     Returns:
-        Tuple of (generated content, tokens used)
+        Tuple of (generated content, tokens used, trace data dict)
     """
     # Gather context from previous agents (Wave 1 outputs)
     previous = context.get("previous_results", {})
@@ -75,11 +70,13 @@ Source Content from Research & Strategy:
 {source_content}
 
 Generate platform-specific social media content for each target platform.
-Follow the template-guided pattern: hook → body → CTA → hashtags.
+Follow the template-guided pattern: hook -> body -> CTA -> hashtags.
 
 After generating content, save each platform's post as a draft file using the
 filesystem tool (if available). Use filenames like 'linkedin_draft.md',
 'twitter_draft.md', 'instagram_draft.md'."""
+
+    start_time = time.time()
 
     # Try MAF agent path (with MCP tools)
     try:
@@ -89,7 +86,9 @@ filesystem tool (if available). Use filenames like 'linkedin_draft.md',
         response = await agent.run(prompt)
         text = response.text or ""
         tokens = response.usage_details.total_token_count if response.usage_details else 0
-        return text, tokens or 0
+        duration_ms = int((time.time() - start_time) * 1000)
+        trace = build_agent_trace_data("scribe", text, tokens or 0, duration_ms, response)
+        return text, tokens or 0, trace
     except Exception as e:
         logger.warning("MAF agent path failed for scribe, falling back to direct LLM: %s", e)
 
@@ -100,4 +99,6 @@ filesystem tool (if available). Use filenames like 'linkedin_draft.md',
         system_prompt=SCRIBE_PROMPT,
         temperature=0.6,
     )
-    return response.content, response.tokens_used
+    duration_ms = int((time.time() - start_time) * 1000)
+    trace = build_agent_trace_data("scribe", response.content, response.tokens_used, duration_ms)
+    return response.content, response.tokens_used, trace

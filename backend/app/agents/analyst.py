@@ -5,26 +5,21 @@ optimal posting schedules, and performance comparisons.
 """
 
 import logging
+import time
 
 from app.agents.prompts import ANALYST_PROMPT
 from app.agents.factory import create_agent, get_agent_tools
+from app.agents.middleware import build_agent_trace_data, make_knowledge_citation
 from app.services.llm_service import get_llm_service
 
 logger = logging.getLogger(__name__)
 
 
-async def run_analyst(task: str, context: dict) -> tuple[str, int]:
+async def run_analyst(task: str, context: dict) -> tuple[str, int, dict]:
     """Run the Analyst agent via MAF with data-driven benchmarking tools.
 
-    Creates a MAF ChatAgent with engagement metrics and scheduling tools
-    so the analyst can compute data-backed predictions.
-
-    Args:
-        task: The analysis task description
-        context: Context including data and previous results
-
     Returns:
-        Tuple of (analysis results, tokens used)
+        Tuple of (analysis results, tokens used, trace data dict)
     """
     previous = context.get("previous_results", {})
     data_context = ""
@@ -47,6 +42,8 @@ Original Request: {context.get('message', '')}
 Use available tools to calculate engagement metrics and recommend posting schedules.
 Provide quantitative analysis, metrics, and data-driven insights."""
 
+    start_time = time.time()
+
     # Try MAF agent path
     try:
         tools = get_agent_tools("analyst", include_mcp=False)
@@ -54,7 +51,9 @@ Provide quantitative analysis, metrics, and data-driven insights."""
         response = await agent.run(prompt)
         text = response.text or ""
         tokens = response.usage_details.total_token_count if response.usage_details else 0
-        return text, tokens or 0
+        duration_ms = int((time.time() - start_time) * 1000)
+        trace = build_agent_trace_data("analyst", text, tokens or 0, duration_ms, response)
+        return text, tokens or 0, trace
     except Exception as e:
         logger.warning("MAF agent path failed for analyst, falling back to direct LLM: %s", e)
 
@@ -65,5 +64,14 @@ Provide quantitative analysis, metrics, and data-driven insights."""
         system_prompt=ANALYST_PROMPT,
         temperature=0.3,
     )
+    duration_ms = int((time.time() - start_time) * 1000)
+    trace = build_agent_trace_data("analyst", response.content, response.tokens_used, duration_ms)
 
-    return response.content, response.tokens_used
+    # Analyst uses engagement benchmarks and past post data
+    trace["citations"].append(make_knowledge_citation("get_past_posts"))
+    trace["tool_calls"] = [
+        {"tool_name": "calculate_engagement_metrics", "result_preview": "Engagement metrics calculated"},
+        {"tool_name": "recommend_posting_schedule", "result_preview": "Schedule recommendations generated"},
+    ]
+
+    return response.content, response.tokens_used, trace

@@ -177,6 +177,7 @@ async def send_message(
             message_metadata=data.metadata,
             ws_manager=manager,
             db=db,
+            message_id=user_message.id,
         )
     except Exception as e:
         response_content = f"I encountered an error processing your request: {str(e)}"
