@@ -1,0 +1,109 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "baseName": {
+      "value": "oneshot-ctr"
+    },
+    "location": {
+      "value": "eastus2"
+    },
+    "appHostingLocation": {
+      "value": "eastus2"
+    },
+    "tags": {
+      "value": {
+        "environment": "shared",
+        "workload": "social-media-command-center"
+      }
+    },
+    "aiModelDeployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gpt-4o",
+            "version": "2024-11-20"
+          },
+          "name": "gpt-4o",
+          "sku": {
+            "name": "Standard",
+            "capacity": 1
+          }
+        },
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gpt-4o-mini",
+            "version": "2024-07-18"
+          },
+          "name": "gpt-4o-mini",
+          "sku": {
+            "name": "Standard",
+            "capacity": 1
+          }
+        },
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "text-embedding-3-small",
+            "version": "1"
+          },
+          "name": "text-embedding-3-small",
+          "sku": {
+            "name": "Standard",
+            "capacity": 1
+          }
+        }
+      ]
+    },
+    "projectDescription": {
+      "value": "Multi-agent reasoning workspace powering TechVista social media command center."
+    },
+    "backendSecondaryDeploymentName": {
+      "value": "gpt-4o-mini"
+    },
+    "backendCodexDeploymentName": {
+      "value": "gpt-4o-mini"
+    },
+    "backendEmbeddingDeploymentName": {
+      "value": "text-embedding-3-small"
+    },
+    "brandDataContainerName": {
+      "value": "brand-data"
+    },
+    "draftsContainerName": {
+      "value": "drafts"
+    },
+    "draftsShareName": {
+      "value": "drafts"
+    },
+    "backendContainerImage": {
+      "value": "acrwyucfo2wlkuhxannpy.azurecr.io/oneshot-backend:latest"
+    },
+    "frontendContainerImage": {
+      "value": "acrwyucfo2wlkuhxannpy.azurecr.io/oneshot-frontend:latest"
+    },
+    "sqlAdministratorLogin": {
+      "value": "oneshotsqladmin"
+    },
+    "sqlAdministratorLoginPassword": {
+      "value": ""
+    },
+    "sqlDatabaseName": {
+      "value": "oneshotdb"
+    },
+    "sqlDatabaseSkuName": {
+      "value": "S1"
+    },
+    "sqlDatabaseSkuTier": {
+      "value": "Standard"
+    },
+    "sqlAllowAzureServices": {
+      "value": true
+    },
+    "cognitiveServicesRoleAssignments": {
+      "value": []
+    }
+  }
+}

@@ -180,10 +180,12 @@ var acrName = toLower('acr${baseUniqueName}${uniqueString(baseName, resourceGrou
 var containerAppsEnvironmentName = take('${baseName}-cae', 60)
 var backendContainerAppName = take('${baseName}-backend', 32)
 var frontendContainerAppName = take('${baseName}-frontend', 32)
+var backendContainerIdentityName = take('${baseName}-backend-uami', 128)
+var frontendContainerIdentityName = take('${baseName}-frontend-uami', 128)
 var backendOpenAiEndpoint = 'https://${aiFoundry.outputs.aiServicesName}.openai.azure.com/'
-var backendApiUrl = 'https://${backendContainerAppName}.${containerAppsEnvironmentName}.${appHostingLocation}.azurecontainerapps.io'
-var backendWsUrl = 'wss://${backendContainerAppName}.${containerAppsEnvironmentName}.${appHostingLocation}.azurecontainerapps.io'
-var frontendApiUrl = 'https://${frontendContainerAppName}.${containerAppsEnvironmentName}.${appHostingLocation}.azurecontainerapps.io'
+var backendApiUrl = 'https://${backendContainerApp!.outputs.fqdn}'
+var backendWsUrl = 'wss://${backendContainerApp!.outputs.fqdn}'
+var containerAppsAllowedOriginRegex = '^https://${frontendContainerAppName}(--[a-z0-9]+)?\\..*\\.azurecontainerapps\\.io$'
 var shouldDeployAzureSql = deployAzureSql && !empty(sqlAdministratorLoginPassword)
 var resolvedSqlServerName = sqlServerName == '' ? toLower(take('${baseName}-sql-${baseUniqueName}', 63)) : sqlServerName
 var sqlServerFqdn = '${resolvedSqlServerName}.${environment().suffixes.sqlServerHostname}'
@@ -260,18 +262,69 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.11.
     tags: tags
     zoneRedundant: false
     enableTelemetry: enableTelemetry
+    publicNetworkAccess: 'Enabled'
+  }
+}
+
+module backendContainerIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.5.0' = if (deployApplicationHosting) {
+  name: take('avm.res.managed-identity.user-assigned-identity.${backendContainerIdentityName}', 64)
+  params: {
+    name: backendContainerIdentityName
+    location: appHostingLocation
+    tags: tags
+    enableTelemetry: enableTelemetry
+  }
+}
+
+module frontendContainerIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.5.0' = if (deployApplicationHosting) {
+  name: take('avm.res.managed-identity.user-assigned-identity.${frontendContainerIdentityName}', 64)
+  params: {
+    name: frontendContainerIdentityName
+    location: appHostingLocation
+    tags: tags
+    enableTelemetry: enableTelemetry
+  }
+}
+
+module backendAcrPullAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = if (deployApplicationHosting) {
+  name: take('avm.ptn.authorization.resource-role-assignment.backend.${backendContainerAppName}', 64)
+  params: {
+    principalId: backendContainerIdentity!.outputs.principalId
+    principalType: 'ServicePrincipal'
+    resourceId: containerRegistry!.outputs.resourceId
+    roleDefinitionId: '7f951dda-4ed3-4680-a7ca-43fe172d538d'
+    roleName: 'AcrPull'
+  }
+}
+
+module frontendAcrPullAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = if (deployApplicationHosting) {
+  name: take('avm.ptn.authorization.resource-role-assignment.frontend.${frontendContainerAppName}', 64)
+  params: {
+    principalId: frontendContainerIdentity!.outputs.principalId
+    principalType: 'ServicePrincipal'
+    resourceId: containerRegistry!.outputs.resourceId
+    roleDefinitionId: '7f951dda-4ed3-4680-a7ca-43fe172d538d'
+    roleName: 'AcrPull'
   }
 }
 
 module backendContainerApp 'br/public:avm/res/app/container-app:0.20.0' = if (deployApplicationHosting) {
   name: take('avm.res.app.container-app.${backendContainerAppName}', 64)
+  dependsOn: [
+    backendAcrPullAssignment
+  ]
   params: {
     name: backendContainerAppName
     location: appHostingLocation
-    tags: tags
+    tags: union(tags, {
+      'azd-service-name': 'backend'
+    })
     environmentResourceId: containerAppsEnvironment!.outputs.resourceId
     managedIdentities: {
       systemAssigned: true
+      userAssignedResourceIds: [
+        backendContainerIdentity!.outputs.resourceId
+      ]
     }
     activeRevisionsMode: 'Single'
     ingressExternal: true
@@ -283,14 +336,14 @@ module backendContainerApp 'br/public:avm/res/app/container-app:0.20.0' = if (de
           {
             name: backendDatabaseUrlSecretName
             keyVaultUrl: backendDatabaseUrlSecretUri
-            identity: 'system'
+            identity: backendContainerIdentity!.outputs.resourceId
           }
         ]
       : []
     registries: [
       {
         server: containerRegistry!.outputs.loginServer
-        identity: 'system'
+        identity: backendContainerIdentity!.outputs.resourceId
       }
     ]
     containers: [
@@ -345,7 +398,11 @@ module backendContainerApp 'br/public:avm/res/app/container-app:0.20.0' = if (de
             }
             {
               name: 'ALLOWED_ORIGINS'
-              value: '["${frontendApiUrl}"]'
+              value: '[]'
+            }
+            {
+              name: 'ALLOWED_ORIGIN_REGEX'
+              value: containerAppsAllowedOriginRegex
             }
           ],
           shouldUseKeyVaultBackedSecrets
@@ -374,13 +431,21 @@ module backendContainerApp 'br/public:avm/res/app/container-app:0.20.0' = if (de
 
 module frontendContainerApp 'br/public:avm/res/app/container-app:0.20.0' = if (deployApplicationHosting) {
   name: take('avm.res.app.container-app.${frontendContainerAppName}', 64)
+  dependsOn: [
+    frontendAcrPullAssignment
+  ]
   params: {
     name: frontendContainerAppName
     location: appHostingLocation
-    tags: tags
+    tags: union(tags, {
+      'azd-service-name': 'frontend'
+    })
     environmentResourceId: containerAppsEnvironment!.outputs.resourceId
     managedIdentities: {
       systemAssigned: true
+      userAssignedResourceIds: [
+        frontendContainerIdentity!.outputs.resourceId
+      ]
     }
     activeRevisionsMode: 'Single'
     ingressExternal: true
@@ -390,7 +455,7 @@ module frontendContainerApp 'br/public:avm/res/app/container-app:0.20.0' = if (d
     registries: [
       {
         server: containerRegistry!.outputs.loginServer
-        identity: 'system'
+        identity: frontendContainerIdentity!.outputs.resourceId
       }
     ]
     containers: [
@@ -411,11 +476,11 @@ module frontendContainerApp 'br/public:avm/res/app/container-app:0.20.0' = if (d
             value: 'http://+:3000'
           }
           {
-            name: 'NEXT_PUBLIC_API_URL'
+            name: 'RUNTIME_API_URL'
             value: backendApiUrl
           }
           {
-            name: 'NEXT_PUBLIC_WS_URL'
+            name: 'RUNTIME_WS_URL'
             value: backendWsUrl
           }
         ]
@@ -429,32 +494,10 @@ module frontendContainerApp 'br/public:avm/res/app/container-app:0.20.0' = if (d
   }
 }
 
-module backendAcrPullAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = if (deployApplicationHosting) {
-  name: take('avm.ptn.authorization.resource-role-assignment.backend.${backendContainerAppName}', 64)
-  params: {
-    principalId: backendContainerApp!.outputs.systemAssignedMIPrincipalId!
-    principalType: 'ServicePrincipal'
-    resourceId: containerRegistry!.outputs.resourceId
-    roleDefinitionId: '7f951dda-4ed3-4680-a7ca-43fe172d538d'
-    roleName: 'AcrPull'
-  }
-}
-
-module frontendAcrPullAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = if (deployApplicationHosting) {
-  name: take('avm.ptn.authorization.resource-role-assignment.frontend.${frontendContainerAppName}', 64)
-  params: {
-    principalId: frontendContainerApp!.outputs.systemAssignedMIPrincipalId!
-    principalType: 'ServicePrincipal'
-    resourceId: containerRegistry!.outputs.resourceId
-    roleDefinitionId: '7f951dda-4ed3-4680-a7ca-43fe172d538d'
-    roleName: 'AcrPull'
-  }
-}
-
 module backendContainerAppKeyVaultSecretsUserRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = if (shouldUseKeyVaultBackedSecrets) {
   name: take('avm.ptn.authorization.resource-role-assignment.kv.${backendContainerAppName}', 64)
   params: {
-    principalId: backendContainerApp!.outputs.systemAssignedMIPrincipalId!
+    principalId: backendContainerIdentity!.outputs.principalId
     principalType: 'ServicePrincipal'
     resourceId: keyVaultResourceId
     roleDefinitionId: '4633458b-17de-408a-b874-0445c86b69e6'

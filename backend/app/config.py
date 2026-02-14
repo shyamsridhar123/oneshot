@@ -35,6 +35,7 @@ class Settings(BaseSettings):
 
     # CORS
     allowed_origins: list[str] = ["http://localhost:3000", "http://127.0.0.1:3000"]
+    allowed_origin_regex: str | None = None
 
     @field_validator("allowed_origins", mode="before")
     @classmethod

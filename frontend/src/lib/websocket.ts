@@ -18,8 +18,7 @@ import type {
   AgentName,
 } from "./types";
 import { useStore } from "./store";
-
-const WS_BASE = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8000";
+import { getRuntimeWsBase } from "./runtime-config";
 
 type EventHandler<T = unknown> = (data: T) => void;
 
@@ -96,7 +95,8 @@ class AgentWebSocket {
     if (!this.conversationId) return;
 
     const epoch = this.connectionEpoch;
-    const url = `${WS_BASE}/ws/agents/${this.conversationId}`;
+    const wsBase = getRuntimeWsBase();
+    const url = `${wsBase}/ws/agents/${this.conversationId}`;
     
     try {
       this.ws = new WebSocket(url);
@@ -130,7 +130,7 @@ class AgentWebSocket {
       const stateName = state !== undefined ? stateNames[state] : "UNKNOWN";
       console.error(
         `[WS] Connection error to ${url} (state: ${stateName}). ` +
-        `Is the backend running at ${WS_BASE}?`
+        `Is the backend running at ${wsBase}?`
       );
       this.handlers.onConnectionError?.({ 
         error: `WebSocket connection failed (state: ${stateName}). Ensure backend is running.` 

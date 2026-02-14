@@ -21,6 +21,8 @@ services:
       - "8000:8000"
     volumes:
       - oneshot-backend-data:/app/data
+    networks:
+      - oneshot-shared
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 10s
@@ -42,6 +44,8 @@ services:
         condition: service_healthy
     ports:
       - "3000:3000"
+    networks:
+      - oneshot-shared
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000"]
       interval: 10s
@@ -51,3 +55,7 @@ services:
 
 volumes:
   oneshot-backend-data:
+
+networks:
+  oneshot-shared:
+    driver: bridge
