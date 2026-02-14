@@ -45,6 +45,12 @@ Like a real content team — but in seconds. *You only get one shot at the first
 
 > **Agents League @ TechConnect — Track 2: Reasoning Agents.** The challenge asks participants to build an intelligent agent that helps a company's communication team create social media content across platforms using multi-step reasoning. OneShot answers that challenge with 7 coordinated MAF agents, 5 distinct reasoning patterns, grounded brand data, MCP tool integration, and a full production UI — everything the starter kit describes as aspirational "Going Further" bonuses, we ship as core features.
 
+## Try OneShot Live
+
+You can try the live deployment here:
+
+- https://oneshot-ctr-frontend.ambitiouscoast-16cae529.eastus2.azurecontainerapps.io/
+
 ---
 
 <p align="center">
